@@ -165,6 +165,7 @@ function timecalc(num)
 	return mins, secs, mils
 end
 
+-- https://love2d.org/wiki/Tutorial:Animation
 function newAnimation(image, width, height, duration)
 	local animation = {}
 	animation.spriteSheet = image;
