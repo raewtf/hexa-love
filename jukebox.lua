@@ -3,6 +3,7 @@ local floor = math.floor
 local jukebox = {}
 
 function jukebox:enter(current, ...)
+	love.window.setTitle('HEXA — Jukebox')
 	local args = {...} -- Arguments passed in through the scene management will arrive here
 
 	assets = {
@@ -43,19 +44,21 @@ function jukebox:enter(current, ...)
 
 	vars.anim_ship_x = timer.tween(1.7, vars, {ship_x = 200}, 'out-cubic')
 
-	self:shuffle()
+	if save.music then
+		self:shuffle()
+	end
 end
 
 function jukebox:keypressed(key)
 	if not transitioning and not vars.waiting then
-		if key == 'z' then
+		if (save.keyboard == 1 and key == 'z') or (save.keyboard == 2 and key == ',') then
 			vars.showtext = not vars.showtext
 			if vars.showtext then
 				vars.anim_text_y = timer.tween(0.3, vars, {text_y = 0}, 'out-back')
 			else
 				vars.anim_text_y = timer.tween(0.3, vars, {text_y = 50}, 'in-back')
 			end
-		elseif key == 'x' then
+		elseif (save.keyboard == 1 and key == 'x') or (save.keyboard == 2 and key == '.') then
 			playsound(assets.sfx_back)
 			vars.anim_ship_x = timer.tween(0.7, vars, {ship_x = 500}, 'in-back')
 			vars.delay = timer.after(0.4, function()
@@ -67,7 +70,7 @@ function jukebox:keypressed(key)
 end
 
 function jukebox:update(dt)
-	if music == nil and not transitioning then self:shuffle() end
+	if music == nil and not transitioning and save.music then self:shuffle() end
 	assets.ship.currentTime = assets.ship.currentTime + dt
 	if assets.ship.currentTime >= assets.ship.duration then
 		assets.ship.currentTime = assets.ship.currentTime - assets.ship.duration
@@ -83,7 +86,13 @@ function jukebox:draw()
 	gfx.setFont(assets.half_circle_inverted)
 	if save.color == 1 then gfx.setColor(love.math.colorFromBytes(194, 195, 199, 255)) end
 
-	gfx.print('Z toggles the text. X goes back.', 10, 220 + floor(vars.text_y))
+	if save.gamepad then -- Gamepad
+		gfx.print('A toggles the text. B goes back.', 10, 220 + floor(vars.text_y))
+	elseif save.keyboard == 1 then -- Arrows + Z & X
+		gfx.print('Z toggles the text. X goes back.', 10, 220 + floor(vars.text_y))
+	elseif save.keyboard == 2 then -- WASD + , & .
+		gfx.print(', toggles the text. . goes back.', 10, 220 + floor(vars.text_y))
+	end
 
 	gfx.setFont(assets.full_circle_inverted)
 	if save.color == 1 then gfx.setColor(love.math.colorFromBytes(255, 241, 232, 255)) end
@@ -107,9 +116,8 @@ function jukebox:draw()
 	local spritenum = floor(assets.ship.currentTime / assets.ship.duration * #assets.ship.quads) + 1
 	gfx.draw(assets.ship.spriteSheet, assets.ship.quads[spritenum], floor(vars.ship_x), 120, 0, 1, 1, 69, 37)
 
+	draw_on_top()
 end
-
--- TODO: why does having the music off make it skip fuck through tracks?
 
 function jukebox:shuffle()
 	vars.rand = math.random(1, vars.num)

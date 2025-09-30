@@ -1,4 +1,6 @@
 game = require('game')
+missions = require('missions')
+statistics = require('statistics')
 howtoplay = require('howtoplay')
 options = require('options')
 credits = require('credits')
@@ -9,6 +11,7 @@ local floor = math.floor
 local title = {}
 
 function title:enter(current, ...)
+	love.window.setTitle('HEXA')
 	local args = {...} -- Arguments passed in through the scene management will arrive here
 
 	assets = {
@@ -16,12 +19,15 @@ function title:enter(current, ...)
 		stars_small = gfx.newImage('images/' .. tostring(save.color) .. '/stars_small.png'),
 		stars_large = gfx.newImage('images/' .. tostring(save.color) .. '/stars_large.png'),
 		logo = gfx.newImage('images/' .. tostring(save.color) .. '/logo.png'),
+		half = gfx.newImage('images/half.png'),
 		half_1x = gfx.newImage('images/half_1x.png'),
 		full_circle_inverted = gfx.newImageFont('fonts/full-circle-inverted.png', '0123456789 !"#$%&\'()*+,-./:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\\]™_`abcdefghijklmnopqrstuvwxyz{|}~≠🎵'),
 		half_circle_inverted = gfx.newImageFont('fonts/half-circle-inverted.png', '0123456789 !"#$%&\'()*+,-./:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\\]™_`abcdefghijklmnopqrstuvwxyz{|}~≠⏰🔒'),
 		sfx_move = love.audio.newSource('audio/sfx/swap.mp3', 'static'),
 		sfx_bonk = love.audio.newSource('audio/sfx/bonk.mp3', 'static'),
+		sfx_back = love.audio.newSource('audio/sfx/back.mp3', 'static'),
 		sfx_select = love.audio.newSource('audio/sfx/select.mp3', 'static'),
+		modal_small = gfx.newImage('images/' .. tostring(save.color) .. '/modal_small.png'),
 	}
 
 	vars = {
@@ -34,7 +40,8 @@ function title:enter(current, ...)
 		dailyrunnable = false,
 		waiting = true,
 		selection = 0,
-		selections = {'arcade', 'zen', 'dailyrun', 'missions', 'howtoplay', 'options', 'credits'},
+		handler = 'title',
+		selections = {'arcade', 'zen', 'dailyrun', 'missions', 'statistics', 'howtoplay', 'options', 'credits', 'quit'},
 	}
 	vars.input_wait = timer.after(transitiontime, function()
 		vars.waiting = false
@@ -83,70 +90,85 @@ end
 
 function title:keypressed(key)
 	if not transitioning and not vars.waiting then
-		if key == 'j' then
-			scenemanager:transitionscene(jukebox)
-			fademusic()
-			playsound(assets.sfx_select)
-			vars.selection = 0
-		elseif key == 'up' then
-			if vars.selection ~= 0 then
-				if vars.selection > 1 then
-					vars.selection = vars.selection - 1
-				else
-					vars.selection = #vars.selections
-				end
-				playsound(assets.sfx_move)
-			end
-		elseif key == 'down' then
-			if vars.selection ~= 0 then
-				if vars.selection < #vars.selections then
-					vars.selection = vars.selection + 1
-				else
-					vars.selection = 1
-				end
-				playsound(assets.sfx_move)
-			end
-		elseif key == 'z' then
-			if vars.selections[vars.selection] == 'arcade' then
-				scenemanager:transitionscene(game, 'arcade')
+		if vars.handler == 'title' then
+			if key == 'j' then
+				scenemanager:transitionscene(jukebox)
 				fademusic()
-			elseif vars.selections[vars.selection] == 'zen' then
-				scenemanager:transitionscene(game, 'zen')
-				fademusic()
-			elseif vars.selections[vars.selection] == 'dailyrun' then
-				if vars.dailyrunnable then
-					scenemanager:transitionscene(game, 'dailyrun')
-					save.lastdaily.score = 0
-					fademusic()
-					vars.resetlastdaily = timer.after(0.5, function()
-						save.lastdaily = os.date("!*t")
-						save.lastdaily.score = 0
-						save.lastdaily.sent = false
-						love.filesystem.write('data', json.encode(save))
-					end)
-				else
-					shakies()
-					playsound(assets.sfx_bonk)
-				end
-			elseif vars.selections[vars.selection] == 'missions' then
-				scenemanager:transitionscene(missions)
-			elseif vars.selections[vars.selection] == 'howtoplay' then
-				scenemanager:transitionscene(howtoplay)
-			elseif vars.selections[vars.selection] == 'options' then
-				scenemanager:transitionscene(options)
-			elseif vars.selections[vars.selection] == 'credits' then
-				scenemanager:transitionscene(credits)
-			end
-			if transitioning then
 				playsound(assets.sfx_select)
 				vars.selection = 0
+			elseif (save.keyboard == 1 and key == 'up') or (save.keyboard == 2 and key == 'w') then
+				if vars.selection ~= 0 then
+					if vars.selection > 1 then
+						vars.selection = vars.selection - 1
+					else
+						vars.selection = #vars.selections
+					end
+					playsound(assets.sfx_move)
+				end
+			elseif (save.keyboard == 1 and key == 'down') or (save.keyboard == 2 and key == 's') then
+				if vars.selection ~= 0 then
+					if vars.selection < #vars.selections then
+						vars.selection = vars.selection + 1
+					else
+						vars.selection = 1
+					end
+					playsound(assets.sfx_move)
+				end
+			elseif (save.keyboard == 1 and key == 'z') or (save.keyboard == 2 and key == ',') then
+				if vars.selections[vars.selection] == 'arcade' then
+					scenemanager:transitionscene(game, 'arcade')
+					fademusic()
+				elseif vars.selections[vars.selection] == 'zen' then
+					scenemanager:transitionscene(game, 'zen')
+					fademusic()
+				elseif vars.selections[vars.selection] == 'dailyrun' then
+					if vars.dailyrunnable then
+						scenemanager:transitionscene(game, 'dailyrun')
+						save.lastdaily.score = 0
+						fademusic()
+						vars.resetlastdaily = timer.after(0.5, function()
+							save.lastdaily = os.date('!*t')
+							save.lastdaily.sent = false
+							love.filesystem.write('data.json', json.encode(save))
+						end)
+					else
+						shakies()
+						playsound(assets.sfx_bonk)
+					end
+				elseif vars.selections[vars.selection] == 'missions' then
+					scenemanager:transitionscene(missions)
+				elseif vars.selections[vars.selection] == 'statistics' then
+					scenemanager:transitionscene(statistics)
+				elseif vars.selections[vars.selection] == 'howtoplay' then
+					scenemanager:transitionscene(howtoplay)
+				elseif vars.selections[vars.selection] == 'options' then
+					scenemanager:transitionscene(options)
+				elseif vars.selections[vars.selection] == 'credits' then
+					scenemanager:transitionscene(credits)
+				elseif vars.selections[vars.selection] == 'quit' then
+					vars.handler = 'quit'
+					if music ~= nil then music:setVolume(0.3) end
+					playsound(assets.sfx_select)
+				end
+				if transitioning then
+					playsound(assets.sfx_select)
+					vars.selection = 0
+				end
+			end
+		elseif vars.handler == 'quit' then
+			if (save.keyboard == 1 and key == 'z') or (save.keyboard == 2 and key == ',') then
+				love.event.quit()
+			elseif (save.keyboard == 1 and key == 'x') or (save.keyboard == 2 and key == '.') then
+				if music ~= nil then music:setVolume(1) end
+				vars.handler = 'title'
+				playsound(assets.sfx_back)
 			end
 		end
 	end
 end
 
 function title:update()
-	local time = os.date("!*t")
+	local time = os.date('!*t')
 
 	if save.lastdaily.year == time.year and save.lastdaily.month == time.month and save.lastdaily.day == time.day then
 		vars.dailyrunnable = false
@@ -168,42 +190,76 @@ function title:draw()
 	local time = os.date('!*t')
 
 	if time.hour < 23 then
-		gfx.print(((vars.dailyrunnable and '⏰ ') or '🔒 ') .. (24 - time.hour) .. 'h', 265 + floor(vars.title), 130)
+		gfx.print(((vars.dailyrunnable and '⏰ ') or '🔒 ') .. (24 - time.hour) .. 'h', 265 + floor(vars.title), 90)
 	else
 		if time.min < 59 then
-			gfx.print(((vars.dailyrunnable and '⏰ ') or '🔒 ') .. (60 - time.min) .. 'm', 265 + floor(vars.title), 130)
+			gfx.print(((vars.dailyrunnable and '⏰ ') or '🔒 ') .. (60 - time.min) .. 'm', 265 + floor(vars.title), 90)
 		else
-			gfx.print(((vars.dailyrunnable and '⏰ ') or '🔒 ') .. (60 - time.sec) .. 'w', 265 + floor(vars.title), 130)
+			gfx.print(((vars.dailyrunnable and '⏰ ') or '🔒 ') .. (60 - time.sec) .. 'w', 265 + floor(vars.title), 90)
 		end
 	end
 
-	gfx.printf('Arcade Mode', 0, 90, 385 + floor(vars.title), 'right')
-	gfx.printf('Chill Mode', 0, 110, 385 + floor(vars.title), 'right')
-	gfx.printf('Daily Run', 0, 130, 385 + floor(vars.title), 'right')
-	gfx.printf('Mission Mode', 0, 150, 385 + floor(vars.title), 'right')
-	gfx.printf('How to Play', 0, 170, 385 + floor(vars.title), 'right')
-	gfx.printf('Options', 0, 190, 385 + floor(vars.title), 'right')
-	gfx.printf('Credits', 0, 210, 385 + floor(vars.title), 'right')
+	for i = 1, #vars.selections do
+		local text = ''
+		if vars.selections[i] == 'arcade' then
+			text = 'Arcade Mode'
+		elseif vars.selections[i] == 'zen' then
+			text = 'Chill Mode'
+		elseif vars.selections[i] == 'dailyrun' then
+			text = 'Daily Run'
+		elseif vars.selections[i] == 'missions' then
+			text = 'Mission Mode'
+		elseif vars.selections[i] == 'statistics' then
+			text = 'Statistics'
+		elseif vars.selections[i] == 'howtoplay' then
+			text = 'How to Play'
+		elseif vars.selections[i] == 'options' then
+			text = 'Options'
+		elseif vars.selections[i] == 'credits' then
+			text = 'Credits'
+		elseif vars.selections[i] == 'quit' then
+			text = 'Quit Game'
+		end
+		if vars.selection ~= i then
+			gfx.printf(text, 0, (210 - (20 * #vars.selections)) + (20 * i), 385 + floor(vars.title), 'right')
+		end
+	end
 
-	gfx.print('The arrows move. Z picks.', 10 - floor(vars.title), 220)
+	if save.gamepad then -- Gamepad
+		gfx.print('The D-pad moves. A picks.', 10 - floor(vars.title), 220)
+	elseif save.keyboard == 1 then -- Arrows + Z & X
+		gfx.print('The arrows move. Z picks.', 10 - floor(vars.title), 220)
+	elseif save.keyboard == 2 then -- WASD + , & .
+		gfx.print('WASD moves. , picks.', 10 - floor(vars.title), 220)
+	end
 
 	gfx.setFont(assets.full_circle_inverted)
 	if save.color == 1 then gfx.setColor(love.math.colorFromBytes(255, 241, 232, 255)) end
 
-	if vars.selections[vars.selection] == 'arcade' then
-		gfx.printf('Arcade Mode', 0, 90, 385 + floor(vars.title), 'right')
-	elseif vars.selections[vars.selection] == 'zen' then
-		gfx.printf('Chill Mode', 0, 110, 385 + floor(vars.title), 'right')
-	elseif vars.selections[vars.selection] == 'dailyrun' then
-		gfx.printf('Daily Run', 0, 130, 385 + floor(vars.title), 'right')
-	elseif vars.selections[vars.selection] == 'missions' then
-		gfx.printf('Mission Mode', 0, 150, 385 + floor(vars.title), 'right')
-	elseif vars.selections[vars.selection] == 'howtoplay' then
-		gfx.printf('How to Play', 0, 170, 385 + floor(vars.title), 'right')
-	elseif vars.selections[vars.selection] == 'options' then
-		gfx.printf('Options', 0, 190, 385 + floor(vars.title), 'right')
-	elseif vars.selections[vars.selection] == 'credits' then
-		gfx.printf('Credits', 0, 210, 385 + floor(vars.title), 'right')
+	for i = 1, #vars.selections do
+		local text = ''
+		if vars.selections[vars.selection] == 'arcade' then
+			text = 'Arcade Mode'
+		elseif vars.selections[vars.selection] == 'zen' then
+			text = 'Chill Mode'
+		elseif vars.selections[vars.selection] == 'dailyrun' then
+			text = 'Daily Run'
+		elseif vars.selections[vars.selection] == 'missions' then
+			text = 'Mission Mode'
+		elseif vars.selections[vars.selection] == 'statistics' then
+			text = 'Statistics'
+		elseif vars.selections[vars.selection] == 'howtoplay' then
+			text = 'How to Play'
+		elseif vars.selections[vars.selection] == 'options' then
+			text = 'Options'
+		elseif vars.selections[vars.selection] == 'credits' then
+			text = 'Credits'
+		elseif vars.selections[vars.selection] == 'quit' then
+			text = 'Quit Game'
+		end
+		if vars.selection == i then
+			gfx.printf(text, 0, (210 - (20 * #vars.selections)) + (20 * i), 385 + floor(vars.title), 'right')
+		end
 	end
 
 	if vars.selections[vars.selection] == 'arcade' then
@@ -229,6 +285,37 @@ function title:draw()
 	gfx.setColor(1, 1, 1, 1)
 
 	gfx.draw(assets.logo, 0, 0)
+
+	if vars.handler == 'quit' then
+		gfx.draw(assets.half, 0, 0)
+		gfx.draw(assets.modal_small, 46, 35)
+
+		gfx.setFont(assets.full_circle_inverted)
+		if save.color == 1 then gfx.setColor(love.math.colorFromBytes(255, 241, 232, 255)) end
+
+		gfx.printf('Are you sure you\'d\nlike to quit?', 0, 62, 400, 'center')
+
+		gfx.setFont(assets.half_circle_inverted)
+		if save.color == 1 then gfx.setColor(love.math.colorFromBytes(194, 195, 199, 255)) end
+
+		if save.gamepad then
+			gfx.printf('(You can also quit at any time\nby pressing Start twice quickly\noutside of the game.)', 0, 103, 400, 'center')
+		else
+			gfx.printf('(You can also quit at any time\nby pressing ESC twice quickly\noutside of the game.)', 0, 103, 400, 'center')
+		end
+
+		if save.gamepad then
+			gfx.printf('A quits. B goes back.', 0, 160, 400, 'center')
+		elseif save.keyboard == 1 then
+			gfx.printf('Z quits. X goes back.', 0, 160, 400, 'center')
+		elseif save.keyboard == 2 then
+			gfx.printf(', quits. . goes back.', 0, 160, 400, 'center')
+		end
+
+		gfx.setColor(1, 1, 1, 1)
+	end
+
+	draw_on_top()
 end
 
 return title

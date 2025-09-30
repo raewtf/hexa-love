@@ -7,12 +7,13 @@ local offsetx, offsety = 0, 0
 title = require('title')
 
 local gfx = love.graphics
-half_circle = gfx.newImageFont('fonts/half-circle-inverted.png', '0123456789 !"#$%&\'()*+,-./:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\\]™_`abcdefghijklmnopqrstuvwxyz{|}~≠⏰🔒')
+local gamepad = false
 local floor = math.floor
 local max = math.max
-local quit = 0
+local scale
+quit = 0
 
-version = '2.1.6pc b1'
+version = '2.1.7b2'
 
 gfx.setLineWidth(3)
 gfx.setLineStyle('rough')
@@ -20,16 +21,146 @@ gfx.setLineJoin('bevel')
 gfx.setDefaultFilter('nearest', 'nearest')
 love.keyboard.setKeyRepeat(false)
 
+hexaplex_blacks = {
+	{love.math.colorFromBytes(29, 43, 83, 255)},
+	{love.math.colorFromBytes(41, 173, 255, 255)},
+	{love.math.colorFromBytes(255, 0, 77, 255)},
+	{love.math.colorFromBytes(0, 0, 0, 255)},
+	{love.math.colorFromBytes(0, 135, 81, 255)},
+	{love.math.colorFromBytes(41, 173, 255, 255)},
+	{love.math.colorFromBytes(255, 0, 77, 255)},
+	{love.math.colorFromBytes(29, 43, 83, 255)},
+	{love.math.colorFromBytes(29, 43, 83, 255)},
+	{love.math.colorFromBytes(0, 0, 0, 255)},
+	{love.math.colorFromBytes(41, 173, 255, 255)},
+	{love.math.colorFromBytes(255, 0, 77, 255)},
+	{love.math.colorFromBytes(126, 37, 83, 255)},
+	{love.math.colorFromBytes(0, 0, 0, 255)},
+	{love.math.colorFromBytes(126, 37, 83, 255)},
+	{love.math.colorFromBytes(171, 82, 54, 255)},
+	{love.math.colorFromBytes(255, 0, 77, 255)},
+	{love.math.colorFromBytes(41, 173, 255, 255)},
+	{love.math.colorFromBytes(29, 43, 83, 255)},
+	{love.math.colorFromBytes(0, 135, 81, 255)},
+	{love.math.colorFromBytes(255, 0, 77, 255)},
+	{love.math.colorFromBytes(171, 82, 54, 255)},
+	{love.math.colorFromBytes(0, 135, 81, 255)},
+	{love.math.colorFromBytes(255, 0, 77, 255)},
+	{love.math.colorFromBytes(171, 82, 54, 255)},
+	{love.math.colorFromBytes(255, 0, 77, 255)},
+}
+
+hexaplex_gray1s = {
+	{love.math.colorFromBytes(129, 118, 153, 255)},
+	{love.math.colorFromBytes(234, 51, 82, 255)},
+	{love.math.colorFromBytes(59, 133, 86, 255)},
+	{love.math.colorFromBytes(94, 87, 80, 255)},
+	{love.math.colorFromBytes(59, 133, 86, 255)},
+	{love.math.colorFromBytes(238, 127, 167, 255)},
+	{love.math.colorFromBytes(234, 51, 82, 255)},
+	{love.math.colorFromBytes(32, 43, 80, 255)},
+	{love.math.colorFromBytes(59, 133, 86, 255)},
+	{love.math.colorFromBytes(242, 167, 59, 255)},
+	{love.math.colorFromBytes(86, 171, 248, 255)},
+	{love.math.colorFromBytes(238, 127, 167, 255)},
+	{love.math.colorFromBytes(160, 87, 61, 255)},
+	{love.math.colorFromBytes(116, 44, 82, 255)},
+	{love.math.colorFromBytes(234, 51, 82, 255)},
+	{love.math.colorFromBytes(234, 51, 82, 255)},
+	{love.math.colorFromBytes(59, 133, 86, 255)},
+	{love.math.colorFromBytes(242, 167, 59, 255)},
+	{love.math.colorFromBytes(94, 87, 80, 255)},
+	{love.math.colorFromBytes(242, 167, 59, 255)},
+	{love.math.colorFromBytes(238, 127, 167, 255)},
+	{love.math.colorFromBytes(242, 167, 59, 255)},
+	{love.math.colorFromBytes(86, 171, 248, 255)},
+	{love.math.colorFromBytes(242, 167, 59, 255)},
+	{love.math.colorFromBytes(234, 51, 82, 255)},
+	{love.math.colorFromBytes(104, 255, 84, 255)},
+}
+
+hexaplex_gray2s = {
+	{love.math.colorFromBytes(194, 195, 199, 255)},
+	{love.math.colorFromBytes(238, 127, 167, 255)},
+	{love.math.colorFromBytes(104, 225, 84, 255)},
+	{love.math.colorFromBytes(129, 118, 153, 255)},
+	{love.math.colorFromBytes(104, 225, 84, 255)},
+	{love.math.colorFromBytes(253, 241, 233, 255)},
+	{love.math.colorFromBytes(242, 167, 59, 255)},
+	{love.math.colorFromBytes(86, 171, 248, 255)},
+	{love.math.colorFromBytes(104, 225, 84, 255)},
+	{love.math.colorFromBytes(252, 237, 87, 255)},
+	{love.math.colorFromBytes(253, 241, 233, 255)},
+	{love.math.colorFromBytes(253, 241, 233, 255)},
+	{love.math.colorFromBytes(242, 167, 59, 255)},
+	{love.math.colorFromBytes(234, 51, 82, 255)},
+	{love.math.colorFromBytes(238, 127, 167, 255)},
+	{love.math.colorFromBytes(242, 167, 59, 255)},
+	{love.math.colorFromBytes(104, 225, 84, 255)},
+	{love.math.colorFromBytes(252, 237, 87, 255)},
+	{love.math.colorFromBytes(129, 118, 153, 255)},
+	{love.math.colorFromBytes(247, 206, 175, 255)},
+	{love.math.colorFromBytes(253, 241, 223, 255)},
+	{love.math.colorFromBytes(247, 206, 175, 255)},
+	{love.math.colorFromBytes(253, 241, 233, 255)},
+	{love.math.colorFromBytes(247, 206, 175, 255)},
+	{love.math.colorFromBytes(242, 167, 59, 255)},
+	{love.math.colorFromBytes(252, 237, 87, 255)},
+}
+
+hexaplex_whites = {
+	{love.math.colorFromBytes(255, 236, 39, 255)},
+	{love.math.colorFromBytes(255, 236, 39, 255)},
+	{love.math.colorFromBytes(255, 236, 39, 255)},
+	{love.math.colorFromBytes(255, 241, 232, 255)},
+	{love.math.colorFromBytes(255, 236, 39, 255)},
+	{love.math.colorFromBytes(255, 241, 232, 255)},
+	{love.math.colorFromBytes(255, 236, 39, 255)},
+	{love.math.colorFromBytes(41, 173, 255, 255)},
+	{love.math.colorFromBytes(255, 236, 39, 255)},
+	{love.math.colorFromBytes(255, 241, 232, 255)},
+	{love.math.colorFromBytes(255, 241, 232, 255)},
+	{love.math.colorFromBytes(255, 236, 39, 255)},
+	{love.math.colorFromBytes(255, 204, 170, 255)},
+	{love.math.colorFromBytes(255, 119, 168, 255)},
+	{love.math.colorFromBytes(0, 228, 54, 255)},
+	{love.math.colorFromBytes(255, 163, 0, 255)},
+	{love.math.colorFromBytes(255, 241, 232, 255)},
+	{love.math.colorFromBytes(255, 241, 232, 255)},
+	{love.math.colorFromBytes(194, 195, 199, 255)},
+	{love.math.colorFromBytes(255, 241, 232, 255)},
+	{love.math.colorFromBytes(255, 241, 232, 255)},
+	{love.math.colorFromBytes(255, 241, 232, 255)},
+	{love.math.colorFromBytes(255, 236, 39, 255)},
+	{love.math.colorFromBytes(255, 241, 232, 255)},
+	{love.math.colorFromBytes(255, 236, 39, 255)},
+	{love.math.colorFromBytes(255, 241, 232, 255)},
+}
+
+local half_circle = gfx.newImageFont('fonts/half-circle-inverted.png', '0123456789 !"#$%&\'()*+,-./:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\\]™_`abcdefghijklmnopqrstuvwxyz{|}~≠⏰🔒')
+
 function savecheck()
+	-- old save file check
 	if love.filesystem.read('data') ~= nil then
 		save = json.decode(love.filesystem.read('data'))
+		love.filesystem.write('data.json', json.encode(save))
+		love.filesystem.remove('data')
+	end
+
+	if love.filesystem.read('data.json') ~= nil then
+		save = json.decode(love.filesystem.read('data.json'))
 	end
 	if save == nil then save = {} end
 	save.scale = save.scale or 1
 	if save.gamepad == nil then save.gamepad = false end
+	save.keyboard = save.keyboard or 1
+	-- 1 = arrow keys, Z and X
+	-- 2 = WASD, , and .
 	save.color = save.color or 1
 	-- 1 = colorful
 	-- 2 = classic
+	save.hexaplex_color = save.hexaplex_color or 1
+	if save.rumble == nil then save.rumble = true end
 	if save.reduceflashing == nil then save.reduceflashing = false end
 	if save.music == nil then save.music = true end
 	if save.sfx == nil then save.sfx = true end
@@ -59,15 +190,24 @@ function savecheck()
 	for i = 1, #save.mission_bests do
 		save.mission_bests[i] = save.mission_bests[i] or 0
 	end
+	save.playtime = save.playtime or 0
+	save.gametime = save.gametime or 0
+	save.total_score = save.total_score or 0
+	save.black_match = save.black_match or 0
+	save.gray_match = save.gray_match or 0
+	save.white_match = save.white_match or 0
+	save.double_match = save.double_match or 0
+	save.bomb_match = save.bomb_match or 0
+	save.wild_match = save.wild_match or 0
 end
 
 function love.quit() -- Save data on quit
-	love.filesystem.write('data', json.encode(save))
+	love.filesystem.write('data.json', json.encode(save))
 end
 
 function rescale(newscale) -- Global rescale
-	save.scale = newscale
-	love.window.setMode(400 * newscale, 240 * newscale)
+	scale = newscale
+	love.window.setMode(400 * newscale, 240 * newscale, {resizable = true, minwidth = 400 * newscale, minheight = 240 * newscale})
 end
 
 -- Setting up music
@@ -165,6 +305,13 @@ function timecalc(num)
 	return mins, secs, mils
 end
 
+function timecalchour(num)
+	local hours = math.floor((num/30) / 3600)
+	local mins = math.floor((num/30) / 60 - (hours * 60))
+	local secs = math.floor((num/30) - (hours * 3600) - (mins * 60))
+	return hours, mins, secs
+end
+
 -- https://love2d.org/wiki/Tutorial:Animation
 function newAnimation(image, width, height, duration)
 	local animation = {}
@@ -185,11 +332,14 @@ end
 
 function love.load()
 	savecheck()
-	-- TODO: achievements??
+	-- CHEEVOS: run init function here
 
 	if love.filesystem.getInfo('missions') == nil then
 		love.filesystem.createDirectory('missions')
 	end
+
+	min_dt = 1/30
+	next_time = love.timer.getTime()
 
 	rescale(save.scale)
 	gamestate.registerEvents()
@@ -200,6 +350,7 @@ function shakies(time, int)
 	if save.reduceflashing then return end
 	if vars.anim_shakies ~= nil then
 		timer.cancel(vars.anim_shakies)
+		timer.cancel(vars.anim_shakies_stop)
 	end
 	vars.shakies = int or 10
 	vars.anim_shakies = timer.tween(time or 0.75, vars, {shakies = 0}, 'out-elastic', function()
@@ -207,47 +358,131 @@ function shakies(time, int)
 		timer.cancel(vars.anim_shakies)
 		vars.anim_shakies = nil
 	end)
+	vars.anim_shakies_stop = timer.after((time or 0.75 / 2), function()
+		timer.cancel(vars.anim_shakies)
+		vars.anim_shakies = nil
+		vars.anim_shakies_stop = nil
+		vars.shakies = 0
+	end)
 end
 
 function shakies_y(time, int)
 	if save.reduceflashing then return end
 	if vars.anim_shakies_y ~= nil then
 		timer.cancel(vars.anim_shakies_y)
+		timer.cancel(vars.anim_shakies_y_stop)
 	end
 	vars.shakies_y = int or 10
-	vars.anim_shakies_y = timer.tween(time or 0.75, vars, {shakies_y = 0}, 'out-elastic', function()
-		vars.shakies_y = nil
-		timer.cancel(vars.anim_shakies)
+	vars.anim_shakies_y = timer.tween(time or 0.75, vars, {shakies_y = 0}, 'out-elastic')
+	vars.anim_shakies_y_stop = timer.after((time or 0.75 / 2), function()
+		timer.cancel(vars.anim_shakies_y)
 		vars.anim_shakies_y = nil
+		vars.anim_shakies_y_stop = nil
+		vars.shakies_y = 0
 	end)
 end
 
 function love.keypressed(key)
-	save.gamepad = false
+	if gamepad then
+		save.gamepad = true
+	else
+		save.gamepad = false
+	end
+	gamepad = false
 	if key == 'escape' and vars ~= nil then
-		if not vars.can_do_stuff then
+		if not vars.can_do_stuff and vars.handler ~= 'quit' then
 			quit = quit + 1
 			vars.quit_timer = timer.after(2, function() quit = 0 end)
 			if quit == 2 then
 				love.event.quit()
 			end
 		end
+	elseif key == '[' then
+		gfx.captureScreenshot('test.png')
 	end
 end
 
 function love.gamepadpressed(joystick, button)
-	save.gamepad = true
-	-- TODO: quit key on gamepad
-	-- TODO: rewrite button prompts/how to play, with button commands, if bool is true
+	if joystick ~= connected_joystick then return end
+	local key
+	if button == 'start' then
+		key = 'escape'
+	elseif button == 'x' then
+		key = 'j'
+	elseif button == 'y' then
+		key = 'c'
+	elseif save.keyboard == 1 then
+		if button == 'dpup' then
+			key = 'up'
+		elseif button == 'dpdown' then
+			key = 'down'
+		elseif button == 'dpleft' then
+			key = 'left'
+		elseif button == 'dpright' then
+			key = 'right'
+		elseif button == 'a' then
+			key = 'z'
+		elseif button == 'b' then
+			key = 'x'
+		end
+	elseif save.keyboard == 2 then
+		if button == 'dpup' then
+			key = 'w'
+		elseif button == 'dpdown' then
+			key = 's'
+		elseif button == 'dpleft' then
+			key = 'a'
+		elseif button == 'dpright' then
+			key = 'd'
+		elseif button == 'a' then
+			key = ','
+		elseif button == 'b' then
+			key = '.'
+		end
+	end
+	gamepad = true
+	love.keypressed(key)
 end
 
--- TODO: lock framerate to 30 FPS?
--- TODO: floor shakies after a bit
+function love.joystickadded(joystick)
+	if connected_joystick == nil then
+		connected_joystick = joystick
+	end
+end
+
+function love.joystickremoved(joystick)
+	if joystick == connected_joystick then
+		connected_joystick = nil
+	end
+end
+
+function rumble(left, right, duration)
+	if save.rumble and save.gamepad and connected_joystick:isVibrationSupported() then
+		connected_joystick:setVibration(left, right, duration)
+	end
+end
+
+-- TODO: mission command lv editor
+-- TODO: move scissor alongside shakies
+-- TODO: Half circle shows under full circle
+-- TOOD: Replace half circle with lighter full circle in colorful mode?
 
 function love.update(dt)
+	next_time = next_time + min_dt
+
+	save.playtime = save.playtime + 1
+
+	local time = os.date('!*t')
+
+	if (save.lastdaily.score ~= 0) and not (save.lastdaily.year == time.year and save.lastdaily.month == time.month and save.lastdaily.day == time.day) then
+	  	save.lastdaily.score = 0
+	 	save.lastdaily.sent = false
+	end
+
 	if vars ~= nil and not vars.paused then
 		timer.update(dt)
 	end
+
 	if music ~= nil then
 		if volume[1] < 1 then music:setVolume(volume[1]) end
 		if not music:isPlaying() then music = nil end
@@ -256,24 +491,77 @@ end
 
 function love.draw()
 	gfx.setColor(1, 1, 1, 1)
-	gfx.scale(save.scale)
-	gfx.setScissor(0, 0, 400 * save.scale, 240 * save.scale)
+
+	local lbw = false
+	local lbh = false
+
+	local ww, wh, flags = love.window.getMode()
+	if ww > 400 * scale then lbw = true end
+	if wh > 240 * scale then lbh = true end
+
+	if lbw then gfx.translate(((floor(ww / 2) * 2) - (400 * scale)) / 2, 0) end
+	if lbh then gfx.translate(0, ((floor(wh / 2) * 2) - (240 * scale)) / 2) end
+
+	gfx.setScissor((lbw and (((floor(ww / 2) * 2) - (400 * scale)) / 2)) or 0, (lbh and (((floor(wh / 2) * 2) - (240 * scale)) / 2)) or 0, 400 * scale, 240 * scale)
+
+	gfx.scale(scale)
 
 	if vars ~= nil then
 		if vars.anim_shakies ~= nil then
-			love.graphics.translate(floor(vars.shakies), offsety)
+			gfx.translate(floor(vars.shakies), offsety)
 		end
 		offsetx, offsety = 0 + floor(vars.shakies or 0), 0 + floor(vars.shakies_y or 0)
 		if vars.anim_shakies_y ~= nil then
-			love.graphics.translate(offsetx, floor(vars.shakies_y))
+			gfx.translate(offsetx, floor(vars.shakies_y))
 		end
+	end
+end
+
+function love.focus(f)
+	if f then
+		love.mouse.setVisible(false)
+	else
+		love.mouse.setVisible(true)
+	end
+end
+
+function love.resize(w, h)
+	local fw = floor(w / 400)
+	local fh = floor(h / 240)
+	if fw < fh and fw >= save.scale then
+		scale = fw
+	elseif fh < fw and fh >= save.scale then
+		scale = fh
+	elseif fw == fh and fw >= save.scale then
+		scale = fw
+	end
+end
+
+function draw_on_top()
+	gfx.setColor(1, 1, 1, 1)
+
+	if quit > 0 then
+		gfx.setColor(0, 0, 0, 1)
+		gfx.rectangle('fill', 0, 0, 400, 25)
+		gfx.setFont(half_circle)
+		if save.color == 1 then gfx.setColor(love.math.colorFromBytes(194, 195, 199, 255)) else gfx.setColor(1, 1, 1, 1) end
+		if save.gamepad then
+			gfx.printf('Press Start again to quit. See ya later!', 0, 5, 400, 'center')
+		else
+			gfx.printf('Press ESC again to quit. See ya later!', 0, 5, 400, 'center')
+		end
+		gfx.setColor(1, 1, 1, 1)
 	end
 
 	if transitioning then
 		gfx.draw(podbaydoor, math.floor(podbaydoorstatus.pos1 / 2) * 2, 0)
 		gfx.draw(podbaydoor, (math.floor(podbaydoorstatus.pos2 / 2) * 2) + 220, 0, 0, -1, 1)
-		gfx.setScissor((podbaydoorstatus.pos1 + 220) * save.scale, 0, max((podbaydoorstatus.pos2 - (podbaydoorstatus.pos1 + 220)) * save.scale, 0), (240 * save.scale))
 	end
 
-	-- TODO: 'Press ESC again to quit' screen
+	local cur_time = love.timer.getTime()
+	if next_time <= cur_time then
+		next_time = cur_time
+		return
+	end
+	love.timer.sleep(next_time - cur_time)
 end

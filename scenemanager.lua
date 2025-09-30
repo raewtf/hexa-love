@@ -40,11 +40,12 @@ end
 
 function scenemanager:loadnewscene()
 	self:cleanupscene()
-	love.filesystem.write('data', json.encode(save))
+	love.filesystem.write('data.json', json.encode(save))
 	gamestate.switch(self.newscene, table.unpack(self.sceneargs))
 end
 
 function scenemanager:cleanupscene()
+	quit = 0
 	if classes ~= nil then
 		for i = #classes, 1, -1 do
 			classes[i] = nil

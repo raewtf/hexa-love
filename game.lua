@@ -13,7 +13,7 @@ local tris_flip = {true, false, true, false, true, true, false, true, false, tru
 function game:enter(current, ...)
 	local args = {...} -- Arguments passed in through the scene management will arrive here
 
-	-- TODO: make sure empty tris look the same as the original
+	-- TODO: implement rubdubdub to BOOM
 
 	assets = {
 		cursor = gfx.newImage('images/' ..tostring(save.color) .. '/cursor.png'),
@@ -54,8 +54,9 @@ function game:enter(current, ...)
 		stars = gfx.newImage('images/' .. tostring(save.color) .. '/stars_large.png'),
 		half = gfx.newImage('images/half.png'),
 		mission_complete = gfx.newImage('images/' .. tostring(save.color) .. '/mission_complete.png'),
-		gray = gfx.newImage('images/' .. tostring(save.color) .. '/gray.png'),
-		grid = gfx.newImage('images/grid.png'),
+		gray = gfx.newImage('images/' .. tostring(save.color) .. tostring(save.color == 1 and '/tris/' .. save.hexaplex_color or '') .. '/gray.png'),
+		grid_up = gfx.newImage('images/grid_up.png'),
+		grid_down = gfx.newImage('images/grid_down.png'),
 	}
 
 	for i = 1, 11 do
@@ -67,7 +68,7 @@ function game:enter(current, ...)
 	end
 
 	vars = {
-		mode = args[1], -- "arcade" or "zen" or "dailyrun", or "picture" or "time" or "logic" or "speedrun"
+		mode = args[1], -- 'arcade' or 'zen' or 'dailyrun', or 'picture" or 'time' or 'logic' or 'speedrun'
 		mission = args[2], -- number. what mission is this?
 		modifier = args[3], -- modifier for whatever, depending on the mission
 		start = args[4], -- starting layout
@@ -112,6 +113,7 @@ function game:enter(current, ...)
 		length3 = 0,
 		handlers = 'game', -- can be game, losing, or lose, or pause. or nothing
 		messagerand = random(1, 10),
+		white_is_white = false,
 		arcade_messages = {'You\'re on your way to\nruler of the universe!', 'Match those HEXAs,\nmatch \'em real good!', 'Hexagons are the\nbestagons.', 'All will bow to their\nnew hexagonal ruler.', 'Hit more Bombs next time!', 'Go for a bigger score;\nconquer more planets!', 'Hit those 2x tris!', 'Those squares never knew\nwhat hit \'em.', 'Mission clear, over.\nReport back to base.', 'Starship HEXA ready for\nthe next launch!'},
 		zen_messages = {'Good practice run! Now,\ntime for the real thing!', 'Make sure to take some\ngood, deep breaths.', 'Did you get a good amount\nof sleep last night?', 'Make sure you\'re drinking\nenough water lately!', 'Come back any time for\nchill HEXA-matching!', 'See you later!', 'Have a good day!', 'Have you heard of\n"hexaflexagons"?', 'Let\'s gooooooo!!', 'Go grab a snack or\nsomethin\'!'},
 		dailyrun_messages = {'Check back in\ntomorrow!', 'See you later!', 'Good run today!', 'HEXA-good run!', 'Now get out there &\ntake on the day!', 'Nice work today!', 'See you tomorrow!', 'Have a good rest\nof your day!', 'Check how your high\nscores compare!', 'Prepare for the day ahead!'},
@@ -145,6 +147,16 @@ function game:enter(current, ...)
 	end)
 
 	if vars.mode == 'arcade' then
+		love.window.setTitle('HEXA — Arcade Mode')
+	elseif vars.mode == 'zen' then
+		love.window.setTitle('HEXA — Chill Mode')
+	elseif vars.mode == 'dailyrun' then
+		love.window.setTitle('HEXA — Daily Run')
+	elseif vars.mode == 'picture' or vars.mode == 'time' or vars.mode == 'logic' or vars.mode == 'speedrun' then
+		love.window.setTitle('HEXA — Mission Mode')
+	end
+
+	if vars.mode == 'arcade' then
 		table.insert(vars.pause_selections, 'restart')
 	end
 
@@ -158,7 +170,7 @@ function game:enter(current, ...)
 
 	-- TODO: set up custom PRNG handler
 	if vars.mode == 'dailyrun' then
-		local time = os.date("!*t")
+		local time = os.date('!*t')
 		math.randomseed(time.year .. time.month .. time.day)
 	elseif vars.mode == 'time' then
 		if vars.seed ~= nil and vars.seed ~= 0 then
@@ -190,7 +202,7 @@ function game:enter(current, ...)
 		end
 	end
 
-	-- TODO: grant 'chill' achievement if vars.mode == 'zen'?
+	-- CHEEVOS: grant 'chill' if vars.mode == 'zen'
 
 	if vars.mode == 'picture' then
 		vars.tris = deepcopy(vars.goal)
@@ -275,7 +287,7 @@ function game:enter(current, ...)
 			vars.anim_label = timer.tween(1, vars, {label = -200})
 		end)
 		vars.countdowngo = timer.after(4, function()
-			cursor_y = 42
+			vars.cursor_y = 42
 			vars.tris = deepcopy(vars.start)
 			playsound(assets.sfx_start)
 			assets.draw_label = assets.label_go
@@ -286,9 +298,6 @@ function game:enter(current, ...)
 			end)
 			newmusic('audio/music/zen' .. random(1, 2) .. '.mp3', true)
 			vars.can_do_stuff = true
-			vars.anim_timer = timer.tween(vars.timer / 1000, vars, {timer = 0}, 'linear', function()
-				self:endround()
-			end)
 		end)
 	elseif vars.mode == 'logic' then
 		assets.ui = gfx.newImage('images/' .. tostring(save.color) .. '/ui_zen.png')
@@ -386,7 +395,7 @@ end
 
 function game:keypressed(key)
 	if vars.handlers == 'game' then
-		if key == 'left' then
+		if (save.keyboard == 1 and key == 'left') or (save.keyboard == 2 and key == 'a') then
 			if vars.can_do_stuff then
 				vars.lastdir = false
 				if vars.slot == 2 then
@@ -414,7 +423,7 @@ function game:keypressed(key)
 					playsound(assets.sfx_bonk)
 				end
 			end
-		elseif key == 'right' then
+		elseif (save.keyboard == 1 and key == 'right') or (save.keyboard == 2 and key == 'd') then
 			if vars.can_do_stuff then
 				vars.lastdir = true
 				if vars.slot == 1 then
@@ -442,7 +451,7 @@ function game:keypressed(key)
 					playsound(assets.sfx_bonk)
 				end
 			end
-		elseif key == 'up' then
+		elseif (save.keyboard == 1 and key == 'up') or (save.keyboard == 2 and key == 'w') then
 			if vars.can_do_stuff then
 				if vars.slot == 3 or vars.slot == 4 or vars.slot == 5 then
 					if vars.lastdir then
@@ -464,7 +473,7 @@ function game:keypressed(key)
 					playsound(assets.sfx_bonk)
 				end
 			end
-		elseif key == 'down' then
+		elseif (save.keyboard == 1 and key == 'down') or (save.keyboard == 2 and key == 's') then
 			if vars.can_do_stuff then
 				if vars.slot == 1 then
 					vars.slot = 3
@@ -484,7 +493,7 @@ function game:keypressed(key)
 					playsound(assets.sfx_bonk)
 				end
 			end
-		elseif key == 'z' then
+		elseif (save.keyboard == 1 and key == 'z') or (save.keyboard == 2 and key == ',') then
 			if vars.can_do_stuff then
 				if save.flip then
 					self:swap(vars.slot, true)
@@ -492,7 +501,7 @@ function game:keypressed(key)
 					self:swap(vars.slot, false)
 				end
 			end
-		elseif key == 'x' then
+		elseif (save.keyboard == 1 and key == 'x') or (save.keyboard == 2 and key == '.') then
 			if vars.can_do_stuff then
 				if save.flip then
 					self:swap(vars.slot, false)
@@ -510,39 +519,39 @@ function game:keypressed(key)
 			end
 		end
 	elseif vars.handlers == 'losing' then
-		if key == 'z' or key == 'x' then
+		if (save.keyboard == 1 and key == 'z' or key == 'x') or (save.keyboard == 2 and key == ',' or key == '.') then
 			if vars.ended and not vars.skippedfanfare then
 				self:ersi()
 			end
 		end
 	elseif vars.handlers == 'lose' then
-		if key == 'z' then
+		if (save.keyboard == 1 and key == 'z') or (save.keyboard == 2 and key == ',') then
 			if vars.mode == 'dailyrun' then
-				-- TODO: transition to highscores, vars.mode ... and if we're doing high scores.
+				-- LEADERBOARDS: transition to highscores, vars.mode if true
 			else
 				fademusic()
 				scenemanager:transitionscene(game, vars.mode)
 			end
-		elseif key == 'x' then
-			fademusic()
+		elseif (save.keyboard == 1 and key == 'x') or (save.keyboard == 2 and key == '.') then
+			fademusic(100)
 			scenemanager:transitionscene(title, false, vars.mode)
 		end
 	elseif vars.handlers == 'pause' then
-		if key == 'left' then
+		if (save.keyboard == 1 and key == 'left') or (save.keyboard == 2 and key == 'a') then
 			if vars.pause_selection == 1 then
 				playsound(assets.sfx_bonk)
 			else
 				vars.pause_selection = vars.pause_selection - 1
 				playsound(assets.sfx_swap)
 			end
-		elseif key == 'right' then
+		elseif (save.keyboard == 1 and key == 'right') or (save.keyboard == 2 and key == 'd') then
 			if vars.pause_selection == #vars.pause_selections then
 				playsound(assets.sfx_bonk)
 			else
 				vars.pause_selection = vars.pause_selection + 1
 				playsound(assets.sfx_swap)
 			end
-		elseif key == 'z' then
+		elseif (save.keyboard == 1 and key == 'z') or (save.keyboard == 2 and key == ',') then
 			vars.paused = false
 			vars.handlers = 'game'
 			if music ~= nil then music:setVolume(1) end
@@ -563,12 +572,12 @@ function game:keypressed(key)
 					else
 						scenemanager:transitionscene(missions)
 					end
-					fademusic()
+					fademusic(200)
 				elseif vars.mode == 'arcade' or vars.mode == 'dailyrun' or vars.mode == 'zen' then
 					self:endround()
 				end
 			end
-		elseif key == 'x' or key == 'escape' then
+		elseif (save.keyboard == 1 and key == 'x') or (save.keyboard == 2 and key == '.') or key == 'escape' then
 			vars.paused = false
 			vars.handlers = 'game'
 			if music ~= nil then music:setVolume(1) end
@@ -583,56 +592,69 @@ function game:update(dt)
 			shakies(.5, 1)
 			shakies_y(.75, 1)
 			playsound(assets.sfx_count)
+			rumble(0.1, 0.1, 0.15)
 		end
 		if vars.old_timer > 9000 and vars.timer <= 9000 then
 			shakies(.5, 2)
 			shakies_y(.75, 2)
 			playsound(assets.sfx_count)
+			rumble(0.2, 0.2, 0.15)
 		end
 		if vars.old_timer > 8000 and vars.timer <= 8000 then
 			shakies(.5, 3)
 			shakies_y(.75, 3)
 			playsound(assets.sfx_count)
+			rumble(0.3, 0.3, 0.15)
 		end
 		if vars.old_timer > 7000 and vars.timer <= 7000 then
 			shakies(.5, 4)
 			shakies_y(.75, 4)
 			playsound(assets.sfx_count)
+			rumble(0.4, 0.4, 0.15)
 		end
 		if vars.old_timer > 6000 and vars.timer <= 6000 then
 			shakies(.5, 5)
 			shakies_y(.75, 5)
 			playsound(assets.sfx_count)
+			rumble(0.5, 0.5, 0.15)
 		end
 		if vars.old_timer > 5000 and vars.timer <= 5000 then
 			shakies(.5, 6)
 			shakies_y(.75, 6)
 			playsound(assets.sfx_count)
+			rumble(0.6, 0.6, 0.15)
 		end
 		if vars.old_timer > 4000 and vars.timer <= 4000 then
 			shakies(.5, 7)
 			shakies_y(.75, 7)
 			playsound(assets.sfx_count)
+			rumble(0.7, 0.7, 0.15)
 		end
 		if vars.old_timer > 3000 and vars.timer <= 3000 then
 			shakies(.5, 8)
 			shakies_y(.75, 8)
 			playsound(assets.sfx_count)
+			rumble(0.8, 0.8, 0.15)
 		end
 		if vars.old_timer > 2000 and vars.timer <= 2000 then
 			shakies(.5, 9)
 			shakies_y(.75, 9)
 			playsound(assets.sfx_count)
+			rumble(0.9, 0.9, 0.15)
 		end
 		if vars.old_timer > 1000 and vars.timer <= 1000 then
 			shakies(.5, 10)
 			shakies_y(.75, 10)
 			playsound(assets.sfx_count)
+			rumble(1, 1, 0.15)
 		end
 		vars.old_timer = vars.timer
 	end
 	if vars.mode == 'speedrun' and vars.can_do_stuff then
 		vars.time = vars.time + 1
+	end
+	if vars.can_do_stuff then
+		save.gametime = save.gametime + 1
 	end
 end
 
@@ -647,7 +669,6 @@ function game:draw()
 	for i = 1, 19 do
 		self:tri(i, tris_x[i], tris_y[i], tris_flip[i], vars.tris[i].color, vars.tris[i].powerup)
 	end
-	gfx.draw(assets.grid, 0, 0)
 
 	local cursor = floor(vars.cursor)
 	if cursor >= 2 then
@@ -674,7 +695,7 @@ function game:draw()
 		gfx.print('HEXAs', 10, 45)
 	elseif vars.mode == 'picture' or vars.mode == 'logic' then
 		gfx.print('Swaps', 10, 10)
-		gfx.print('Best', 10, 40)
+		gfx.print('Best', 10, 45)
 	elseif vars.mode == 'time' then
 		gfx.print('Score', 10, 10)
 		gfx.print('High', 10, 45)
@@ -722,12 +743,14 @@ function game:draw()
 
 	gfx.setColor(1, 1, 1, 1)
 
-	gfx.draw(assets.hexa, assets['hexa' .. floor(vars.hexa)], 0, 0)
+	if vars.hexa <= 11 then
+		gfx.draw(assets.hexa, assets['hexa' .. floor(vars.hexa)], 0, 0)
+	end
 
 	if not vars.can_do_stuff then
 		gfx.draw(assets.half, 0, 0)
 	end
-	if vars.mission_complete then
+	if vars.missioncomplete then
 		gfx.draw(assets.mission_complete, 0, 0)
 	end
 	gfx.draw(assets.modal_canvas, 0, floor(vars.modal))
@@ -794,37 +817,50 @@ function game:draw()
 				gfx.printf('I\'m Done!', pos, 112, length, 'center')
 			end
 		end
-
 	end
+
+	draw_on_top()
 end
 
 function game:tri(i, x, y, up, color, powerup)
-	if color == 'black' then
-		if save.color == 1 then
-			gfx.setColor(love.math.colorFromBytes(29, 43, 83, 255))
-		else
-			gfx.setColor(0, 0, 0, 1)
-		end
-	elseif color == 'gray' then
-		gfx.setColor(1, 1, 1, 1)
-	elseif color == 'white' then
-		if save.color == 1 then
-			gfx.setColor(love.math.colorFromBytes(255, 236, 39, 255))
-		else
+	if color ~= 'none' then
+		if color == 'black' then
+			if save.color == 1 then
+				gfx.setColor(hexaplex_blacks[save.hexaplex_color])
+			else
+				gfx.setColor(0, 0, 0, 1)
+			end
+		elseif color == 'gray' then
 			gfx.setColor(1, 1, 1, 1)
+		elseif color == 'white' then
+			if save.color == 1 then
+				gfx.setColor(hexaplex_whites[save.hexaplex_color])
+				if save.hexaplex_color == 4 or save.hexaplex_color == 6 or save.hexaplex_color == 10 or save.hexaplex_color == 11 or save.hexaplex_color == 17 or save.hexaplex_color == 18 or save.hexaplex_color == 20 or save.hexaplex_color == 21 or save.hexaplex_color == 22 or save.hexaplex_color == 24 or save.hexaplex_color == 26 then
+					vars.white_is_white = true
+				end
+			else
+				gfx.setColor(1, 1, 1, 1)
+			end
+		elseif color == 'whiter' then
+			gfx.setColor(love.math.colorFromBytes(255, 241, 232, 255))
+		end
+		if up then
+			gfx.polygon('fill', x, y - 25, x + 30, y + 25, x - 30, y + 25)
+		else
+			gfx.polygon('fill', x, y + 25, x + 30, y - 25, x - 30, y - 25)
+		end
+		if color == 'gray' then
+			gfx.draw(vars['mesh' .. i], 0, 0)
+		end
+		gfx.setColor(1, 1, 1, 1)
+		if up then
+			gfx.draw(assets.grid_up, x - 31, y - 26)
+		else
+			gfx.draw(assets.grid_down, x - 31, y - 26)
 		end
 	end
-	if up then
-		gfx.polygon('fill', x, y - 25, x + 30, y + 25, x - 30, y + 25)
-	else
-		gfx.polygon('fill', x, y + 25, x + 30, y - 25, x - 30, y - 25)
-	end
-	if color == 'gray' then
-		gfx.draw(vars['mesh' .. i], 0, 0)
-	end
-	gfx.setColor(1, 1, 1, 1)
 	if powerup ~= '' then
-		if save.reduceflashing then
+		if save.reduceflashing or assets['powerup' .. floor(vars.powerup)] == nil then
 			if up then
 				if assets['powerup_' .. powerup .. '_up'] ~= nil then gfx.draw(assets['powerup_' ..powerup .. '_up'], assets['powerup1'], x - 28, y - 23) end
 			else
@@ -916,14 +952,14 @@ function game:check()
 			temp1, temp2, temp3, temp4, temp5, temp6 = self:findslot(i)
 			for i = 1, 3 do
 				if i == 1 then
-					color = "white"
+					color = 'white'
 				elseif i == 2 then
-					color = "black"
+					color = 'black'
 				elseif i == 3 then
-					color = "gray"
+					color = 'gray'
 				end
-				if (temp1.color == color or temp1.powerup == "wild") and (temp2.color == color or temp2.powerup == "wild") and (temp3.color == color or temp3.powerup == "wild") and (temp4.color == color or temp4.powerup == "wild") and (temp5.color == color or temp5.powerup == "wild") and (temp6.color == color or temp6.powerup == "wild") then
-					if temp1.powerup == "bomb" or temp2.powerup == "bomb" or temp3.powerup == "bomb" or temp4.powerup == "bomb" or temp5.powerup == "bomb" or temp6.powerup == "bomb" then
+				if (temp1.color == color or temp1.powerup == 'wild') and (temp2.color == color or temp2.powerup == 'wild') and (temp3.color == color or temp3.powerup == 'wild') and (temp4.color == color or temp4.powerup == 'wild') and (temp5.color == color or temp5.powerup == 'wild') and (temp6.color == color or temp6.powerup == 'wild') then
+					if temp1.powerup == 'bomb' or temp2.powerup == 'bomb' or temp3.powerup == 'bomb' or temp4.powerup == 'bomb' or temp5.powerup == 'bomb' or temp6.powerup == 'bomb' then
 						bomb_temp1 = temp1
 						bomb_temp2 = temp2
 						bomb_temp3 = temp3
@@ -949,22 +985,39 @@ function game:check()
 end
 
 function game:colorflip(temp1, temp2, temp3, temp4, temp5, temp6, yes)
-	-- TODO: make 'white' white in 'colorful' mode
 	if yes then
-		if (temp1.color == "white" and temp1.powerup ~= "wild") or (temp2.color == "white" and temp2.powerup ~= "wild") or (temp3.color == "white" and temp3.powerup ~= "wild") or (temp4.color == "white" and temp4.powerup ~= "wild") or (temp5.color == "white" and temp5.powerup ~= "wild") or (temp6.color == "white" and temp6.powerup ~= "wild") then
-			temp1.color = "gray"
-			temp2.color = "gray"
-			temp3.color = "gray"
-			temp4.color = "gray"
-			temp5.color = "gray"
-			temp6.color = "gray"
-		else
-			temp1.color = "white"
-			temp2.color = "white"
-			temp3.color = "white"
-			temp4.color = "white"
-			temp5.color = "white"
-			temp6.color = "white"
+		if save.color == 1 then
+			if (vars.white_is_white) and ((temp1.color == "white" and temp1.powerup ~= "wild") or (temp2.color == "white" and temp2.powerup ~= "wild") or (temp3.color == "white" and temp3.powerup ~= "wild") or (temp4.color == "white" and temp4.powerup ~= "wild") or (temp5.color == "white" and temp5.powerup ~= "wild") or (temp6.color == "white" and temp6.powerup ~= "wild")) then
+				temp1.color = "gray"
+				temp2.color = "gray"
+				temp3.color = "gray"
+				temp4.color = "gray"
+				temp5.color = "gray"
+				temp6.color = "gray"
+			else
+				temp1.color = "whiter"
+				temp2.color = "whiter"
+				temp3.color = "whiter"
+				temp4.color = "whiter"
+				temp5.color = "whiter"
+				temp6.color = "whiter"
+			end
+		elseif save.color == 2 then
+			if (temp1.color == "white" and temp1.powerup ~= "wild") or (temp2.color == "white" and temp2.powerup ~= "wild") or (temp3.color == "white" and temp3.powerup ~= "wild") or (temp4.color == "white" and temp4.powerup ~= "wild") or (temp5.color == "white" and temp5.powerup ~= "wild") or (temp6.color == "white" and temp6.powerup ~= "wild") then
+				temp1.color = "gray"
+				temp2.color = "gray"
+				temp3.color = "gray"
+				temp4.color = "gray"
+				temp5.color = "gray"
+				temp6.color = "gray"
+			else
+				temp1.color = "white"
+				temp2.color = "white"
+				temp3.color = "white"
+				temp4.color = "white"
+				temp5.color = "white"
+				temp6.color = "white"
+			end
 		end
 	else
 		temp1.color = vars.tempcolor1
@@ -987,6 +1040,7 @@ function game:hexa(temp1, temp2, temp3, temp4, temp5, temp6)
 	vars.tempcolor6 = temp6.color
 	assets.sfx_hexaprep:setPitch(1 + (0.1 * vars.combo))
 	playsound(assets.sfx_hexaprep)
+	rumble(0.1 + (0.1 * vars.combo), 0.1 + (0.1 * vars.combo), 0.15)
 	self:colorflip(temp1, temp2, temp3, temp4, temp5, temp6, true)
 	vars.hexacountdown1 = timer.after(0.1, function()
 		if not save.reduceflashing then
@@ -995,6 +1049,7 @@ function game:hexa(temp1, temp2, temp3, temp4, temp5, temp6)
 	end)
 	vars.hexacountdown2 = timer.after(0.2, function()
 		playsound(assets.sfx_hexaprep)
+		rumble(0.1 + (0.1 * vars.combo), 0.1 + (0.1 * vars.combo), 0.15)
 		if save.reduceflashing then
 			self:colorflip(temp1, temp2, temp3, temp4, temp5, temp6, false)
 		else
@@ -1013,13 +1068,23 @@ function game:hexa(temp1, temp2, temp3, temp4, temp5, temp6)
 			vars.combo = vars.combo + 1
 			shakies()
 			shakies_y()
+			if temp1.powerup == 'wild' or temp2.powerup == 'wild' or temp3.powerup == 'wild' or temp4.powerup == 'wild' or temp5.powerup == 'wild' or temp6.powerup == 'wild' then
+				save.wild_match = save.wild_match + 1
+			end
 			if temp1.powerup == "double" or temp2.powerup == "double" or temp3.powerup == "double" or temp4.powerup == "double" or temp5.powerup == "double" or temp6.powerup == "double" then
+				save.double_match = save.double_match + 1
 				if (temp1.color == "white" and temp1.powerup ~= "wild") or (temp2.color == "white" and temp2.powerup ~= "wild") or (temp3.color == "white" and temp3.powerup ~= "wild") or (temp4.color == "white" and temp4.powerup ~= "wild") or (temp5.color == "white" and temp5.powerup ~= "wild") or (temp6.color == "white" and temp6.powerup ~= "wild") then
 					vars.score = vars.score + (200 * vars.combo)
+					save.total_score = save.total_score + (200 * vars.combo)
+					save.white_match = save.white_match + 1
 				elseif (temp1.color == "gray" and temp1.powerup ~= "wild") or (temp2.color == "gray" and temp2.powerup ~= "wild") or (temp3.color == "gray" and temp3.powerup ~= "wild") or (temp4.color == "gray" and temp4.powerup ~= "wild") or (temp5.color == "gray" and temp5.powerup ~= "wild") or (temp6.color == "gray" and temp6.powerup ~= "wild") then
 					vars.score = vars.score + (300 * vars.combo)
+					save.total_score = save.total_score + (300 * vars.combo)
+					save.gray_match = save.gray_match + 1
 				elseif (temp1.color == "black" and temp1.powerup ~= "wild") or (temp2.color == "black" and temp2.powerup ~= "wild") or (temp3.color == "black" and temp3.powerup ~= "wild") or (temp4.color == "black" and temp4.powerup ~= "wild") or (temp5.color == "black" and temp5.powerup ~= "wild") or (temp6.color == "black" and temp6.powerup ~= "wild") then
 					vars.score = vars.score + (400 * vars.combo)
+					save.total_score = save.total_score + (400 * vars.combo)
+					save.black_match = save.black_match + 1
 				end
 				playsound(assets.sfx_select)
 				assets.draw_label = assets.label_double
@@ -1045,10 +1110,16 @@ function game:hexa(temp1, temp2, temp3, temp4, temp5, temp6)
 			else
 				if (temp1.color == "white" and temp1.powerup ~= "wild") or (temp2.color == "white" and temp2.powerup ~= "wild") or (temp3.color == "white" and temp3.powerup ~= "wild") or (temp4.color == "white" and temp4.powerup ~= "wild") or (temp5.color == "white" and temp5.powerup ~= "wild") or (temp6.color == "white" and temp6.powerup ~= "wild") then
 					vars.score = vars.score + (100 * vars.combo)
+					save.total_score = save.total_score + (100 * vars.combo)
+					save.white_match = save.white_match + 1
 				elseif (temp1.color == "gray" and temp1.powerup ~= "wild") or (temp2.color == "gray" and temp2.powerup ~= "wild") or (temp3.color == "gray" and temp3.powerup ~= "wild") or (temp4.color == "gray" and temp4.powerup ~= "wild") or (temp5.color == "gray" and temp5.powerup ~= "wild") or (temp6.color == "gray" and temp6.powerup ~= "wild") then
 					vars.score = vars.score + (150 * vars.combo)
+					save.total_score = save.total_score + (150 * vars.combo)
+					save.gray_match = save.gray_match + 1
 				elseif (temp1.color == "black" and temp1.powerup ~= "wild") or (temp2.color == "black" and temp2.powerup ~= "wild") or (temp3.color == "black" and temp3.powerup ~= "wild") or (temp4.color == "black" and temp4.powerup ~= "wild") or (temp5.color == "black" and temp5.powerup ~= "wild") or (temp6.color == "black" and temp6.powerup ~= "wild") then
 					vars.score = vars.score + (200 * vars.combo)
+					save.total_score = save.total_score + (200 * vars.combo)
+					save.black_match = save.black_match + 1
 				end
 				if (vars.mode == "arcade" or vars.mode == "dailyrun") and vars.can_do_stuff then
 					timer.cancel(vars.anim_timer)
@@ -1066,13 +1137,16 @@ function game:hexa(temp1, temp2, temp3, temp4, temp5, temp6)
 				end
 			end
 			vars.score = vars.score + (10 * vars.movesbonus)
+			save.total_score = save.total_score + (10 * vars.movesbonus)
 			vars.movesbonus = 5
 			if temp1.powerup == "bomb" or temp2.powerup == "bomb" or temp3.powerup == "bomb" or temp4.powerup == "bomb" or temp5.powerup == "bomb" or temp6.powerup == "bomb" then
+				save.bomb_match = save.bomb_match + 1
 				for i = 1, 19 do
 					newcolor, newpowerup = self:randomizetri()
 					vars.tris[i] = {index = i, color = newcolor, powerup = newpowerup}
 				end
 				playsound(assets.sfx_boom)
+				rumble(1, 1, 0.8)
 				assets.draw_label = assets.label_bomb
 				vars.label = 400
 				timer.cancel(vars.anim_label)
@@ -1086,15 +1160,16 @@ function game:hexa(temp1, temp2, temp3, temp4, temp5, temp6)
 				temp4.color, temp4.powerup = self:randomizetri()
 				temp5.color, temp5.powerup = self:randomizetri()
 				temp6.color, temp6.powerup = self:randomizetri()
-				local rand = random(1, 1000)
+				local rand = random(1, 10000)
 				if rand == 1 then
 					playsound(assets.sfx_vine)
 				else
 					playsound(assets.sfx_hexa)
 				end
+				rumble(0.5 + (0.1 * vars.combo), 0.5 + (0.1 * vars.combo), 0.5)
 			end
 			vars.hexa = 1
-			vars.anim_hexa = timer.tween(0.6, vars, {hexa = 11})
+			vars.anim_hexa = timer.tween(0.6, vars, {hexa = 13})
 			if vars.mode == "logic" or vars.mode == "speedrun" then
 				local logictest = true
 				if vars.modifier == "board" then
@@ -1154,8 +1229,9 @@ function game:hexa(temp1, temp2, temp3, temp4, temp5, temp6)
 end
 
 function game:boom(boomed)
-	if vars.mode == "arcade" or vars.mode == "dailyrun" or vars.mode == "zen" then
+	if vars.mode == 'arcade' or vars.mode == 'dailyrun' or vars.mode == 'zen' then
 		if ((boomed and not vars.boomed) or (not boomed)) and vars.can_do_stuff then
+			rumble(1, 1, 0.8)
 			shakies()
 			shakies_y()
 			if boomed then
@@ -1326,7 +1402,10 @@ function game:ersi()
 	vars.handlers = 'lose'
 	if vars.mode == 'zen' then
 		gfx.setCanvas(assets.modal_canvas)
+			gfx.push()
 			gfx.origin()
+			local sx, sy, sw, sh = gfx.getScissor()
+			gfx.setScissor()
 			gfx.setColor(1, 1, 1, 1)
 
 			gfx.setFont(assets.full_circle_inverted)
@@ -1348,13 +1427,22 @@ function game:ersi()
 			gfx.setFont(assets.half_circle_inverted)
 			if save.color == 1 then gfx.setColor(love.math.colorFromBytes(194, 195, 199, 255)) end
 
-			gfx.print('Z starts a new game. X goes back.', 40, 205)
-
-			gfx.scale(save.scale)
+			if save.gamepad then -- Gamepad
+				gfx.print('A starts a new game. B goes back.', 40, 205)
+			elseif save.keyboard == 1 then -- Arrows + Z & X
+				gfx.print('Z starts a new game. X goes back.', 40, 205)
+			elseif save.keyboard == 2 then -- WASD + , & .
+				gfx.print(', starts a new game. . goes back.', 40, 205)
+			end
+			gfx.setScissor(sx, sy, sw, sh)
+			gfx.pop()
 		gfx.setCanvas()
 	else
 		gfx.setCanvas(assets.modal_canvas)
+			gfx.push()
 			gfx.origin()
+			local sx, sy, sw, sh = gfx.getScissor()
+			gfx.setScissor()
 			gfx.setColor(1, 1, 1, 1)
 
 			gfx.setFont(assets.full_circle_inverted)
@@ -1377,12 +1465,25 @@ function game:ersi()
 			if save.color == 1 then gfx.setColor(love.math.colorFromBytes(194, 195, 199, 255)) end
 
 			if vars.mode == 'dailyrun' then
-				gfx.print('X goes back.', 40, 205)
-				-- TODO: if we're doing scoreboards, "Z shows scores for today. X goes back."
+				if save.gamepad then -- Gamepad
+					gfx.print('B goes back.', 40, 205)
+				elseif save.keyboard == 1 then -- Arrows + Z & X
+					gfx.print('X goes back.', 40, 205)
+				elseif save.keyboard == 2 then -- WASD + , & .
+					gfx.print('. goes back.', 40, 205)
+				end
+				-- LEADERBOARDS: "Z shows scores for today. X goes back." if true
 			else
-				gfx.print('Z starts a new game. X goes back.', 40, 205)
+				if save.gamepad then -- Gamepad
+					gfx.print('A starts a new game. B goes back.', 40, 205)
+				elseif save.keyboard == 1 then -- Arrows + Z & X
+					gfx.print('Z starts a new game. X goes back.', 40, 205)
+				elseif save.keyboard == 2 then -- WASD + , & .
+					gfx.print(', starts a new game. . goes back.', 40, 205)
+				end
 			end
-			gfx.scale(save.scale)
+			gfx.setScissor(sx, sy, sw, sh)
+			gfx.pop()
 		gfx.setCanvas()
 	end
 end
@@ -1393,9 +1494,14 @@ function game:endround()
 		vars.timer = 0
 	end
 	gfx.setCanvas(assets.modal_canvas)
+		gfx.push()
+		local sx, sy, sw, sh = gfx.getScissor()
+		gfx.setScissor()
 		gfx.origin()
+		gfx.clear()
 		gfx.draw(assets.modal, 0, 0)
-		gfx.scale(save.scale)
+		gfx.setScissor(sx, sy, sw, sh)
+		gfx.pop()
 	gfx.setCanvas()
 	if vars.mode == 'arcade' or vars.mode == 'dailyrun' then
 		if not vars.ended then
@@ -1414,21 +1520,21 @@ function game:endround()
 				local time = os.date('!*t')
 				if save.lastdaily.year == time.year and save.lastdaily.month == time.month and save.lastdaily.day == time.day then
 					save.lastdaily.score = vars.score
-					-- TODO: push highscore, depending on hardmode
+					-- LEADERBOARDS: push highscore, depending on hardmode
 					-- if successful, set save.lastdaily.sent = true
 					-- else, set as false
 				end
 			else
-				-- TODO: push highscore, depending on hardmode
+				-- LEADERBOARDS: push highscore, depending on hardmode
 			end
 			if save.hardmode then
 				if vars.score > save.hard_score and vars.mode == 'arcade' then save.hard_score = vars.score end
 			else
 				if vars.score > save.score and vars.mode == 'arcade' then save.score = vars.score end
 			end
-			-- TODO: update cheevos
-			love.filesystem.write('data', json.encode(save))
-			newmusic('audio/music/lose.mp3')
+			-- CHEEVOS: update
+			love.filesystem.write('data.json', json.encode(save))
+			if not transitioning then newmusic('audio/music/lose.mp3') end
 			vars.anim_modal = timer.tween(0.5, vars, {modal = 0}, 'out-back')
 			if save.skipfanfare then
 				self:ersi()
@@ -1436,21 +1542,28 @@ function game:endround()
 				vars.lose1 = timer.after(0.548, function()
 					if not vars.skippedfanfare then
 						gfx.setCanvas(assets.modal_canvas)
+							gfx.push()
 							gfx.origin()
+							local sx, sy, sw, sh = gfx.getScissor()
+							gfx.setScissor()
 							gfx.setColor(1, 1, 1, 1)
 
 							gfx.setFont(assets.full_circle_inverted)
 							if save.color == 1 then gfx.setColor(love.math.colorFromBytes(255, 241, 232, 255)) end
 
 							gfx.printf('You scored ' .. commalize(vars.score) .. ' points.', 0, 50, 480, 'center')
-							gfx.scale(save.scale)
+							gfx.setScissor(sx, sy, sw, sh)
+							gfx.pop()
 						gfx.setCanvas()
 					end
 				end)
 				vars.lose2 = timer.after(2.146, function()
 					if not vars.skippedfanfare then
 						gfx.setCanvas(assets.modal_canvas)
+							gfx.push()
 							gfx.origin()
+							local sx, sy, sw, sh = gfx.getScissor()
+							gfx.setScissor()
 							gfx.setColor(1, 1, 1, 1)
 
 							gfx.setFont(assets.full_circle_inverted)
@@ -1461,14 +1574,18 @@ function game:endround()
 							else
 								gfx.printf('You made ' .. commalize(vars.moves) .. ' swaps,', 0, 90, 480, 'center')
 							end
-							gfx.scale(save.scale)
+							gfx.setScissor(sx, sy, sw, sh)
+							gfx.pop()
 						gfx.setCanvas()
 					end
 				end)
 				vars.lose3 = timer.after(3.957, function()
 					if not vars.skippedfanfare then
 						gfx.setCanvas(assets.modal_canvas)
+							gfx.push()
 							gfx.origin()
+							local sx, sy, sw, sh = gfx.getScissor()
+							gfx.setScissor()
 							gfx.setColor(1, 1, 1, 1)
 
 							gfx.setFont(assets.full_circle_inverted)
@@ -1479,21 +1596,26 @@ function game:endround()
 							else
 								gfx.printf('and scored ' .. commalize(vars.hexas) .. ' HEXAs.', 0, 105, 480, 'center')
 							end
-							gfx.scale(save.scale)
+							gfx.setScissor(sx, sy, sw, sh)
+							gfx.pop()
 						gfx.setCanvas()
 					end
 				end)
 				vars.lose4 = timer.after(6.138, function()
 					if not vars.skippedfanfare then
 						gfx.setCanvas(assets.modal_canvas)
+							gfx.push()
 							gfx.origin()
+							local sx, sy, sw, sh = gfx.getScissor()
+							gfx.setScissor()
 							gfx.setColor(1, 1, 1, 1)
 
 							gfx.setFont(assets.full_circle_inverted)
 							if save.color == 1 then gfx.setColor(love.math.colorFromBytes(255, 241, 232, 255)) end
 
 							gfx.printf(vars[vars.mode .. '_messages'][vars.messagerand], 0, 150, 380, 'center')
-							gfx.scale(save.scale)
+							gfx.setScissor(sx, sy, sw, sh)
+							gfx.pop()
 						gfx.setCanvas()
 					end
 				end)
@@ -1501,19 +1623,35 @@ function game:endround()
 					if not vars.skippedfanfare then
 						vars.handlers = 'lose'
 						gfx.setCanvas(assets.modal_canvas)
+							gfx.push()
 							gfx.origin()
+							local sx, sy, sw, sh = gfx.getScissor()
+							gfx.setScissor()
 							gfx.setColor(1, 1, 1, 1)
 
 							gfx.setFont(assets.half_circle_inverted)
 							if save.color == 1 then gfx.setColor(love.math.colorFromBytes(194, 195, 199, 255)) end
 
 							if vars.mode == 'dailyrun' then
-								gfx.print('X goes back.', 40, 205)
-								-- TODO: if we're doing scoreboards, "Z shows scores for today. X goes back."
+								if save.gamepad then -- Gamepad
+									gfx.print('B goes back.', 40, 205)
+								elseif save.keyboard == 1 then -- Arrows + Z & X
+									gfx.print('X goes back.', 40, 205)
+								elseif save.keyboard == 2 then -- WASD + , & .
+									gfx.print('. goes back.', 40, 205)
+								end
+								-- LEADERBOARDS: "Z shows scores for today. X goes back.", if true
 							else
-								gfx.print('Z starts a new game. X goes back.', 40, 205)
+								if save.gamepad then -- Gamepad
+									gfx.print('A starts a new game. B goes back.', 40, 205)
+								elseif save.keyboard == 1 then -- Arrows + Z & X
+									gfx.print('Z starts a new game. X goes back.', 40, 205)
+								elseif save.keyboard == 2 then -- WASD + , & .
+									gfx.print(', starts a new game. . goes back.', 40, 205)
+								end
 							end
-							gfx.scale(save.scale)
+							gfx.setScissor(sx, sy, sw, sh)
+							gfx.pop()
 						gfx.setCanvas()
 					end
 				end)
@@ -1531,8 +1669,8 @@ function game:endround()
 			if not save.skipfanfare then
 				vars.handlers = 'losing'
 			end
-			love.filesystem.write('data', json.encode(save))
-			newmusic('audio/music/zen_end.mp3')
+			love.filesystem.write('data.json', json.encode(save))
+			if not transitioning then newmusic('audio/music/zen_end.mp3') end
 			vars.anim_modal = timer.tween(0.5, vars, {modal = 0}, 'out-back')
 			if save.skipfanfare then
 				self:ersi()
@@ -1540,21 +1678,28 @@ function game:endround()
 				vars.lose1 = timer.after(2.140, function()
 					if not vars.skippedfanfare then
 						gfx.setCanvas(assets.modal_canvas)
+							gfx.push()
 							gfx.origin()
+							local sx, sy, sw, sh = gfx.getScissor()
+							gfx.setScissor()
 							gfx.setColor(1, 1, 1, 1)
 
 							gfx.setFont(assets.full_circle_inverted)
 							if save.color == 1 then gfx.setColor(love.math.colorFromBytes(255, 241, 232, 255)) end
 
 							gfx.printf('Great run today!', 0, 50, 480, 'center')
-							gfx.scale(save.scale)
+							gfx.setScissor(sx, sy, sw, sh)
+							gfx.pop()
 						gfx.setCanvas()
 					end
 				end)
 				vars.lose2 = timer.after(3.296, function()
 					if not vars.skippedfanfare then
 						gfx.setCanvas(assets.modal_canvas)
+							gfx.push()
 							gfx.origin()
+							local sx, sy, sw, sh = gfx.getScissor()
+							gfx.setScissor()
 							gfx.setColor(1, 1, 1, 1)
 
 							gfx.setFont(assets.full_circle_inverted)
@@ -1565,14 +1710,18 @@ function game:endround()
 							else
 								gfx.printf('You made ' .. commalize(vars.moves) .. ' swaps,', 0, 90, 480, 'center')
 							end
-							gfx.scale(save.scale)
+							gfx.setScissor(sx, sy, sw, sh)
+							gfx.pop()
 						gfx.setCanvas()
 					end
 				end)
 				vars.lose3 = timer.after(4.152, function()
 					if not vars.skippedfanfare then
 						gfx.setCanvas(assets.modal_canvas)
+							gfx.push()
 							gfx.origin()
+							local sx, sy, sw, sh = gfx.getScissor()
+							gfx.setScissor()
 							gfx.setColor(1, 1, 1, 1)
 
 							gfx.setFont(assets.full_circle_inverted)
@@ -1583,21 +1732,26 @@ function game:endround()
 							else
 								gfx.printf('and scored ' .. commalize(vars.hexas) .. ' HEXAs.', 0, 105, 480, 'center')
 							end
-							gfx.scale(save.scale)
+							gfx.setScissor(sx, sy, sw, sh)
+							gfx.pop()
 						gfx.setCanvas()
 					end
 				end)
 				vars.lose4 = timer.after(5.297, function()
 					if not vars.skippedfanfare then
 						gfx.setCanvas(assets.modal_canvas)
+							gfx.push()
 							gfx.origin()
+							local sx, sy, sw, sh = gfx.getScissor()
+							gfx.setScissor()
 							gfx.setColor(1, 1, 1, 1)
 
 							gfx.setFont(assets.full_circle_inverted)
 							if save.color == 1 then gfx.setColor(love.math.colorFromBytes(255, 241, 232, 255)) end
 
 							gfx.printf(vars[vars.mode .. '_messages'][vars.messagerand], 0, 150, 380, 'center')
-							gfx.scale(save.scale)
+							gfx.setScissor(sx, sy, sw, sh)
+							gfx.pop()
 						gfx.setCanvas()
 					end
 				end)
@@ -1605,14 +1759,24 @@ function game:endround()
 					if not vars.skippedfanfare then
 						vars.handlers = 'lose'
 						gfx.setCanvas(assets.modal_canvas)
+							gfx.push()
 							gfx.origin()
+							local sx, sy, sw, sh = gfx.getScissor()
+							gfx.setScissor()
 							gfx.setColor(1, 1, 1, 1)
 
 							gfx.setFont(assets.half_circle_inverted)
 							if save.color == 1 then gfx.setColor(love.math.colorFromBytes(194, 195, 199, 255)) end
 
-							gfx.print('Z starts a new game. X goes back.', 40, 205)
-							gfx.scale(save.scale)
+							if save.gamepad then -- Gamepad
+								gfx.print('A starts a new game. B goes back.', 40, 205)
+							elseif save.keyboard == 1 then -- Arrows + Z & X
+								gfx.print('Z starts a new game. X goes back.', 40, 205)
+							elseif save.keyboard == 2 then -- WASD + , & .
+								gfx.print(', starts a new game. . goes back.', 40, 205)
+							end
+							gfx.setScissor(sx, sy, sw, sh)
+							gfx.pop()
 						gfx.setCanvas()
 					end
 				end)
@@ -1631,8 +1795,8 @@ function game:endround()
 		vars.lose1 = timer.after(1.5, function()
 			playsound(assets.sfx_mission)
 			vars.missioncomplete = true
-			-- TODO: update cheevos
-			love.filesystem.write('data', json.encode(save))
+			-- CHEEVOS: update
+			love.filesystem.write('data.json', json.encode(save))
 		end)
 		vars.lose2 = timer.after(3, function()
 			if vars.mission ~= nil and vars.mission > 50 then
@@ -1658,8 +1822,8 @@ function game:endround()
 			end
 			playsound(assets.sfx_mission)
 			vars.missioncomplete = true
-			-- TODO: update cheevos
-			love.filesystem.write('data', json.encode(save))
+			-- CHEEVOS: update
+			love.filesystem.write('data.json', json.encode(save))
 		end)
 		vars.lose2 = timer.after(3, function()
 			if vars.mission ~= nil and vars.mission > 50 then
@@ -1685,8 +1849,8 @@ function game:endround()
 			end
 			playsound(assets.sfx_mission)
 			vars.missioncomplete = true
-			-- TODO: update cheevos
-			love.filesystem.write('data', json.encode(save))
+			-- CHEEVOS: update
+			love.filesystem.write('data.json', json.encode(save))
 		end)
 		vars.lose2 = timer.after(3, function()
 			if vars.mission ~= nil and vars.mission > 50 then
@@ -1712,8 +1876,8 @@ function game:endround()
 			end
 			playsound(assets.sfx_mission)
 			vars.missioncomplete = true
-			-- TODO: update cheevos
-			love.filesystem.write('data', json.encode(save))
+			-- CHEEVOS: update
+			love.filesystem.write('data.json', json.encode(save))
 		end)
 		vars.lose2 = timer.after(3, function()
 			if vars.mission ~= nil and vars.mission > 50 then
