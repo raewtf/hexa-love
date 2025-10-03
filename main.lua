@@ -490,7 +490,6 @@ function rumble(left, right, duration)
 	end
 end
 
--- TODO: add open save directory key in mission command end screen
 -- TODO: fix weird scissor sometimes-bug in maximize on windows
 -- TODO: boom during game
 -- TODO: re-implement localized text parsing
