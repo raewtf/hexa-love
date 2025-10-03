@@ -153,6 +153,11 @@ function missions:keypressed(key)
 					vars.offset = 211
 				end
 			end
+		elseif (save.keyboard == 1 and key == 'up') or (save.keyboard == 2 and key == 'w') then
+			if vars.custom then
+				local realdir = love.filesystem.getRealDirectory('missions/')
+				love.system.openURL('file://' .. realdir .. '/missions/')
+			end
 		elseif (save.keyboard == 1 and key == 'x') or (save.keyboard == 2 and key == '.') then
 			playsound(assets.sfx_back)
 			scenemanager:transitionscene(title, false, 'missions')
@@ -245,19 +250,19 @@ function missions:draw()
 
 	if save.gamepad then -- Gamepad
 		if vars.custom_missions_enabled then
-			gfx.print('Y toggles custom Missions.', 10, 190)
+			gfx.print('Y toggles custom Missions.' .. (vars.custom and ' Up opens directory.' or ''), 10, 190)
 			gfx.print('X opens Mission Command.', 10, 205)
 		end
 		gfx.print('The D-pad moves. A picks. B goes back.', 10, 220)
 	elseif save.keyboard == 1 then -- Arrows + Z & X
 		if vars.custom_missions_enabled then
-			gfx.print('C toggles custom Missions.', 10, 190)
+			gfx.print('C toggles custom Missions.' .. (vars.custom and ' Up opens directory.' or ''), 10, 190)
 			gfx.print('J opens Mission Command.', 10, 205)
 		end
 		gfx.print('The arrows move. Z picks. X goes back.', 10, 220)
 	elseif save.keyboard == 2 then -- WASD + , & .
 		if vars.custom_missions_enabled then
-			gfx.print('C toggles custom Missions.', 10, 190)
+			gfx.print('C toggles custom Missions.' .. (vars.custom and ' W opens directory.' or ''), 10, 190)
 			gfx.print('J opens Mission Command.', 10, 205)
 		end
 		gfx.print('WASD moves. , picks. . goes back.', 10, 220)

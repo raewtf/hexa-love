@@ -36,6 +36,7 @@ function mission_command:enter(current, ...)
 		powerup_double_down = gfx.newImage('images/' .. tostring(save.color) .. '/powerup_double_down.png'),
 		powerup_wild_up = gfx.newImage('images/' .. tostring(save.color) .. '/powerup_wild_up.png'),
 		powerup_wild_down = gfx.newImage('images/' .. tostring(save.color) .. '/powerup_wild_down.png'),
+		powerup_wild_box = gfx.newImage('images/' .. tostring(save.color) .. '/powerup_wild_box.png'),
 		error = gfx.newImage('images/' .. tostring(save.color) .. '/error.png'),
 		sfx_move = love.audio.newSource('audio/sfx/swap.mp3', 'static'),
 		sfx_move2 = love.audio.newSource('audio/sfx/move.mp3', 'static'),
@@ -45,6 +46,13 @@ function mission_command:enter(current, ...)
 		gray = gfx.newImage('images/' .. tostring(save.color) .. tostring(save.color == 1 and '/tris/' .. save.hexaplex_color or '') .. '/gray.png'),
 		grid_up = gfx.newImage('images/grid_up.png'),
 		grid_down = gfx.newImage('images/grid_down.png'),
+		box_full = gfx.newImage('images/box_full.png'),
+		box_half = gfx.newImage('images/box_half.png'),
+		box_none = gfx.newImage('images/' .. tostring(save.color) .. '/box_none.png'),
+		select_1 = gfx.newImage('images/' .. tostring(save.color) .. '/select_1.png'),
+		select_2 = gfx.newImage('images/' .. tostring(save.color) .. '/select_2.png'),
+		select_3 = gfx.newImage('images/' .. tostring(save.color) .. '/select_3.png'),
+		selector_hide = gfx.newImage('images/' .. tostring(save.color) .. '/selector_hide.png'),
 	}
 
 	for i = 1, 5 do
@@ -76,7 +84,7 @@ function mission_command:enter(current, ...)
 		error_x = -355,
 		modal = 400,
 		powerup = 1,
-		flash = 0.25,
+		flash = 1,
 		save_selection = 1,
 		save_selections = {'picture_name', 'author_name', 'save'},
 		picture_name = 'Object',
@@ -111,12 +119,12 @@ function mission_command:enter(current, ...)
 		vars.anim_powerup = timer.tween(0.7, vars, {powerup = 4.99})
 	end)
 
-	vars.anim_flash = timer.tween(0.5, vars, {flash = 0.75}, 'linear')
+	vars.anim_flash = timer.tween(0.5, vars, {flash = 3.99}, 'linear')
 	vars.anim_flash_loop = timer.every(0.5, function()
-		if vars.flash < 0.5 then
-			vars.anim_flash = timer.tween(0.5, vars, {flash = 0.75}, 'linear')
-		elseif vars.flash > 0.5 then
-			vars.anim_flash = timer.tween(0.5, vars, {flash = 0.25}, 'linear')
+		if vars.flash < 2 then
+			vars.anim_flash = timer.tween(0.5, vars, {flash = 3.99}, 'linear')
+		elseif vars.flash > 2 then
+			vars.anim_flash = timer.tween(0.5, vars, {flash = 1}, 'linear')
 		end
 	end)
 
@@ -666,8 +674,8 @@ function mission_command:keypressed(key)
 				scenemanager:transitionscene(missions, vars.custom)
 				fademusic()
 			elseif (save.keyboard == 1 and key == 'z') or (save.keyboard == 2 and key == ',') then
-				scenemanager:transitionscene(missions, vars.custom)
-				fademusic()
+				local realdir = love.filesystem.getRealDirectory('missions/')
+				love.system.openURL('file://' .. realdir .. '/missions/')
 			end
 		end
 	end
@@ -996,22 +1004,187 @@ function mission_command:draw()
 		end
 	end
 
-	-- TODO: finish drawing modal
 	local modal = floor(vars.modal) + 35
 	gfx.draw(assets.modal, 46, modal)
 	if vars.selector_show_powerup then
-	else
-	end
-	if vars.selector_show_powerup then
-		gfx.setColor(1, 1, 1, 1)
+		if save.color == 1 then
+			gfx.setColor(love.math.colorFromBytes(255, 241, 232, 255))
+		else
+			gfx.setColor(1, 1, 1, 1)
+		end
 		if vars.selector_rack == 1 then
 			gfx.rectangle('fill', 96, 11 + modal, 200, 16)
 		else
 			gfx.rectangle('fill', 96, 90 + modal, 200, 16)
 		end
 	end
+	gfx.setFont(assets.full_circle_inverted)
+	if save.color == 1 then gfx.setColor(love.math.colorFromBytes(255, 241, 232, 255)) end
 	if vars.selector_show_powerup then
+		if vars.selector_rack == 1 then
+			gfx.setFont(assets.full_circle)
+			gfx.setColor(1, 1, 1, 1)
+		end
+		gfx.printf('Choose a tri color:', 0, 12 + modal, 400, 'center')
+		if vars.selector_rack == 2 then
+			gfx.setFont(assets.full_circle)
+			gfx.setColor(1, 1, 1, 1)
+		else
+			gfx.setFont(assets.full_circle_inverted)
+			if save.color == 1 then gfx.setColor(love.math.colorFromBytes(255, 241, 232, 255)) end
+		end
+		gfx.printf('Choose a tri Power-up:', 0, 90 + modal, 400, 'center')
 	else
+		gfx.printf('Choose a tri color:', 0, 46 + modal, 400, 'center')
+	end
+	gfx.setColor(1, 1, 1, 1)
+	if vars.selector_show_powerup then
+		gfx.draw(assets.x, 96, 116 + modal)
+		if save.reduceflashing or assets['powerup' .. floor(vars.powerup)] == nil then
+			if assets['powerup_double_up'] ~= nil then gfx.draw(assets['powerup_double_up'], assets['powerup1'], 91 + 46, 104 + modal) end
+			if assets['powerup_bomb_up'] ~= nil then gfx.draw(assets['powerup_bomb_up'], assets['powerup1'], 148 + 46, 104 + modal) end
+			if assets['powerup_wild_box'] ~= nil then gfx.draw(assets['powerup_wild_box'], assets['powerup1'], 203 + 46, 104 + modal) end
+		else
+			if assets['powerup_double_up'] ~= nil then gfx.draw(assets['powerup_double_up'], assets['powerup' .. floor(vars.powerup)], 91 + 46, 104 + modal) end
+			if assets['powerup_bomb_up'] ~= nil then gfx.draw(assets['powerup_bomb_up'], assets['powerup' .. floor(vars.powerup)], 148 + 46, 104 + modal) end
+			if assets['powerup_wild_box'] ~= nil then gfx.draw(assets['powerup_wild_box'], assets['powerup' .. floor(vars.powerup)], 203 + 46, 104 + modal) end
+		end
+		if vars.selector_show_no_color then
+			gfx.draw(assets.x, 96, 38 + modal)
+			if save.color == 1 then
+				gfx.setColor(hexaplex_whites[save.hexaplex_color])
+			end
+			gfx.draw(assets.box_full, 156 - 55 + 46, 35 + modal)
+			if save.color == 1 then
+				gfx.setColor(hexaplex_gray1s[save.hexaplex_color])
+			elseif save.color == 2 then
+				gfx.setColor(0, 0, 0, 1)
+			end
+			gfx.draw(assets.box_full, 156 + 46, 35 + modal)
+			if save.color == 1 then
+				gfx.setColor(hexaplex_gray2s[save.hexaplex_color])
+			elseif save.color == 2 then
+				gfx.setColor(1, 1, 1, 1)
+			end
+			gfx.draw(assets.box_half, 156 + 46, 35 + modal)
+			if save.color == 1 then
+				gfx.setColor(hexaplex_blacks[save.hexaplex_color])
+			elseif save.color == 2 then
+				gfx.setColor(0, 0, 0, 1)
+			end
+			gfx.draw(assets.box_full, 156 + 55 + 46, 35 + modal)
+			gfx.setColor(1, 1, 1, 1)
+			gfx.draw(assets.box_none, 156 + 55 + 46, 35 + modal)
+		else
+			if save.color == 1 then
+				gfx.setColor(hexaplex_whites[save.hexaplex_color])
+			end
+			gfx.draw(assets.box_full, 156 - 77 + 46, 35 + modal)
+			if save.color == 1 then
+				gfx.setColor(hexaplex_gray1s[save.hexaplex_color])
+			elseif save.color == 2 then
+				gfx.setColor(0, 0, 0, 1)
+			end
+			gfx.draw(assets.box_full, 156 - 22 + 46, 35 + modal)
+			if save.color == 1 then
+				gfx.setColor(hexaplex_gray2s[save.hexaplex_color])
+			elseif save.color == 2 then
+				gfx.setColor(1, 1, 1, 1)
+			end
+			gfx.draw(assets.box_half, 156 - 22 + 46, 35 + modal)
+			if save.color == 1 then
+				gfx.setColor(hexaplex_blacks[save.hexaplex_color])
+			elseif save.color == 2 then
+				gfx.setColor(0, 0, 0, 1)
+			end
+			gfx.draw(assets.box_full, 156 + 33 + 46, 35 + modal)
+			gfx.setColor(1, 1, 1, 1)
+			gfx.draw(assets.box_none, 156 + 33 + 46, 35 + modal)
+		end
+
+		if vars.selector_rack2selection == 4 then
+			gfx.draw(assets.selector_hide, 30 + 46, 31 + modal)
+		else
+			if vars.selector_show_no_color and vars.selector_rack1selection == 1 then
+				gfx.draw(assets.selector_hide, 30 + 46, 109 + modal)
+			end
+		end
+
+		local flash = floor(vars.flash)
+		if flash < 1 then flash = 1 end
+		if flash > 3 then flash = 3 end
+		if vars.selector_rack2selection ~= 4 then
+			if vars.selector_show_no_color then
+				gfx.draw(assets['select_' .. flash], 152 - 165 + (55 * vars.selector_rack1selection) + 46, 31 + modal)
+			else
+				gfx.draw(assets['select_' .. flash], 152 - 132 + (55 * vars.selector_rack1selection) + 46, 31 + modal)
+			end
+		end
+		if not (vars.selector_show_no_color and vars.selector_rack1selection == 1) then
+			gfx.draw(assets['select_' .. flash], 152 - 165 + (55 * vars.selector_rack2selection) + 46, 109 + modal)
+		end
+	else
+		if vars.selector_show_no_color then
+			gfx.draw(assets.x, 96, 78 + modal)
+			if save.color == 1 then
+				gfx.setColor(hexaplex_whites[save.hexaplex_color])
+			end
+			gfx.draw(assets.box_full, 156 - 55 + 46, 75 + modal)
+			if save.color == 1 then
+				gfx.setColor(hexaplex_gray1s[save.hexaplex_color])
+			elseif save.color == 2 then
+				gfx.setColor(0, 0, 0, 1)
+			end
+			gfx.draw(assets.box_full, 156 + 46, 75 + modal)
+			if save.color == 1 then
+				gfx.setColor(hexaplex_gray2s[save.hexaplex_color])
+			elseif save.color == 2 then
+				gfx.setColor(1, 1, 1, 1)
+			end
+			gfx.draw(assets.box_half, 156 + 46, 75 + modal)
+			if save.color == 1 then
+				gfx.setColor(hexaplex_blacks[save.hexaplex_color])
+			elseif save.color == 2 then
+				gfx.setColor(0, 0, 0, 1)
+			end
+			gfx.draw(assets.box_full, 156 + 55 + 46, 75 + modal)
+			gfx.setColor(1, 1, 1, 1)
+			gfx.draw(assets.box_none, 156 + 55 + 46, 75 + modal)
+		else
+			if save.color == 1 then
+				gfx.setColor(hexaplex_whites[save.hexaplex_color])
+			end
+			gfx.draw(assets.box_full, 156 - 77 + 46, 75 + modal)
+			if save.color == 1 then
+				gfx.setColor(hexaplex_gray1s[save.hexaplex_color])
+			elseif save.color == 2 then
+				gfx.setColor(0, 0, 0, 1)
+			end
+			gfx.draw(assets.box_full, 156 - 22 + 46, 75 + modal)
+			if save.color == 1 then
+				gfx.setColor(hexaplex_gray2s[save.hexaplex_color])
+			elseif save.color == 2 then
+				gfx.setColor(1, 1, 1, 1)
+			end
+			gfx.draw(assets.box_half, 156 - 22 + 46, 75 + modal)
+			if save.color == 1 then
+				gfx.setColor(hexaplex_blacks[save.hexaplex_color])
+			elseif save.color == 2 then
+				gfx.setColor(0, 0, 0, 1)
+			end
+			gfx.draw(assets.box_full, 156 + 33 + 46, 75 + modal)
+			gfx.setColor(1, 1, 1, 1)
+			gfx.draw(assets.box_none, 156 + 33 + 46, 75 + modal)
+		end
+
+		local flash = floor(vars.flash)
+		if flash < 1 then flash = 1 end
+		if flash > 3 then flash = 3 end
+		if vars.selector_show_no_color then
+			gfx.draw(assets['select_' .. flash], 152 - 165 + (55 * vars.selector_rack1selection) + 46, 71 + modal)
+		else
+			gfx.draw(assets['select_' .. flash], 152 - 132 + (55 * vars.selector_rack1selection) + 46, 71 + modal)
+		end
 	end
 
 	if save.color == 1 then
@@ -1047,11 +1220,11 @@ function mission_command:draw()
 		end
 
 		if save.gamepad then
-			gfx.print('B goes back.', 810 + x, 220)
+			gfx.print('A opens Mission directory. B goes back.', 810 + x, 220)
 		elseif save.keyboard == 1 then
-			gfx.print('X goes back.', 810 + x, 220)
+			gfx.print('Z opens Mission directory. X goes back.', 810 + x, 220)
 		elseif save.keyboard == 2 then
-			gfx.print('. goes back.', 810 + x, 220)
+			gfx.print(', opens Mission directory. . goes back.', 810 + x, 220)
 		end
 	end
 
@@ -1167,7 +1340,7 @@ function mission_command:open_selector(tri, show_powerup, show_no_color)
 			vars.selector_rack2selection = 1
 		end
 	end
-	if self.show_no_color then
+	if vars.selector_show_no_color then
 		if tri.color == 'none' then
 			vars.selector_rack1selection = 1
 		elseif tri.color == 'white' then
