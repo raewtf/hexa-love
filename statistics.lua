@@ -66,8 +66,31 @@ function statistics:draw()
 	gfx.draw(assets.stars_large, floor(vars.lx), floor(vars.ly))
 	gfx.draw(assets.img25, 0, 0)
 
-	gfx.setFont(assets.half_circle_inverted)
-	if save.color == 1 then gfx.setColor(love.math.colorFromBytes(194, 195, 199, 255)) end
+	gfx.setFont(assets.full_circle_inverted)
+	if save.color == 1 then gfx.setColor(love.math.colorFromBytes(255, 241, 232, 255)) end
+
+	gfx.print(commalize(save.swaps), 250, 5)
+	gfx.print(commalize(save.hexas), 250, 20)
+	gfx.print(string.format('%.2f', save.swaps / save.hexas) .. ':1', 250, 35)
+	gfx.print(commalize(save.score), 250, 50)
+	gfx.print(commalize(save.hard_score), 250, 65)
+	local playhours, playmins, playsecs = timecalchour(save.playtime)
+	gfx.print(playhours .. 'h ' .. playmins .. 'm ' .. playsecs .. 's', 250, 80)
+	local gamehours, gamemins, gamesecs = timecalchour(save.gametime)
+	gfx.print(gamehours .. 'h ' .. gamemins .. 'm ' .. gamesecs .. 's', 250, 95)
+	gfx.print(commalize(save.total_score), 250, 110)
+	gfx.print(commalize(save.black_match), 250, 125)
+	gfx.print(commalize(save.gray_match), 250, 140)
+	gfx.print(commalize(save.white_match), 250, 155)
+	gfx.print(commalize(save.double_match), 250, 170)
+	gfx.print(commalize(save.bomb_match), 250, 185)
+	gfx.print(commalize(save.wild_match), 250, 200)
+
+	if save.color == 1 then
+		gfx.setColor(love.math.colorFromBytes(255, 241, 232, 127))
+	else
+		gfx.setFont(assets.half_circle_inverted)
+	end
 
 	if save.gamepad then -- Gamepad
 		gfx.print('B goes back.', 70, 220)
@@ -91,26 +114,6 @@ function statistics:draw()
 	gfx.printf('HEXAs w/ 2x Tris:', 0, 170, 240, 'right')
 	gfx.printf('HEXAPLEX Kerplosions:', 0, 185, 240, 'right')
 	gfx.printf('HEXAs w/ Wild Tris:', 0, 200, 240, 'right')
-
-	gfx.setFont(assets.full_circle_inverted)
-	if save.color == 1 then gfx.setColor(love.math.colorFromBytes(255, 241, 232, 255)) end
-
-	gfx.print(commalize(save.swaps), 250, 5)
-	gfx.print(commalize(save.hexas), 250, 20)
-	gfx.print(string.format('%.2f', save.swaps / save.hexas) .. ':1', 250, 35)
-	gfx.print(commalize(save.score), 250, 50)
-	gfx.print(commalize(save.hard_score), 250, 65)
-	local playhours, playmins, playsecs = timecalchour(save.playtime)
-	gfx.print(playhours .. 'h ' .. playmins .. 'm ' .. playsecs .. 's', 250, 80)
-	local gamehours, gamemins, gamesecs = timecalchour(save.gametime)
-	gfx.print(gamehours .. 'h ' .. gamemins .. 'm ' .. gamesecs .. 's', 250, 95)
-	gfx.print(commalize(save.total_score), 250, 110)
-	gfx.print(commalize(save.black_match), 250, 125)
-	gfx.print(commalize(save.gray_match), 250, 140)
-	gfx.print(commalize(save.white_match), 250, 155)
-	gfx.print(commalize(save.double_match), 250, 170)
-	gfx.print(commalize(save.bomb_match), 250, 185)
-	gfx.print(commalize(save.wild_match), 250, 200)
 
 	gfx.setColor(1, 1, 1, 1)
 

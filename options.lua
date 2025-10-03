@@ -122,14 +122,24 @@ function options:keypressed(key)
 			vars.selection = 0
 		elseif (save.keyboard == 1 and key == 'z') or (save.keyboard == 2 and key == ',') then
 			if vars.selections[vars.selection] == "music" then
-				save.music = not save.music
-				if not save.music then
-					fademusic(1)
+				save.music = save.music + 1
+				if save.music > 5 then
+					save.music = 0
+				end
+				if save.music > 0 then
+					if music ~= nil then
+						volume = {save.music / 5}
+					else
+						newmusic('audio/music/title.mp3', true)
+					end
 				else
-					newmusic('audio/music/title.mp3', true)
+					fademusic(1)
 				end
 			elseif vars.selections[vars.selection] == "sfx" then
-				save.sfx = not save.sfx
+				save.sfx = save.sfx + 1
+				if save.sfx > 5 then
+					save.sfx = 0
+				end
 			elseif vars.selections[vars.selection] == 'visuals' then
 				scenemanager:transitionscene(visuals)
 				playsound(assets.sfx_select)
@@ -182,18 +192,66 @@ function options:draw()
 	gfx.draw(assets.stars_large, floor(vars.lx), floor(vars.ly))
 	gfx.draw(assets.img25, 0, 0)
 
-	gfx.setFont(assets.half_circle_inverted)
-	if save.color == 1 then gfx.setColor(love.math.colorFromBytes(194, 195, 199, 255)) end
+	gfx.setFont(assets.full_circle_inverted)
+	if save.color == 1 then gfx.setColor(love.math.colorFromBytes(255, 241, 232, 255)) end
 
-	gfx.printf('Music: ' .. tostring(save.music and 'ON' or 'OFF'), 0, 25, 400, 'center')
-	gfx.printf('SFX: ' .. tostring(save.sfx and 'ON' or 'OFF'), 0, 45, 400, 'center')
-	gfx.printf('Video Options', 0, 65, 400, 'center')
-	gfx.printf('Keys: ' .. tostring(save.keyboard == 1 and 'Arrows + Z & X' or save.keyboard == 2 and 'WASD + , & .'), 0, 85, 400, 'center')
-	gfx.printf('Rumble: ' .. tostring(save.rumble and 'ON' or 'OFF'), 0, 105, 400, 'center')
-	gfx.printf('Flip Rotation: ' .. tostring(save.flip and 'ON' or 'OFF'), 0, 125, 400, 'center')
-	gfx.printf('Skip Fanfare: ' .. tostring(save.skipfanfare and 'ON' or 'OFF'), 0, 145, 400, 'center')
-	gfx.printf('Hard Mode: ' .. tostring(save.hardmode and 'ON' or 'OFF'), 0, 165, 400, 'center')
-	gfx.printf(vars.resetprogress == 1 and 'Reset Local Stats' or vars.resetprogress == 2 and 'Are you sure?' or vars.resetprogress == 3 and 'Are you really sure?!' or vars.resetprogress == 4 and 'Local stats reset.', 0, 185, 400, 'center')
+	local text = ''
+	for i = 1, #vars.selections do
+		if vars.selections[vars.selection] == 'music' then
+			text = 'Music Volume: ' .. tostring(save.music)
+		elseif vars.selections[vars.selection] == 'sfx' then
+			text = 'SFX Volume: ' .. tostring(save.sfx)
+		elseif vars.selections[vars.selection] == 'visuals' then
+			text = 'Video Options'
+		elseif vars.selections[vars.selection] == 'keyboard' then
+			text = 'Keys: ' .. tostring(save.keyboard == 1 and 'Arrows + Z & X' or save.keyboard == 2 and 'WASD + , & .')
+		elseif vars.selections[vars.selection] == 'rumble' then
+			text = 'Rumble: ' .. tostring(save.rumble and 'ON' or 'OFF')
+		elseif vars.selections[vars.selection] == 'flip' then
+			text = 'Flip Rotation: ' .. tostring(save.flip and 'ON' or 'OFF')
+		elseif vars.selections[vars.selection] == 'skipfanfare' then
+			text = 'Skip Fanfare: ' .. tostring(save.skipfanfare and 'ON' or 'OFF')
+		elseif vars.selections[vars.selection] == 'hardmode' then
+			text = 'Hard Mode: ' .. tostring(save.hardmode and 'ON' or 'OFF')
+		elseif vars.selections[vars.selection] == 'reset' then
+			text = vars.resetprogress == 1 and 'Reset Local Stats' or vars.resetprogress == 2 and 'Are you sure?' or vars.resetprogress == 3 and 'Are you really sure?!' or vars.resetprogress == 4 and 'Local stats reset.'
+		end
+		if vars.selection == i then
+			gfx.printf(text, 0, 5 + (20 * i), 400, 'center')
+		end
+	end
+
+	if save.color == 1 then
+		gfx.setColor(love.math.colorFromBytes(255, 241, 232, 127))
+	else
+		gfx.setFont(assets.half_circle_inverted)
+	end
+
+	local text = ''
+	for i = 1, #vars.selections do
+		if vars.selections[i] == 'music' then
+			text = 'Music Volume: ' .. tostring(save.music)
+		elseif vars.selections[i] == 'sfx' then
+			text = 'SFX Volume: ' .. tostring(save.sfx)
+		elseif vars.selections[i] == 'visuals' then
+			text = 'Video Options'
+		elseif vars.selections[i] == 'keyboard' then
+			text = 'Keys: ' .. tostring(save.keyboard == 1 and 'Arrows + Z & X' or save.keyboard == 2 and 'WASD + , & .')
+		elseif vars.selections[i] == 'rumble' then
+			text = 'Rumble: ' .. tostring(save.rumble and 'ON' or 'OFF')
+		elseif vars.selections[i] == 'flip' then
+			text = 'Flip Rotation: ' .. tostring(save.flip and 'ON' or 'OFF')
+		elseif vars.selections[i] == 'skipfanfare' then
+			text = 'Skip Fanfare: ' .. tostring(save.skipfanfare and 'ON' or 'OFF')
+		elseif vars.selections[i] == 'hardmode' then
+			text = 'Hard Mode: ' .. tostring(save.hardmode and 'ON' or 'OFF')
+		elseif vars.selections[i] == 'reset' then
+			text = vars.resetprogress == 1 and 'Reset Local Stats' or vars.resetprogress == 2 and 'Are you sure?' or vars.resetprogress == 3 and 'Are you really sure?!' or vars.resetprogress == 4 and 'Local stats reset.'
+		end
+		if vars.selection ~= i then
+			gfx.printf(text, 0, 5 + (20 * i), 400, 'center')
+		end
+	end
 
 	gfx.print('v' .. version, 65, 205)
 	if save.gamepad then -- Gamepad
@@ -202,29 +260,6 @@ function options:draw()
 		gfx.print('The arrows move. Z toggles.', 70, 220)
 	elseif save.keyboard == 2 then -- WASD + , & .
 		gfx.print('WASD moves. , toggles.', 70, 220)
-	end
-
-	gfx.setFont(assets.full_circle_inverted)
-	if save.color == 1 then gfx.setColor(love.math.colorFromBytes(255, 241, 232, 255)) end
-
-	if vars.selections[vars.selection] == 'music' then
-		gfx.printf('Music: ' .. tostring(save.music and 'ON' or 'OFF'), 0, 25, 400, 'center')
-	elseif vars.selections[vars.selection] == 'sfx' then
-		gfx.printf('SFX: ' .. tostring(save.sfx and 'ON' or 'OFF'), 0, 45, 400, 'center')
-	elseif vars.selections[vars.selection] == 'visuals' then
-		gfx.printf('Video Options', 0, 65, 400, 'center')
-	elseif vars.selections[vars.selection] == 'keyboard' then
-		gfx.printf('Keys: ' .. tostring(save.keyboard == 1 and 'Arrows + Z & X' or save.keyboard == 2 and 'WASD + , & .'), 0, 85, 400, 'center')
-	elseif vars.selections[vars.selection] == 'rumble' then
-		gfx.printf('Rumble: ' .. tostring(save.rumble and 'ON' or 'OFF'), 0, 105, 400, 'center')
-	elseif vars.selections[vars.selection] == 'flip' then
-		gfx.printf('Flip Rotation: ' .. tostring(save.flip and 'ON' or 'OFF'), 0, 125, 400, 'center')
-	elseif vars.selections[vars.selection] == 'skipfanfare' then
-		gfx.printf('Skip Fanfare: ' .. tostring(save.skipfanfare and 'ON' or 'OFF'), 0, 145, 400, 'center')
-	elseif vars.selections[vars.selection] == 'hardmode' then
-		gfx.printf('Hard Mode: ' .. tostring(save.hardmode and 'ON' or 'OFF'), 0, 165, 400, 'center')
-	elseif vars.selections[vars.selection] == 'reset' then
-		gfx.printf(vars.resetprogress == 1 and 'Reset Local Stats' or vars.resetprogress == 2 and 'Are you sure?' or vars.resetprogress == 3 and 'Are you really sure?!' or vars.resetprogress == 4 and 'Local stats reset.', 0, 185, 400, 'center')
 	end
 
 	gfx.setColor(1, 1, 1, 1)

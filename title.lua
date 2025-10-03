@@ -184,60 +184,10 @@ function title:draw()
 
 	gfx.draw(assets.half_1x, floor((250 + vars.title) / 2) * 2, 212 - (20 * #vars.selections))
 
-	gfx.setFont(assets.half_circle_inverted)
-	if save.color == 1 then gfx.setColor(love.math.colorFromBytes(194, 195, 199, 255)) end
-
-	local time = os.date('!*t')
-
-	if time.hour < 23 then
-		gfx.print(((vars.dailyrunnable and '⏰ ') or '🔒 ') .. (24 - time.hour) .. 'h', 265 + floor(vars.title), 90)
-	else
-		if time.min < 59 then
-			gfx.print(((vars.dailyrunnable and '⏰ ') or '🔒 ') .. (60 - time.min) .. 'm', 265 + floor(vars.title), 90)
-		else
-			gfx.print(((vars.dailyrunnable and '⏰ ') or '🔒 ') .. (60 - time.sec) .. 'w', 265 + floor(vars.title), 90)
-		end
-	end
-
-	for i = 1, #vars.selections do
-		local text = ''
-		if vars.selections[i] == 'arcade' then
-			text = 'Arcade Mode'
-		elseif vars.selections[i] == 'zen' then
-			text = 'Chill Mode'
-		elseif vars.selections[i] == 'dailyrun' then
-			text = 'Daily Run'
-		elseif vars.selections[i] == 'missions' then
-			text = 'Mission Mode'
-		elseif vars.selections[i] == 'statistics' then
-			text = 'Statistics'
-		elseif vars.selections[i] == 'howtoplay' then
-			text = 'How to Play'
-		elseif vars.selections[i] == 'options' then
-			text = 'Options'
-		elseif vars.selections[i] == 'credits' then
-			text = 'Credits'
-		elseif vars.selections[i] == 'quit' then
-			text = 'Quit Game'
-		end
-		if vars.selection ~= i then
-			gfx.printf(text, 0, (210 - (20 * #vars.selections)) + (20 * i), 385 + floor(vars.title), 'right')
-		end
-	end
-
-	if save.gamepad then -- Gamepad
-		gfx.print('The D-pad moves. A picks.', 10 - floor(vars.title), 220)
-	elseif save.keyboard == 1 then -- Arrows + Z & X
-		gfx.print('The arrows move. Z picks.', 10 - floor(vars.title), 220)
-	elseif save.keyboard == 2 then -- WASD + , & .
-		gfx.print('WASD moves. , picks.', 10 - floor(vars.title), 220)
-	end
-
 	gfx.setFont(assets.full_circle_inverted)
 	if save.color == 1 then gfx.setColor(love.math.colorFromBytes(255, 241, 232, 255)) end
 
 	for i = 1, #vars.selections do
-		local text = ''
 		if vars.selections[vars.selection] == 'arcade' then
 			text = 'Arcade Mode'
 		elseif vars.selections[vars.selection] == 'zen' then
@@ -279,6 +229,63 @@ function title:draw()
 	elseif vars.selections[vars.selection] == 'missions' then
 		if save.highest_mission > 1 then
 			gfx.print('Missions Completed: ' .. commalize(save.highest_mission - 1), 10 - floor(vars.title), 205)
+		end
+	end
+
+	if save.color == 1 then
+		gfx.setColor(love.math.colorFromBytes(255, 241, 232, 127))
+	else
+		gfx.setFont(assets.half_circle_inverted)
+	end
+
+	local time = os.date('!*t')
+
+	local text = ''
+	for i = 1, #vars.selections do
+		if vars.selections[i] == 'arcade' then
+			text = 'Arcade Mode'
+		elseif vars.selections[i] == 'zen' then
+			text = 'Chill Mode'
+		elseif vars.selections[i] == 'dailyrun' then
+			text = 'Daily Run'
+		elseif vars.selections[i] == 'missions' then
+			text = 'Mission Mode'
+		elseif vars.selections[i] == 'statistics' then
+			text = 'Statistics'
+		elseif vars.selections[i] == 'howtoplay' then
+			text = 'How to Play'
+		elseif vars.selections[i] == 'options' then
+			text = 'Options'
+		elseif vars.selections[i] == 'credits' then
+			text = 'Credits'
+		elseif vars.selections[i] == 'quit' then
+			text = 'Quit Game'
+		end
+		if vars.selection ~= i then
+			gfx.printf(text, 0, (210 - (20 * #vars.selections)) + (20 * i), 385 + floor(vars.title), 'right')
+		end
+	end
+
+	if save.gamepad then -- Gamepad
+		gfx.print('The D-pad moves. A picks.', 10 - floor(vars.title), 220)
+	elseif save.keyboard == 1 then -- Arrows + Z & X
+		gfx.print('The arrows move. Z picks.', 10 - floor(vars.title), 220)
+	elseif save.keyboard == 2 then -- WASD + , & .
+		gfx.print('WASD moves. , picks.', 10 - floor(vars.title), 220)
+	end
+
+	if save.color == 1 then
+		gfx.setColor(love.math.colorFromBytes(255, 241, 232, 127))
+		gfx.setFont(assets.half_circle_inverted)
+	end
+
+	if time.hour < 23 then
+		gfx.print(((vars.dailyrunnable and '⏰ ') or '🔒 ') .. (24 - time.hour) .. 'h', 265 + floor(vars.title), 90)
+	else
+		if time.min < 59 then
+			gfx.print(((vars.dailyrunnable and '⏰ ') or '🔒 ') .. (60 - time.min) .. 'm', 265 + floor(vars.title), 90)
+		else
+			gfx.print(((vars.dailyrunnable and '⏰ ') or '🔒 ') .. (60 - time.sec) .. 'w', 265 + floor(vars.title), 90)
 		end
 	end
 

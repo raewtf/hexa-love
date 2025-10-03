@@ -1,3 +1,4 @@
+rng = love.math.newRandomGenerator()
 scenemanager = require('scenemanager')
 gamestate = require 'gamestate'
 timer = require 'timer'
@@ -12,12 +13,13 @@ local floor = math.floor
 local max = math.max
 local scale
 quit = 0
+local fullscreen = false
 
-version = '2.1.7b2'
+version = '2.1.7'
 
 gfx.setLineWidth(3)
 gfx.setLineStyle('rough')
-gfx.setLineJoin('bevel')
+gfx.setLineJoin('miter')
 gfx.setDefaultFilter('nearest', 'nearest')
 love.keyboard.setKeyRepeat(false)
 
@@ -162,8 +164,30 @@ function savecheck()
 	save.hexaplex_color = save.hexaplex_color or 1
 	if save.rumble == nil then save.rumble = true end
 	if save.reduceflashing == nil then save.reduceflashing = false end
-	if save.music == nil then save.music = true end
-	if save.sfx == nil then save.sfx = true end
+
+	if save.music ~= nil then
+		if type(save.music) == 'boolean' then
+			if save.music then
+				save.music = 3
+			else
+				save.music = 0
+			end
+		end
+	else
+		save.music = 3
+	end
+	if save.sfx ~= nil then
+		if type(save.sfx) == 'boolean' then
+			if save.sfx then
+				save.sfx = 3
+			else
+				save.sfx = 0
+			end
+		end
+	else
+		save.sfx = 3
+	end
+
 	if save.flip == nil then save.flip = false end
 	if save.skipfanfare == nil then save.skipfanfare = false end
 	if save.lastdaily == nil then save.lastdaily = {} end
@@ -228,9 +252,10 @@ end
 
 -- New music track. This should be called in a scene's init, only if there's no track leading into it. File is a path to an audio file in the PDX. Loop, if true, will loop the audio file. Range will set the loop's starting range.
 function newmusic(file, loop, range)
-	if save.music and music == nil then -- If a music file isn't actively playing...then go ahead and set a new one.
+	if save.music > 0 and music == nil then -- If a music file isn't actively playing...then go ahead and set a new one.
 		music = love.audio.newSource(file, "stream")
-		volume = {1}
+		music:setVolume(save.music / 5)
+		volume = {save.music / 5}
 		if loop then -- If set to loop, then ... loop it!
 			music:setLooping(true)
 		end
@@ -239,8 +264,9 @@ function newmusic(file, loop, range)
 end
 
 function playsound(sound)
-	if save.sfx then
+	if save.sfx > 0 then
 		sound:stop()
+		sound:setVolume(save.sfx / 5)
 		sound:play()
 	end
 end
@@ -358,7 +384,7 @@ function shakies(time, int)
 		timer.cancel(vars.anim_shakies)
 		vars.anim_shakies = nil
 	end)
-	vars.anim_shakies_stop = timer.after((time or 0.75 / 2), function()
+	vars.anim_shakies_stop = timer.after((time or 0.75 / 1.5), function()
 		timer.cancel(vars.anim_shakies)
 		vars.anim_shakies = nil
 		vars.anim_shakies_stop = nil
@@ -374,7 +400,7 @@ function shakies_y(time, int)
 	end
 	vars.shakies_y = int or 10
 	vars.anim_shakies_y = timer.tween(time or 0.75, vars, {shakies_y = 0}, 'out-elastic')
-	vars.anim_shakies_y_stop = timer.after((time or 0.75 / 2), function()
+	vars.anim_shakies_y_stop = timer.after((time or 0.75 / 1.5), function()
 		timer.cancel(vars.anim_shakies_y)
 		vars.anim_shakies_y = nil
 		vars.anim_shakies_y_stop = nil
@@ -390,15 +416,17 @@ function love.keypressed(key)
 	end
 	gamepad = false
 	if key == 'escape' and vars ~= nil then
-		if not vars.can_do_stuff and vars.handler ~= 'quit' then
+		if not vars.can_do_stuff and vars.handler ~= 'quit' and vars.handler ~= 'keyboard' then
 			quit = quit + 1
 			vars.quit_timer = timer.after(2, function() quit = 0 end)
 			if quit == 2 then
 				love.event.quit()
 			end
 		end
-	elseif key == '[' then
-		gfx.captureScreenshot('test.png')
+	end
+	if key == 'f11' then
+		fullscreen = not fullscreen
+		love.window.setFullscreen(fullscreen)
 	end
 end
 
@@ -462,10 +490,9 @@ function rumble(left, right, duration)
 	end
 end
 
--- TODO: mission command lv editor
--- TODO: move scissor alongside shakies
--- TODO: Half circle shows under full circle
--- TOOD: Replace half circle with lighter full circle in colorful mode?
+-- TODO: fix weird scissor sometimes-bug in maximize on windows
+-- TODO: boom during game
+-- TODO: re-implement localized text parsing
 
 function love.update(dt)
 	next_time = next_time + min_dt
@@ -484,7 +511,7 @@ function love.update(dt)
 	end
 
 	if music ~= nil then
-		if volume[1] < 1 then music:setVolume(volume[1]) end
+		music:setVolume(volume[1])
 		if not music:isPlaying() then music = nil end
 	end
 end
@@ -503,6 +530,8 @@ function love.draw()
 	if lbh then gfx.translate(0, ((floor(wh / 2) * 2) - (240 * scale)) / 2) end
 
 	gfx.setScissor((lbw and (((floor(ww / 2) * 2) - (400 * scale)) / 2)) or 0, (lbh and (((floor(wh / 2) * 2) - (240 * scale)) / 2)) or 0, 400 * scale, 240 * scale)
+
+	gfx.clear(0, 0, 0, 1)
 
 	gfx.scale(scale)
 

@@ -38,6 +38,7 @@ function missions:enter(current, ...)
 		custom_files = 0,
 		custom_selection = 1,
 		offset = 0,
+		custom_missions_enabled = true,
 	}
 	vars.input_wait = timer.after(transitiontime, function()
 		vars.waiting = false
@@ -158,7 +159,7 @@ function missions:keypressed(key)
 		elseif (save.keyboard == 1 and key == 'z') or (save.keyboard == 2 and key == ',') then
 			if vars.custom then
 				playsound(assets.sfx_select)
-				scenemanager:transitionscene(game, vars.custom_missions[vars.selection].type, vars.custom_missions[vars.selection].mission, vars.custom_missions[vars.selection].modifier or nil, vars.custom_missions[vars.selection].start or nil, vars.custom_missions[vars.selection].goal or nil, vars.custom_missions[vars.selection].seed or nil, vars.custom_missions[vars.selection].name or nil)
+				scenemanager:transitionscene(game, vars.custom_missions[vars.custom_selection].type, vars.custom_missions[vars.custom_selection].mission, vars.custom_missions[vars.custom_selection].modifier or nil, vars.custom_missions[vars.custom_selection].start or nil, vars.custom_missions[vars.custom_selection].goal or nil, vars.custom_missions[vars.custom_selection].seed or nil, vars.custom_missions[vars.custom_selection].name or nil)
 				fademusic()
 			else
 				if vars.selection > save.highest_mission then
@@ -170,10 +171,13 @@ function missions:keypressed(key)
 					fademusic()
 				end
 			end
-		elseif key == 'c' then
+		elseif key == 'c' and vars.custom_missions_enabled then
 			vars.custom = not vars.custom
-		elseif key == 'j' then
+			playsound(assets.sfx_select)
+		elseif key == 'j' and vars.custom_missions_enabled then
 			scenemanager:transitionscene(mission_command, vars.custom)
+			fademusic()
+			playsound(assets.sfx_select)
 		end
 	end
 end
@@ -209,8 +213,11 @@ function missions:draw()
 			gfx.printf('You have no custom missions!', 0, 70, 400, 'center')
 			gfx.printf('Please load some to continue.', 0, 85, 400, 'center')
 
-			gfx.setFont(assets.half_circle_inverted)
-			if save.color == 1 then gfx.setColor(love.math.colorFromBytes(194, 195, 199, 255)) end
+			if save.color == 1 then
+				gfx.setColor(love.math.colorFromBytes(255, 241, 232, 127))
+			else
+				gfx.setFont(assets.half_circle_inverted)
+			end
 
 			gfx.printf('More info can be found here:', 0, 120, 400, 'center')
 			gfx.printf('https://rae.wtf/blog/hexa-manual', 0, 135, 400, 'center')
@@ -229,20 +236,30 @@ function missions:draw()
 		end
 	end
 
-	gfx.setFont(assets.half_circle_inverted)
-	if save.color == 1 then gfx.setColor(love.math.colorFromBytes(194, 195, 199, 255)) end
+	if save.color == 1 then
+		gfx.setFont(assets.full_circle_inverted)
+		gfx.setColor(love.math.colorFromBytes(255, 241, 232, 127))
+	else
+		gfx.setFont(assets.half_circle_inverted)
+	end
 
 	if save.gamepad then -- Gamepad
-		gfx.print('Y toggles custom Missions.', 10, 190)
-		gfx.print('X opens Mission Command.', 10, 205)
+		if vars.custom_missions_enabled then
+			gfx.print('Y toggles custom Missions.', 10, 190)
+			gfx.print('X opens Mission Command.', 10, 205)
+		end
 		gfx.print('The D-pad moves. A picks. B goes back.', 10, 220)
 	elseif save.keyboard == 1 then -- Arrows + Z & X
-		gfx.print('C toggles custom Missions.', 10, 190)
-		gfx.print('J opens Mission Command.', 10, 205)
+		if vars.custom_missions_enabled then
+			gfx.print('C toggles custom Missions.', 10, 190)
+			gfx.print('J opens Mission Command.', 10, 205)
+		end
 		gfx.print('The arrows move. Z picks. X goes back.', 10, 220)
 	elseif save.keyboard == 2 then -- WASD + , & .
-		gfx.print('C toggles custom Missions.', 10, 190)
-		gfx.print('J opens Mission Command.', 10, 205)
+		if vars.custom_missions_enabled then
+			gfx.print('C toggles custom Missions.', 10, 190)
+			gfx.print('J opens Mission Command.', 10, 205)
+		end
 		gfx.print('WASD moves. , picks. . goes back.', 10, 220)
 	end
 
@@ -282,6 +299,13 @@ function missions:draw_cell(column, custom)
 				gfx.setFont(assets.half_circle)
 				gfx.setColor(0, 0, 0, 1)
 				gfx.printf('🔒 ' .. 'Mission ' .. column, 0, 8, 202, 'center')
+				if save.color == 1 then
+					gfx.setFont(assets.full_circle)
+					gfx.setColor(0, 0, 0, 0.5)
+				else
+					gfx.setFont(assets.half_circle)
+					gfx.setColor(0, 0, 0, 1)
+				end
 				gfx.printf('Complete the\nprior Missions\nto unlock!', 0, 41, 202, 'center')
 			else
 				gfx.setFont(assets.full_circle)

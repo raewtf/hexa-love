@@ -1,5 +1,4 @@
 local gfx = love.graphics
-local random = math.random
 local floor = math.floor
 local ceil = math.ceil
 local min = math.min
@@ -12,8 +11,6 @@ local tris_flip = {true, false, true, false, true, true, false, true, false, tru
 
 function game:enter(current, ...)
 	local args = {...} -- Arguments passed in through the scene management will arrive here
-
-	-- TODO: implement rubdubdub to BOOM
 
 	assets = {
 		cursor = gfx.newImage('images/' ..tostring(save.color) .. '/cursor.png'),
@@ -112,7 +109,7 @@ function game:enter(current, ...)
 		length2 = 0,
 		length3 = 0,
 		handlers = 'game', -- can be game, losing, or lose, or pause. or nothing
-		messagerand = random(1, 10),
+		messagerand = rng:random(1, 10),
 		white_is_white = false,
 		arcade_messages = {'You\'re on your way to\nruler of the universe!', 'Match those HEXAs,\nmatch \'em real good!', 'Hexagons are the\nbestagons.', 'All will bow to their\nnew hexagonal ruler.', 'Hit more Bombs next time!', 'Go for a bigger score;\nconquer more planets!', 'Hit those 2x tris!', 'Those squares never knew\nwhat hit \'em.', 'Mission clear, over.\nReport back to base.', 'Starship HEXA ready for\nthe next launch!'},
 		zen_messages = {'Good practice run! Now,\ntime for the real thing!', 'Make sure to take some\ngood, deep breaths.', 'Did you get a good amount\nof sleep last night?', 'Make sure you\'re drinking\nenough water lately!', 'Come back any time for\nchill HEXA-matching!', 'See you later!', 'Have a good day!', 'Have you heard of\n"hexaflexagons"?', 'Let\'s gooooooo!!', 'Go grab a snack or\nsomethin\'!'},
@@ -125,7 +122,6 @@ function game:enter(current, ...)
 		else
 			vars['mesh' .. i] = gfx.newMesh({{tris_x[i], tris_y[i] + 25, 0.5, 1}, {tris_x[i] + 30, tris_y[i] - 25, 1, 0}, {tris_x[i] - 30, tris_y[i] - 25, 0, 0}}, 'triangles', 'static')
 		end
-		--assets.gray:setWrap('repeat', 'repeat')
 		vars['mesh' .. i]:setTexture(assets.gray)
 	end
 
@@ -168,18 +164,17 @@ function game:enter(current, ...)
 		assets.bg = gfx.newImage('images/' .. tostring(save.color) .. '/bg_zen.png')
 	end
 
-	-- TODO: set up custom PRNG handler
 	if vars.mode == 'dailyrun' then
 		local time = os.date('!*t')
-		math.randomseed(time.year .. time.month .. time.day)
+		rng:setSeed(time.year .. time.month .. time.day)
 	elseif vars.mode == 'time' then
 		if vars.seed ~= nil and vars.seed ~= 0 then
-			math.randomseed(vars.seed)
+			rng:setSeed(vars.seed)
 		else
-			math.randomseed(123459 * vars.mission)
+			rng:setSeed(123459 * vars.mission)
 		end
 	else
-		math.randomseed(os.time())
+		rng:setSeed(os.time())
 	end
 
 	if vars.mode ~= 'dailyrun' then
@@ -248,7 +243,7 @@ function game:enter(current, ...)
 			vars.anim_label = timer.tween(1, vars, {label = -200}, 'linear', function()
 				assets.draw_label = nil
 			end)
-			newmusic('audio/music/arcade' .. random(1, 3) .. '.mp3', true)
+			newmusic('audio/music/arcade' .. rng:random(1, 3) .. '.mp3', true)
 			vars.can_do_stuff = true
 			self:check()
 			vars.anim_timer = timer.tween(vars.timer / 1000, vars, {timer = 0}, 'linear', function()
@@ -258,7 +253,7 @@ function game:enter(current, ...)
 	elseif vars.mode == 'zen' then
 		assets.ui = gfx.newImage('images/' .. tostring(save.color) .. '/ui_zen.png')
 		vars.countdowngo = timer.after(1, function()
-			newmusic('audio/music/zen' .. random(1, 2) .. '.mp3', true)
+			newmusic('audio/music/zen' .. rng:random(1, 2) .. '.mp3', true)
 			vars.can_do_stuff = true
 			self:check()
 		end)
@@ -296,13 +291,13 @@ function game:enter(current, ...)
 			vars.anim_label = timer.tween(1, vars, {label = -200}, 'linear', function()
 				assets.draw_label = nil
 			end)
-			newmusic('audio/music/zen' .. random(1, 2) .. '.mp3', true)
+			newmusic('audio/music/zen' .. rng:random(1, 2) .. '.mp3', true)
 			vars.can_do_stuff = true
 		end)
 	elseif vars.mode == 'logic' then
 		assets.ui = gfx.newImage('images/' .. tostring(save.color) .. '/ui_zen.png')
 		vars.countdowngo = timer.after(1, function()
-			newmusic('audio/music/zen' .. random(1, 2) .. '.mp3', true)
+			newmusic('audio/music/zen' .. rng:random(1, 2) .. '.mp3', true)
 			vars.can_do_stuff = true
 			self:check()
 		end)
@@ -337,7 +332,7 @@ function game:enter(current, ...)
 			vars.anim_label = timer.tween(1, vars, {label = -200}, 'linear', function()
 				assets.draw_label = nil
 			end)
-			newmusic('audio/music/arcade' .. random(1, 3) .. '.mp3', true)
+			newmusic('audio/music/arcade' .. rng:random(1, 3) .. '.mp3', true)
 			vars.can_do_stuff = true
 			self:check()
 			vars.anim_timer = timer.tween(vars.timer / 1000, vars, {timer = 0}, 'linear', function()
@@ -377,7 +372,7 @@ function game:enter(current, ...)
 			vars.anim_label = timer.tween(1, vars, {label = -200}, 'linear', function()
 				assets.draw_label = nil
 			end)
-			newmusic('audio/music/arcade' .. random(1, 3) .. '.mp3', true)
+			newmusic('audio/music/arcade' .. rng:random(1, 3) .. '.mp3', true)
 			vars.can_do_stuff = true
 			self:check()
 			vars.anim_timer = timer.tween(vars.timer / 1000, vars, {timer = 0}, 'linear', function()
@@ -677,33 +672,6 @@ function game:draw()
 		gfx.draw(assets.cursor, floor(vars.cursor_x), floor(vars.cursor_y))
 	end
 
-	gfx.setFont(assets.half_circle_inverted)
-	if save.color == 1 then gfx.setColor(love.math.colorFromBytes(194, 195, 199, 255)) end
-
-	if vars.mode == 'arcade' or vars.mode == 'dailyrun' then
-		gfx.print('Score', 10, 10)
-		if vars.mode == 'arcade' then
-			gfx.print('High', 10, 45)
-		else
-			gfx.print('Seed', 10, 45)
-		end
-		if save.hardmode then
-			gfx.print('HARD\nMODE', 10, 80)
-		end
-	elseif vars.mode == 'zen' then
-		gfx.print('Swaps', 10, 10)
-		gfx.print('HEXAs', 10, 45)
-	elseif vars.mode == 'picture' or vars.mode == 'logic' then
-		gfx.print('Swaps', 10, 10)
-		gfx.print('Best', 10, 45)
-	elseif vars.mode == 'time' then
-		gfx.print('Score', 10, 10)
-		gfx.print('High', 10, 45)
-	elseif vars.mode == 'speedrun' then
-		gfx.print('Time', 10, 10)
-		gfx.print('Best', 10, 45)
-	end
-
 	gfx.setFont(assets.full_circle_inverted)
 	if save.color == 1 then gfx.setColor(love.math.colorFromBytes(255, 241, 232, 255)) end
 
@@ -735,7 +703,38 @@ function game:draw()
 		gfx.print(bestmins .. ':' .. bestsecs .. '.' .. bestmils, 10, 60)
 	end
 
+	if save.color == 1 then
+		gfx.setColor(love.math.colorFromBytes(255, 241, 232, 127))
+	else
+		gfx.setFont(assets.half_circle_inverted)
+	end
+
+	if vars.mode == 'arcade' or vars.mode == 'dailyrun' then
+		gfx.print('Score', 10, 10)
+		if vars.mode == 'arcade' then
+			gfx.print('High', 10, 45)
+		else
+			gfx.print('Seed', 10, 45)
+		end
+		if save.hardmode then
+			gfx.print('HARD\nMODE', 10, 80)
+		end
+	elseif vars.mode == 'zen' then
+		gfx.print('Swaps', 10, 10)
+		gfx.print('HEXAs', 10, 45)
+	elseif vars.mode == 'picture' or vars.mode == 'logic' then
+		gfx.print('Swaps', 10, 10)
+		gfx.print('Best', 10, 45)
+	elseif vars.mode == 'time' then
+		gfx.print('Score', 10, 10)
+		gfx.print('High', 10, 45)
+	elseif vars.mode == 'speedrun' then
+		gfx.print('Time', 10, 10)
+		gfx.print('Best', 10, 45)
+	end
+
 	gfx.setFont(assets.clock)
+	if save.color == 1 then gfx.setColor(love.math.colorFromBytes(255, 241, 232, 255)) end
 
 	if vars.mode == 'arcade' or vars.mode == 'dailyrun' or vars.mode == 'time' then
 		gfx.print(ceil(vars.timer / 1000), 305, 55)
@@ -766,33 +765,6 @@ function game:draw()
 			gfx.setColor(1, 1, 1, 1)
 		end
 
-		gfx.setFont(assets.half_circle_inverted)
-
-		for i = 1, #vars.pause_selections do
-			vars['pos' .. i] = floor(400 / #vars.pause_selections) * (i - 1)
-			vars['length' .. i] = floor(400 / #vars.pause_selections)
-		end
-
-		gfx.printf('Continue', vars.pos1, 112, vars.length1, 'center')
-		if #vars.pause_selections == 2 then
-			if vars.mode == 'logic' or vars.mode == 'time' or vars.mode == 'picture' or vars.mode == 'speedrun' then
-				gfx.printf('Exit Mission', vars.pos2, 112, vars.length2, 'center')
-			elseif vars.mode == 'arcade' or vars.mode == 'dailyrun' then
-				gfx.printf('End Game', vars.pos2, 112, vars.length2, 'center')
-			elseif vars.mode == 'zen' then
-				gfx.printf('I\'m Done!', vars.pos2, 112, vars.length2, 'center')
-			end
-		else
-			gfx.printf('Restart Game', vars.pos2, 112, vars.length2, 'center')
-			if vars.mode == 'logic' or vars.mode == 'time' or vars.mode == 'picture' or vars.mode == 'speedrun' then
-				gfx.printf('Exit Mission', vars.pos3, 112, vars.length3, 'center')
-			elseif vars.mode == 'arcade' or vars.mode == 'dailyrun' then
-				gfx.printf('End Game', vars.pos3, 112, vars.length3, 'center')
-			elseif vars.mode == 'zen' then
-				gfx.printf('I\'m Done!', vars.pos3, 112, vars.length3, 'center')
-			end
-		end
-
 		gfx.setFont(assets.full_circle_inverted)
 
 		if vars.pause_selections[vars.pause_selection] == 'continue' then
@@ -815,6 +787,45 @@ function game:draw()
 				gfx.printf('End Game', pos, 112, length, 'center')
 			elseif vars.mode == 'zen' then
 				gfx.printf('I\'m Done!', pos, 112, length, 'center')
+			end
+		end
+
+		if save.color == 1 then
+			gfx.setColor(love.math.colorFromBytes(255, 241, 232, 127))
+		else
+			gfx.setFont(assets.half_circle_inverted)
+		end
+
+		for i = 1, #vars.pause_selections do
+			vars['pos' .. i] = floor(400 / #vars.pause_selections) * (i - 1)
+			vars['length' .. i] = floor(400 / #vars.pause_selections)
+		end
+
+		if vars.pause_selections[vars.pause_selection] ~= 'continue' then
+			gfx.printf('Continue', vars.pos1, 112, vars.length1, 'center')
+		end
+		if #vars.pause_selections == 2 then
+			if vars.pause_selections[vars.pause_selection] ~= 'quit' then
+				if vars.mode == 'logic' or vars.mode == 'time' or vars.mode == 'picture' or vars.mode == 'speedrun' then
+					gfx.printf('Exit Mission', vars.pos2, 112, vars.length2, 'center')
+				elseif vars.mode == 'arcade' or vars.mode == 'dailyrun' then
+					gfx.printf('End Game', vars.pos2, 112, vars.length2, 'center')
+				elseif vars.mode == 'zen' then
+					gfx.printf('I\'m Done!', vars.pos2, 112, vars.length2, 'center')
+				end
+			end
+		else
+			if vars.pause_selections[vars.pause_selection] ~= 'restart' then
+				gfx.printf('Restart Game', vars.pos2, 112, vars.length2, 'center')
+			end
+			if vars.pause_selections[vars.pause_selection] ~= 'quit' then
+				if vars.mode == 'logic' or vars.mode == 'time' or vars.mode == 'picture' or vars.mode == 'speedrun' then
+					gfx.printf('Exit Mission', vars.pos3, 112, vars.length3, 'center')
+				elseif vars.mode == 'arcade' or vars.mode == 'dailyrun' then
+					gfx.printf('End Game', vars.pos3, 112, vars.length3, 'center')
+				elseif vars.mode == 'zen' then
+					gfx.printf('I\'m Done!', vars.pos3, 112, vars.length3, 'center')
+				end
 			end
 		end
 	end
@@ -1160,7 +1171,7 @@ function game:hexa(temp1, temp2, temp3, temp4, temp5, temp6)
 				temp4.color, temp4.powerup = self:randomizetri()
 				temp5.color, temp5.powerup = self:randomizetri()
 				temp6.color, temp6.powerup = self:randomizetri()
-				local rand = random(1, 10000)
+				local rand = rng:random(1, 10000)
 				if rand == 1 then
 					playsound(assets.sfx_vine)
 				else
@@ -1311,8 +1322,8 @@ function game:randomizetri()
 		powerup = ''
 		return color, powerup
 	else
-		local randomcolor = random(1, 3)
-		local randompowerup = random(1, 50)
+		local randomcolor = rng:random(1, 3)
+		local randompowerup = rng:random(1, 50)
 		local color
 		local powerup
 		if randomcolor == 1 then
@@ -1388,7 +1399,7 @@ function game:restart()
 		vars.anim_label = timer.tween(1, vars, {label = -200}, 'linear', function()
 			assets.draw_label = nil
 		end)
-		newmusic('audio/music/arcade' .. random(1, 3) .. '.mp3', true)
+		newmusic('audio/music/arcade' .. rng:random(1, 3) .. '.mp3', true)
 		vars.can_do_stuff = true
 		self:check()
 		vars.anim_timer = timer.tween(vars.timer / 1000, vars, {timer = 0}, 'linear', function()
@@ -1424,8 +1435,11 @@ function game:ersi()
 			end
 			gfx.printf(vars[vars.mode .. '_messages'][vars.messagerand], 0, 150, 380, 'center')
 
-			gfx.setFont(assets.half_circle_inverted)
-			if save.color == 1 then gfx.setColor(love.math.colorFromBytes(194, 195, 199, 255)) end
+			if save.color == 1 then
+				gfx.setColor(love.math.colorFromBytes(255, 241, 232, 127))
+			else
+				gfx.setFont(assets.half_circle_inverted)
+			end
 
 			if save.gamepad then -- Gamepad
 				gfx.print('A starts a new game. B goes back.', 40, 205)
@@ -1461,8 +1475,11 @@ function game:ersi()
 			end
 			gfx.printf(vars[vars.mode .. '_messages'][vars.messagerand], 0, 150, 380, 'center')
 
-			gfx.setFont(assets.half_circle_inverted)
-			if save.color == 1 then gfx.setColor(love.math.colorFromBytes(194, 195, 199, 255)) end
+			if save.color == 1 then
+				gfx.setColor(love.math.colorFromBytes(255, 241, 232, 127))
+			else
+				gfx.setFont(assets.half_circle_inverted)
+			end
 
 			if vars.mode == 'dailyrun' then
 				if save.gamepad then -- Gamepad
@@ -1629,8 +1646,11 @@ function game:endround()
 							gfx.setScissor()
 							gfx.setColor(1, 1, 1, 1)
 
-							gfx.setFont(assets.half_circle_inverted)
-							if save.color == 1 then gfx.setColor(love.math.colorFromBytes(194, 195, 199, 255)) end
+							if save.color == 1 then
+								gfx.setColor(love.math.colorFromBytes(255, 241, 232, 127))
+							else
+								gfx.setFont(assets.half_circle_inverted)
+							end
 
 							if vars.mode == 'dailyrun' then
 								if save.gamepad then -- Gamepad

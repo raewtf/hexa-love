@@ -44,7 +44,7 @@ function jukebox:enter(current, ...)
 
 	vars.anim_ship_x = timer.tween(1.7, vars, {ship_x = 200}, 'out-cubic')
 
-	if save.music then
+	if save.music > 0 then
 		self:shuffle()
 	end
 end
@@ -70,7 +70,7 @@ function jukebox:keypressed(key)
 end
 
 function jukebox:update(dt)
-	if music == nil and not transitioning and save.music then self:shuffle() end
+	if music == nil and not transitioning and save.music > 0 then self:shuffle() end
 	assets.ship.currentTime = assets.ship.currentTime + dt
 	if assets.ship.currentTime >= assets.ship.duration then
 		assets.ship.currentTime = assets.ship.currentTime - assets.ship.duration
@@ -82,17 +82,6 @@ function jukebox:draw()
 	gfx.draw(assets.stars_small, floor(vars.sx), 0)
 	gfx.draw(assets.stars_large, floor(vars.lx), 0)
 	gfx.draw(assets.img25, 0, 0)
-
-	gfx.setFont(assets.half_circle_inverted)
-	if save.color == 1 then gfx.setColor(love.math.colorFromBytes(194, 195, 199, 255)) end
-
-	if save.gamepad then -- Gamepad
-		gfx.print('A toggles the text. B goes back.', 10, 220 + floor(vars.text_y))
-	elseif save.keyboard == 1 then -- Arrows + Z & X
-		gfx.print('Z toggles the text. X goes back.', 10, 220 + floor(vars.text_y))
-	elseif save.keyboard == 2 then -- WASD + , & .
-		gfx.print(', toggles the text. . goes back.', 10, 220 + floor(vars.text_y))
-	end
 
 	gfx.setFont(assets.full_circle_inverted)
 	if save.color == 1 then gfx.setColor(love.math.colorFromBytes(255, 241, 232, 255)) end
@@ -111,6 +100,20 @@ function jukebox:draw()
 		gfx.print('🎵 Solid based scandal - MusMus', 10, 205 + floor(vars.text_y))
 	end
 
+	if save.color == 1 then
+		gfx.setColor(love.math.colorFromBytes(255, 241, 232, 127))
+	else
+		gfx.setFont(assets.half_circle_inverted)
+	end
+
+	if save.gamepad then -- Gamepad
+		gfx.print('A toggles the text. B goes back.', 10, 220 + floor(vars.text_y))
+	elseif save.keyboard == 1 then -- Arrows + Z & X
+		gfx.print('Z toggles the text. X goes back.', 10, 220 + floor(vars.text_y))
+	elseif save.keyboard == 2 then -- WASD + , & .
+		gfx.print(', toggles the text. . goes back.', 10, 220 + floor(vars.text_y))
+	end
+
 	gfx.setColor(1, 1, 1, 1)
 
 	local spritenum = floor(assets.ship.currentTime / assets.ship.duration * #assets.ship.quads) + 1
@@ -120,7 +123,7 @@ function jukebox:draw()
 end
 
 function jukebox:shuffle()
-	vars.rand = math.random(1, vars.num)
+	vars.rand = rng:random(1, vars.num)
 	newmusic('audio/music/' .. vars.tunes[vars.rand] .. '.mp3')
 end
 

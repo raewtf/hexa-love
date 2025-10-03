@@ -133,18 +133,6 @@ function howtoplay:draw()
 		gfx.draw(assets['manual' .. vars.page], 220, 40)
 	end
 
-	gfx.setFont(assets.half_circle_inverted)
-	if save.color == 1 then gfx.setColor(love.math.colorFromBytes(194, 195, 199, 255)) end
-
-	if save.gamepad then -- Gamepad
-		gfx.print('The D-pad turns the page. B goes back.', 10, 220)
-	elseif save.keyboard == 1 then -- Arrows + Z & X
-		gfx.print('The arrows turn the page. X goes back.', 10, 220)
-	elseif save.keyboard == 2 then -- WASD + , & .
-		gfx.print('WASD turns the page. . goes back.', 10, 220)
-	end
-	gfx.printf(vars.page .. '/7', 0, 220, 390, 'right')
-
 	gfx.setFont(assets.full_circle_inverted)
 	if save.color == 1 then gfx.setColor(love.math.colorFromBytes(255, 241, 232, 255)) end
 
@@ -163,6 +151,21 @@ function howtoplay:draw()
 	elseif vars.page == 7 then
 		gfx.print('That should be all you need to\nknow to get started with HEXA!\n\nYou can also consult the manual:\nhttps://rae.wtf/blog/hexa-manual\n...if there\'s something you\'re\nstill confused about.\n\nIf you like this game,\nlet me know on-line!\nhttps://rae.wtf\n\n...and thank you for playing!', 10, 10)
 	end
+
+	if save.color == 1 then
+		gfx.setColor(love.math.colorFromBytes(255, 241, 232, 127))
+	else
+		gfx.setFont(assets.half_circle_inverted)
+	end
+
+	if save.gamepad then -- Gamepad
+		gfx.print('The D-pad turns the page. B goes back.', 10, 220)
+	elseif save.keyboard == 1 then -- Arrows + Z & X
+		gfx.print('The arrows turn the page. X goes back.', 10, 220)
+	elseif save.keyboard == 2 then -- WASD + , & .
+		gfx.print('WASD turns the page. . goes back.', 10, 220)
+	end
+	gfx.printf(vars.page .. '/7', 0, 220, 390, 'right')
 
 	draw_on_top()
 end

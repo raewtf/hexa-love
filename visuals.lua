@@ -137,13 +137,45 @@ function visuals:draw()
 	gfx.draw(assets.stars_large, floor(vars.lx), floor(vars.ly))
 	gfx.draw(assets.img25, 0, 0)
 
-	gfx.setFont(assets.half_circle_inverted)
-	if save.color == 1 then gfx.setColor(love.math.colorFromBytes(194, 195, 199, 255)) end
+	gfx.setFont(assets.full_circle_inverted)
+	if save.color == 1 then gfx.setColor(love.math.colorFromBytes(255, 241, 232, 255)) end
 
-	gfx.printf('Minimum Scale: ' .. save.scale, 0, 20, 400, 'center')
-	gfx.printf('Reduce Flashing: ' .. tostring(save.reduceflashing and 'ON' or 'OFF'), 0, 40, 400, 'center')
-	gfx.printf('Game Style: ' .. tostring(save.color == 1 and 'Colorful' or save.color == 2 and 'Classic'), 0, 60, 400, 'center')
-	gfx.printf('HEXAPLEX Style: ' .. save.hexaplex_color .. '. ' .. vars.hexaplex_names[save.hexaplex_color], 0, 80, 400, 'center')
+	for i = 1, #vars.selections do
+		if vars.selections[vars.selection] == 'scale' then
+			text = 'Minimum Scale: ' .. save.scale
+		elseif vars.selections[vars.selection] == 'reduceflashing' then
+			text = 'Reduce Flashing: ' .. tostring(save.reduceflashing and 'ON' or 'OFF')
+		elseif vars.selections[vars.selection] == 'color' then
+			text = 'Game Style: ' .. tostring(save.color == 1 and 'Colorful' or save.color == 2 and 'Classic')
+		elseif vars.selections[vars.selection] == 'hexaplex_color' then
+			text = 'HEXAPLEX Style: ' .. save.hexaplex_color .. '. ' .. vars.hexaplex_names[save.hexaplex_color]
+		end
+		if vars.selection == i then
+			gfx.printf(text, 0, 0 + (20 * i), 400, 'center')
+		end
+	end
+
+	if save.color == 1 then
+		gfx.setColor(love.math.colorFromBytes(255, 241, 232, 127))
+	else
+		gfx.setFont(assets.half_circle_inverted)
+	end
+
+	local text = ''
+	for i = 1, #vars.selections do
+		if vars.selections[i] == 'scale' then
+			text = 'Minimum Scale: ' .. save.scale
+		elseif vars.selections[i] == 'reduceflashing' then
+			text = 'Reduce Flashing: ' .. tostring(save.reduceflashing and 'ON' or 'OFF')
+		elseif vars.selections[i] == 'color' then
+			text = 'Game Style: ' .. tostring(save.color == 1 and 'Colorful' or save.color == 2 and 'Classic')
+		elseif vars.selections[i] == 'hexaplex_color' then
+			text = 'HEXAPLEX Style: ' .. save.hexaplex_color .. '. ' .. vars.hexaplex_names[save.hexaplex_color]
+		end
+		if vars.selection ~= i then
+			gfx.printf(text, 0, 0 + (20 * i), 400, 'center')
+		end
+	end
 
 	if save.gamepad then -- Gamepad
 		gfx.print('The D-pad moves. A toggles.', 70, 220)
@@ -162,19 +194,6 @@ function visuals:draw()
 		else
 			gfx.printf('Unlock more\nstyles by\nsetting new\nhigh scores!', 0, 135, 230, 'center')
 		end
-	end
-
-	gfx.setFont(assets.full_circle_inverted)
-	if save.color == 1 then gfx.setColor(love.math.colorFromBytes(255, 241, 232, 255)) end
-
-	if vars.selections[vars.selection] == 'scale' then
-		gfx.printf('Minimum Scale: ' .. save.scale, 0, 20, 400, 'center')
-	elseif vars.selections[vars.selection] == 'reduceflashing' then
-		gfx.printf('Reduce Flashing: ' .. tostring(save.reduceflashing and 'ON' or 'OFF'), 0, 40, 400, 'center')
-	elseif vars.selections[vars.selection] == 'color' then
-		gfx.printf('Game Style: ' .. tostring(save.color == 1 and 'Colorful' or save.color == 2 and 'Classic'), 0, 60, 400, 'center')
-	elseif vars.selections[vars.selection] == 'hexaplex_color' then
-		gfx.printf('HEXAPLEX Style: ' .. save.hexaplex_color .. '. ' .. vars.hexaplex_names[save.hexaplex_color], 0, 80, 400, 'center')
 	end
 
 	gfx.setColor(1, 1, 1, 1)

@@ -85,8 +85,21 @@ function credits:draw()
 	gfx.draw(assets.stars_large, floor(vars.lx), floor(vars.ly))
 	gfx.draw(assets.img25, 0, 0)
 
-	gfx.setFont(assets.half_circle_inverted)
-	if save.color == 1 then gfx.setColor(love.math.colorFromBytes(194, 195, 199, 255)) end
+
+	gfx.setFont(assets.full_circle_inverted)
+	if save.color == 1 then gfx.setColor(love.math.colorFromBytes(255, 241, 232, 255)) end
+
+	if vars.page == 1 then
+		gfx.printf('\n\n\n\nProgrammed by Rae\nGraphics stuff drawn by Rae\n\nMusic from MusMus; SFX made with JSFXR\n\nFonts from Panic and Astigmatic\n\nHUMP lib from Matthias Richter', 0, 5, 400, 'center')
+	elseif vars.page == 2 then
+		gfx.printf('\n\n\n\nThank you to...\nVoxy, Toad, scizzorz, superfunc, mag,\nhunty, Scenic, Schyzo, DRD, Drew-Lo,\nIGDATC, and Panic!\n\nThank you to the wonderful PC testers:\nOrchid, Maddy, Toad, Seb, Winter,\nVoxy, Diego, Roxby, and Scenic Route!', 0, 5, 400, 'center')
+	end
+
+	if save.color == 1 then
+		gfx.setColor(love.math.colorFromBytes(255, 241, 232, 127))
+	else
+		gfx.setFont(assets.half_circle_inverted)
+	end
 
 	if save.gamepad then -- Gamepad
 		gfx.print('The D-pad turns the page.', 65, 205)
@@ -100,15 +113,6 @@ function credits:draw()
 	end
 
 	gfx.printf(vars.page .. '/2', 0, 220, 330, 'right')
-
-	gfx.setFont(assets.full_circle_inverted)
-	if save.color == 1 then gfx.setColor(love.math.colorFromBytes(255, 241, 232, 255)) end
-
-	if vars.page == 1 then
-		gfx.printf('\n\n\n\nProgrammed by Rae\nGraphics stuff drawn by Rae\n\nMusic from MusMus; SFX made with JSFXR\n\nFonts from Panic and Astigmatic\n\nHUMP lib from Matthias Richter', 0, 5, 400, 'center')
-	elseif vars.page == 2 then
-		gfx.printf('\n\n\n\nThank you to...\nVoxy, Toad, scizzorz, superfunc, mag,\nhunty, Scenic, Schyzo, DRD, Drew-Lo,\nIGDATC, and Panic!\n\nThank you to the wonderful PC testers:\nOrchid, Maddy, Toad, Seb,\nWinter, Voxy, Diego, and Roxby!', 0, 5, 400, 'center')
-	end
 
 	gfx.setColor(1, 1, 1, 1)
 

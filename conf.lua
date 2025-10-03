@@ -2,6 +2,7 @@ function love.conf(t)
 	t.version = '11.5'
 	t.identity = 'HEXA'
 	t.window.title = 'HEXA'
+	t.window.icon = 'images/1/icon.png'
 	t.window.width = 400
 	t.window.height = 240
 	t.window.resizable = true
