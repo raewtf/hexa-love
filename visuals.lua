@@ -1,6 +1,7 @@
 local gfx = love.graphics
 local floor = math.floor
 local min = math.min
+local text = getLocalizedText
 local visuals = {}
 
 function visuals:reload_images()
@@ -22,7 +23,7 @@ function visuals:enter(current, ...)
 		sfx_select = love.audio.newSource('audio/sfx/select.mp3', 'static'),
 		sfx_back = love.audio.newSource('audio/sfx/back.mp3', 'static'),
 		sfx_bonk = love.audio.newSource('audio/sfx/bonk.mp3', 'static'),
-		quad = gfx.newQuad(0, 0, 400, 143, 400, 240),
+		quad = gfx.newQuad(0, 0, 400, 140, 400, 240),
 		hexaplex = gfx.newImage('images/2/manual-table-2.png'),
 		hexaplex1 = gfx.newImage('images/1/manual-table-2_1.png'),
 		hexaplex2 = gfx.newImage('images/1/manual-table-2_2.png'),
@@ -40,8 +41,7 @@ function visuals:enter(current, ...)
 		ly = 0,
 		waiting = true,
 		selection = 0,
-		selections = {'scale', 'reduceflashing', 'color', 'hexaplex_color'},
-		hexaplex_names = {'Athletic', 'Cookie', 'Margherita', 'Crossword', 'Dee M.G.', 'Cotton Candy', 'Trailblazer', 'Deep Sea', 'Starship', 'Taxicab', 'Blue Skies', 'Candy Wrapper', 'Potpourri', 'Hot Pink', 'Monster Mash', 'So Retro', 'Festive', 'Blue Sunny Day', 'Stainless Steel', 'Player Two', 'Head Over Heels', 'Quarterback', 'Ocean Man', 'On Fire', 'Candy Corn', 'Appleseed'},
+		selections = {'scale', 'clean_scaling', 'reduceflashing', 'color', 'hexaplex_color'},
 	}
 	vars.input_wait = timer.after(transitiontime, function()
 		vars.waiting = false
@@ -72,7 +72,7 @@ end
 
 function visuals:keypressed(key)
 	if not transitioning and not vars.waiting then
-		if (save.keyboard == 1 and key == 'up') or (save.keyboard == 2 and key == 'w') then
+		if key == save.up then
 			if vars.selection ~= 0 then
 				if vars.selection > 1 then
 					vars.selection = vars.selection - 1
@@ -81,7 +81,7 @@ function visuals:keypressed(key)
 				end
 				playsound(assets.sfx_move)
 			end
-		elseif (save.keyboard == 1 and key == 'down') or (save.keyboard == 2 and key == 's') then
+		elseif key == save.down then
 			if vars.selection ~= 0 then
 				if vars.selection < #vars.selections then
 					vars.selection = vars.selection + 1
@@ -90,11 +90,11 @@ function visuals:keypressed(key)
 				end
 				playsound(assets.sfx_move)
 			end
-		elseif (save.keyboard == 1 and key == 'x') or (save.keyboard == 2 and key == '.') then
+		elseif key == save.secondary then
 			playsound(assets.sfx_back)
 			scenemanager:transitionscene(options, 'visuals')
 			vars.selection = 0
-		elseif (save.keyboard == 1 and key == 'z') or (save.keyboard == 2 and key == ',') then
+		elseif key == save.primary then
 			if vars.selections[vars.selection] == 'scale' then
 				save.scale = save.scale + 1
 				if save.scale > 4 then
@@ -102,6 +102,11 @@ function visuals:keypressed(key)
 				end
 				rescale(save.scale)
 				playsound(assets.sfx_select)
+			elseif vars.selections[vars.selection] == 'clean_scaling' then
+				save.clean_scaling = not save.clean_scaling
+				playsound(assets.sfx_select)
+				local w, h, _ = love.window.getMode()
+				love.resize(w, h)
 			elseif vars.selections[vars.selection] == 'reduceflashing' then
 				save.reduceflashing = not save.reduceflashing
 				playsound(assets.sfx_select)
@@ -117,7 +122,7 @@ function visuals:keypressed(key)
 					save.hexaplex_color = save.hexaplex_color + 1
 					local score = save.score
 					if save.hard_score > save.score then score = save.hard_score end
-					if save.hexaplex_color > min(1 + floor(score / 1000), #vars.hexaplex_names) then
+					if save.hexaplex_color > min(1 + floor(score / 1000), 26) then
 						save.hexaplex_color = 1
 					end
 					self:reload_images()
@@ -141,17 +146,16 @@ function visuals:draw()
 	if save.color == 1 then gfx.setColor(love.math.colorFromBytes(255, 241, 232, 255)) end
 
 	for i = 1, #vars.selections do
-		if vars.selections[vars.selection] == 'scale' then
-			text = 'Minimum Scale: ' .. save.scale
-		elseif vars.selections[vars.selection] == 'reduceflashing' then
-			text = 'Reduce Flashing: ' .. tostring(save.reduceflashing and 'ON' or 'OFF')
-		elseif vars.selections[vars.selection] == 'color' then
-			text = 'Game Style: ' .. tostring(save.color == 1 and 'Colorful' or save.color == 2 and 'Classic')
-		elseif vars.selections[vars.selection] == 'hexaplex_color' then
-			text = 'HEXAPLEX Style: ' .. save.hexaplex_color .. '. ' .. vars.hexaplex_names[save.hexaplex_color]
-		end
 		if vars.selection == i then
-			gfx.printf(text, 0, 0 + (20 * i), 400, 'center')
+			if vars.selections[vars.selection] == 'scale' then
+				gfx.printf(text(vars.selections[vars.selection]) .. tostring(save[vars.selections[vars.selection]]), 0, -10 + (20 * i), 400, 'center')
+			elseif vars.selections[vars.selection] == 'reduceflashing' then
+				gfx.printf(text(vars.selections[vars.selection]) .. text(tostring(save[vars.selections[vars.selection]])), 0, -10 + (20 * i), 400, 'center')
+			elseif vars.selections[vars.selection] == 'hexaplex_color' then
+				gfx.printf(text('hexaplex_color') .. text('hexaplex_' .. save.hexaplex_color), 0, -10 + (20 * i), 400, 'center')
+			else
+				gfx.printf(text(vars.selections[vars.selection]) .. text(vars.selections[vars.selection] .. tostring(save[vars.selections[vars.selection]])), 0, -10 + (20 * i), 400, 'center')
+			end
 		end
 	end
 
@@ -161,38 +165,34 @@ function visuals:draw()
 		gfx.setFont(assets.half_circle_inverted)
 	end
 
-	local text = ''
 	for i = 1, #vars.selections do
-		if vars.selections[i] == 'scale' then
-			text = 'Minimum Scale: ' .. save.scale
-		elseif vars.selections[i] == 'reduceflashing' then
-			text = 'Reduce Flashing: ' .. tostring(save.reduceflashing and 'ON' or 'OFF')
-		elseif vars.selections[i] == 'color' then
-			text = 'Game Style: ' .. tostring(save.color == 1 and 'Colorful' or save.color == 2 and 'Classic')
-		elseif vars.selections[i] == 'hexaplex_color' then
-			text = 'HEXAPLEX Style: ' .. save.hexaplex_color .. '. ' .. vars.hexaplex_names[save.hexaplex_color]
-		end
 		if vars.selection ~= i then
-			gfx.printf(text, 0, 0 + (20 * i), 400, 'center')
+			if vars.selections[i] == 'scale' then
+				gfx.printf(text(vars.selections[i]) .. tostring(save[vars.selections[i]]), 0, -10 + (20 * i), 400, 'center')
+			elseif vars.selections[i] == 'reduceflashing' then
+				gfx.printf(text(vars.selections[i]) .. text(tostring(save[vars.selections[i]])), 0, -10 + (20 * i), 400, 'center')
+			elseif vars.selections[i] == 'hexaplex_color' then
+				gfx.printf(text('hexaplex_color') .. text('hexaplex_' .. save.hexaplex_color), 0, -10 + (20 * i), 400, 'center')
+			else
+				gfx.printf(text(vars.selections[i]) .. text(vars.selections[i] .. tostring(save[vars.selections[i]])), 0, -10 + (20 * i), 400, 'center')
+			end
 		end
 	end
 
 	if save.gamepad then -- Gamepad
-		gfx.print('The D-pad moves. A toggles.', 70, 220)
-	elseif save.keyboard == 1 then -- Arrows + Z & X
-		gfx.print('The arrows move. Z toggles.', 70, 220)
-	elseif save.keyboard == 2 then -- WASD + , & .
-		gfx.print('WASD moves. , toggles.', 70, 220)
+		gfx.print(text('dpad') .. text('moves') .. text('a') .. text('toggle'), 70, 220)
+	else
+		gfx.print(start(save.up) .. text('slash') .. start(save.down) .. text('move') .. start(save.primary) .. text('toggle'), 70, 220)
 	end
 
 	if save.color == 1 then
 		local score = save.score
 		if save.hard_score > save.score then score = save.hard_score end
-		gfx.printf(min(1 + floor(score / 1000), #vars.hexaplex_names) .. '/' .. #vars.hexaplex_names .. ' unlocked', 0, 115, 230, 'center')
-		if 1 + floor(score / 1000) >= #vars.hexaplex_names then
-			gfx.printf('Congratulations!\n\nYou\'re a HEXA\nmaster!', 0, 135, 230, 'center')
+		gfx.printf(min(1 + floor(score / 1000), 26) .. text('slash') .. 26 .. text('unlocked'), 0, 120, 230, 'center')
+		if 1 + floor(score / 1000) >= 26 then
+			gfx.printf(text('hexaplex_color_all'), 0, 140, 230, 'center')
 		else
-			gfx.printf('Unlock more\nstyles by\nsetting new\nhigh scores!', 0, 135, 230, 'center')
+			gfx.printf(text('hexaplex_color_locked'), 0, 140, 230, 'center')
 		end
 	end
 
@@ -200,18 +200,18 @@ function visuals:draw()
 
 	if save.color == 1 then
 		gfx.setColor(hexaplex_blacks[save.hexaplex_color])
-		gfx.draw(assets.hexaplex1, 165, 75)
+		gfx.draw(assets.hexaplex1, 165, 80)
 		gfx.setColor(hexaplex_gray1s[save.hexaplex_color])
-		gfx.draw(assets.hexaplex2, 165, 75)
+		gfx.draw(assets.hexaplex2, 165, 80)
 		gfx.setColor(hexaplex_gray2s[save.hexaplex_color])
-		gfx.draw(assets.hexaplex3, 165, 75)
+		gfx.draw(assets.hexaplex3, 165, 80)
 		gfx.setColor(1, 1, 1, 1)
-		gfx.draw(assets.hexaplex4, 165, 75)
+		gfx.draw(assets.hexaplex4, 165, 80)
 		gfx.setColor(hexaplex_whites[save.hexaplex_color])
-		gfx.draw(assets.hexaplex5, 165, 75)
+		gfx.draw(assets.hexaplex5, 165, 80)
 	else
-		gfx.draw(assets.hexaplex, 115, 75)
-		gfx.draw(assets.img25, assets.quad, 0, 79)
+		gfx.draw(assets.hexaplex, 115, 80)
+		gfx.draw(assets.img25, assets.quad, 0, 83)
 	end
 	gfx.setColor(1, 1, 1, 1)
 	gfx.draw(assets.fg, 0, 0)

@@ -1,5 +1,6 @@
 local gfx = love.graphics
 local floor = math.floor
+local text = getLocalizedText
 local jukebox = {}
 
 function jukebox:enter(current, ...)
@@ -51,14 +52,14 @@ end
 
 function jukebox:keypressed(key)
 	if not transitioning and not vars.waiting then
-		if (save.keyboard == 1 and key == 'z') or (save.keyboard == 2 and key == ',') then
+		if key == save.primary then
 			vars.showtext = not vars.showtext
 			if vars.showtext then
 				vars.anim_text_y = timer.tween(0.3, vars, {text_y = 0}, 'out-back')
 			else
 				vars.anim_text_y = timer.tween(0.3, vars, {text_y = 50}, 'in-back')
 			end
-		elseif (save.keyboard == 1 and key == 'x') or (save.keyboard == 2 and key == '.') then
+		elseif key == save.secondary then
 			playsound(assets.sfx_back)
 			vars.anim_ship_x = timer.tween(0.7, vars, {ship_x = 500}, 'in-back')
 			vars.delay = timer.after(0.4, function()
@@ -86,19 +87,7 @@ function jukebox:draw()
 	gfx.setFont(assets.full_circle_inverted)
 	if save.color == 1 then gfx.setColor(love.math.colorFromBytes(255, 241, 232, 255)) end
 
-	if vars.rand == 1 then
-		gfx.print('🎵 Edge of the galaxy - MusMus', 10, 205 + floor(vars.text_y))
-	elseif vars.rand == 2 then
-		gfx.print('🎵 The entrance of Queen of fate - MusMus', 10, 205 + floor(vars.text_y))
-	elseif vars.rand == 3 then
-		gfx.print('🎵 PsychoChemical - MusMus', 10, 205 + floor(vars.text_y))
-	elseif vars.rand == 4 then
-		gfx.print('🎵 dear Dragon - MUSMUS', 10, 205 + floor(vars.text_y))
-	elseif vars.rand == 5 then
-		gfx.print('🎵 Sweet vermouth - MusMus', 10, 205 + floor(vars.text_y))
-	elseif vars.rand == 6 then
-		gfx.print('🎵 Solid based scandal - MusMus', 10, 205 + floor(vars.text_y))
-	end
+	gfx.print(text('music_' .. vars.tunes[vars.rand]), 10, 205 + floor(vars.text_y))
 
 	if save.color == 1 then
 		gfx.setColor(love.math.colorFromBytes(255, 241, 232, 127))
@@ -107,11 +96,9 @@ function jukebox:draw()
 	end
 
 	if save.gamepad then -- Gamepad
-		gfx.print('A toggles the text. B goes back.', 10, 220 + floor(vars.text_y))
-	elseif save.keyboard == 1 then -- Arrows + Z & X
-		gfx.print('Z toggles the text. X goes back.', 10, 220 + floor(vars.text_y))
-	elseif save.keyboard == 2 then -- WASD + , & .
-		gfx.print(', toggles the text. . goes back.', 10, 220 + floor(vars.text_y))
+		gfx.print(text('a') .. text('toggles_text') .. text('b') .. text('back'), 10, 220 + floor(vars.text_y))
+	else
+		gfx.print(start(save.primary) .. text('toggles_text') .. start(save.secondary) .. text('back'), 10, 220 + floor(vars.text_y))
 	end
 
 	gfx.setColor(1, 1, 1, 1)

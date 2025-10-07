@@ -1,5 +1,6 @@
 local gfx = love.graphics
 local floor = math.floor
+local text = getLocalizedText
 local credits = {}
 
 function credits:enter(current, ...)
@@ -56,7 +57,7 @@ end
 
 function credits:keypressed(key)
 	if not transitioning and not vars.waiting then
-		if (save.keyboard == 1 and key == 'left') or (save.keyboard == 2 and key == 'a') then
+		if key == save.left then
 			if vars.page > 1 then
 				vars.page = vars.page - 1
 				playsound(assets.sfx_move)
@@ -64,7 +65,7 @@ function credits:keypressed(key)
 				playsound(assets.sfx_bonk)
 				shakies()
 			end
-		elseif (save.keyboard == 1 and key == 'right') or (save.keyboard == 2 and key == 'd') then
+		elseif key == save.right then
 			if vars.page < 2 then
 				vars.page = vars.page + 1
 				playsound(assets.sfx_move)
@@ -72,7 +73,7 @@ function credits:keypressed(key)
 				playsound(assets.sfx_bonk)
 				shakies()
 			end
-		elseif (save.keyboard == 1 and key == 'x') or (save.keyboard == 2 and key == '.') then
+		elseif key == save.secondary then
 			playsound(assets.sfx_back)
 			scenemanager:transitionscene(title, false, 'credits')
 		end
@@ -90,9 +91,9 @@ function credits:draw()
 	if save.color == 1 then gfx.setColor(love.math.colorFromBytes(255, 241, 232, 255)) end
 
 	if vars.page == 1 then
-		gfx.printf('\n\n\n\nProgrammed by Rae\nGraphics stuff drawn by Rae\n\nMusic from MusMus; SFX made with JSFXR\n\nFonts from Panic and Astigmatic\n\nHUMP lib from Matthias Richter', 0, 5, 400, 'center')
+		gfx.printf(text('credits1'), 0, 5, 400, 'center')
 	elseif vars.page == 2 then
-		gfx.printf('\n\n\n\nThank you to...\nVoxy, Toad, scizzorz, superfunc, mag,\nhunty, Scenic, Schyzo, DRD, Drew-Lo,\nIGDATC, and Panic!\n\nThank you to the wonderful PC testers:\nOrchid, Maddy, Toad, Seb, Winter,\nVoxy, Diego, Roxby, and Scenic Route!', 0, 5, 400, 'center')
+		gfx.printf(text('credits2'), 0, 5, 400, 'center')
 	end
 
 	if save.color == 1 then
@@ -102,14 +103,11 @@ function credits:draw()
 	end
 
 	if save.gamepad then -- Gamepad
-		gfx.print('The D-pad turns the page.', 65, 205)
-		gfx.print('B goes back.', 70, 220)
-	elseif save.keyboard == 1 then -- Arrows + Z & X
-		gfx.print('The arrows turn the page.', 65, 205)
-		gfx.print('X goes back.', 70, 220)
-	elseif save.keyboard == 2 then -- WASD + , & .
-		gfx.print('WASD turns the page.', 65, 205)
-		gfx.print('. goes back.', 70, 220)
+		gfx.print(text('dpad') .. text('pages'), 65, 205)
+		gfx.print(text('b') .. text('back'), 70, 220)
+	else
+		gfx.print(start(save.left) .. '/' .. start(save.right) .. text('page'), 65, 205)
+		gfx.print(start(save.secondary) .. text('back'), 70, 220)
 	end
 
 	gfx.printf(vars.page .. '/2', 0, 220, 330, 'right')

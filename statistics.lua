@@ -1,5 +1,6 @@
 local gfx = love.graphics
 local floor = math.floor
+local text = getLocalizedText
 local statistics = {}
 
 function statistics:enter(current, ...)
@@ -53,7 +54,7 @@ end
 
 function statistics:keypressed(key)
 	if not transitioning and not vars.waiting then
-		if (save.keyboard == 1 and key == 'x') or (save.keyboard == 2 and key == '.') then
+		if key == save.secondary then
 			playsound(assets.sfx_back)
 			scenemanager:transitionscene(title, false, 'statistics')
 		end
@@ -93,27 +94,25 @@ function statistics:draw()
 	end
 
 	if save.gamepad then -- Gamepad
-		gfx.print('B goes back.', 70, 220)
-	elseif save.keyboard == 1 then -- Arrows + Z & X
-		gfx.print('X goes back.', 70, 220)
-	elseif save.keyboard == 2 then -- WASD + , & .
-		gfx.print('. goes back.', 70, 220)
+		gfx.print(text('b') .. text('back'), 70, 220)
+	else
+		gfx.print(start(save.secondary) .. text('back'), 70, 220)
 	end
 
-	gfx.printf('Total Swaps:', 0, 5, 240, 'right')
-	gfx.printf('Total HEXAs:', 0, 20, 240, 'right')
-	gfx.printf('Swaps:HEXAs (approx.):', 0, 35, 240, 'right')
-	gfx.printf('High Score:', 0, 50, 240, 'right')
-	gfx.printf('High Score (Hard Mode):', 0, 65, 240, 'right')
-	gfx.printf('Total Playtime:', 0, 80, 240, 'right')
-	gfx.printf('Total In-Game Time:', 0, 95, 240, 'right')
-	gfx.printf('Total Score:', 0, 110, 240, 'right')
-	gfx.printf('HEXAs w/ Dark Tris:', 0, 125, 240, 'right')
-	gfx.printf('HEXAs w/ Dithered Tris:', 0, 140, 240, 'right')
-	gfx.printf('HEXAs w/ Light Tris:', 0, 155, 240, 'right')
-	gfx.printf('HEXAs w/ 2x Tris:', 0, 170, 240, 'right')
-	gfx.printf('HEXAPLEX Kerplosions:', 0, 185, 240, 'right')
-	gfx.printf('HEXAs w/ Wild Tris:', 0, 200, 240, 'right')
+	gfx.printf(text('totalswaps'), 0, 5, 240, 'right')
+	gfx.printf(text('totalhexas'), 0, 20, 240, 'right')
+	gfx.printf(text('swapshexas'), 0, 35, 240, 'right')
+	gfx.printf(text('highscore'), 0, 50, 240, 'right')
+	gfx.printf(text('highscorehardmode'), 0, 65, 240, 'right')
+	gfx.printf(text('playtime'), 0, 80, 240, 'right')
+	gfx.printf(text('gametime'), 0, 95, 240, 'right')
+	gfx.printf(text('totalscore'), 0, 110, 240, 'right')
+	gfx.printf(text('hexablack'), 0, 125, 240, 'right')
+	gfx.printf(text('hexagray'), 0, 140, 240, 'right')
+	gfx.printf(text('hexawhite'), 0, 155, 240, 'right')
+	gfx.printf(text('hexadouble'), 0, 170, 240, 'right')
+	gfx.printf(text('kerplosion'), 0, 185, 240, 'right')
+	gfx.printf(text('hexawild'), 0, 200, 240, 'right')
 
 	gfx.setColor(1, 1, 1, 1)
 

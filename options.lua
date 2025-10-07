@@ -1,5 +1,6 @@
 local gfx = love.graphics
 local floor = math.floor
+local text = getLocalizedText
 local options = {}
 
 visuals = require('visuals')
@@ -31,6 +32,8 @@ function options:enter(current, ...)
 		sfx_select = love.audio.newSource('audio/sfx/select.mp3', 'static'),
 		sfx_back = love.audio.newSource('audio/sfx/back.mp3', 'static'),
 		sfx_boom = love.audio.newSource('audio/sfx/boom.mp3', 'static'),
+		half = gfx.newImage('images/half.png'),
+		modal_small = gfx.newImage('images/' .. tostring(save.color) .. '/modal_small.png'),
 	}
 
 	vars = {
@@ -43,7 +46,9 @@ function options:enter(current, ...)
 		resetprogress = 1,
 		selection = 0,
 		waiting = true,
-		selections = {'music', 'sfx', 'visuals', 'keyboard', 'rumble', 'flip', 'skipfanfare', 'hardmode', 'reset'},
+		handler = 'options',
+		remap_step = 1,
+		selections = {'music', 'sfx', 'lang', 'visuals', 'keyboard', 'rumble', 'flip', 'skipfanfare', 'hardmode', 'reset'},
 	}
 	vars.input_wait = timer.after(transitiontime, function()
 		vars.waiting = false
@@ -92,96 +97,160 @@ end
 
 function options:keypressed(key)
 	if not transitioning and not vars.waiting then
-		if (save.keyboard == 1 and key == 'up') or (save.keyboard == 2 and key == 'w') then
-			if vars.selection ~= 0 then
-				if vars.selection > 1 then
-					vars.selection = vars.selection - 1
-				else
-					vars.selection = #vars.selections
-				end
-				playsound(assets.sfx_move)
-				if vars.resetprogress < 4 then
-					vars.resetprogress = 1
-				end
-			end
-		elseif (save.keyboard == 1 and key == 'down') or (save.keyboard == 2 and key == 's') then
-			if vars.selection ~= 0 then
-				if vars.selection < #vars.selections then
-					vars.selection = vars.selection + 1
-				else
-					vars.selection = 1
-				end
-				playsound(assets.sfx_move)
-				if vars.resetprogress < 4 then
-					vars.resetprogress = 1
-				end
-			end
-		elseif (save.keyboard == 1 and key == 'x') or (save.keyboard == 2 and key == '.') then
-			playsound(assets.sfx_back)
-			scenemanager:transitionscene(title, false, 'options')
-			vars.selection = 0
-		elseif (save.keyboard == 1 and key == 'z') or (save.keyboard == 2 and key == ',') then
-			if vars.selections[vars.selection] == "music" then
-				save.music = save.music + 1
-				if save.music > 5 then
-					save.music = 0
-				end
-				if save.music > 0 then
-					if music ~= nil then
-						volume = {save.music / 5}
+		if vars.handler == 'options' then
+			if key == save.up then
+				if vars.selection ~= 0 then
+					if vars.selection > 1 then
+						vars.selection = vars.selection - 1
 					else
-						newmusic('audio/music/title.mp3', true)
+						vars.selection = #vars.selections
 					end
-				else
-					fademusic(1)
-				end
-			elseif vars.selections[vars.selection] == "sfx" then
-				save.sfx = save.sfx + 1
-				if save.sfx > 5 then
-					save.sfx = 0
-				end
-			elseif vars.selections[vars.selection] == 'visuals' then
-				scenemanager:transitionscene(visuals)
-				playsound(assets.sfx_select)
-			elseif vars.selections[vars.selection] == 'keyboard' then
-				save.keyboard = save.keyboard + 1
-				if save.keyboard > 2 then
-					save.keyboard = 1
-				end
-			elseif vars.selections[vars.selection] == 'rumble' then
-				save.rumble = not save.rumble
-				rumble(1, 1, 0.2)
-			elseif vars.selections[vars.selection] == "flip" then
-				save.flip = not save.flip
-			elseif vars.selections[vars.selection] == "skipfanfare" then
-				save.skipfanfare = not save.skipfanfare
-			elseif vars.selections[vars.selection] == "hardmode" then
-				save.hardmode = not save.hardmode
-			elseif vars.selections[vars.selection] == "reset" then
-				if vars.resetprogress < 3 then
-					vars.resetprogress = vars.resetprogress + 1
-				elseif vars.resetprogress == 3 then
-					playsound(assets.sfx_boom)
-					vars.resetprogress = vars.resetprogress + 1
-					save.score = 0
-					save.hard_score = 0
-					save.swaps = 0
-					save.hexas = 0
-					save.mission_bests = {}
-					save.highest_mission = 1
-					for i = 1, #save.mission_bests do
-						save.mission_bests[i] = save.mission_bests[i] or 0
+					playsound(assets.sfx_move)
+					if vars.resetprogress < 4 then
+						vars.resetprogress = 1
 					end
-					for i = 1, 50 do
-						if save.mission_bests['mission' .. i] == nil then
-							save.mission_bests['mission' .. i] = 0
+				end
+			elseif key == save.down then
+				if vars.selection ~= 0 then
+					if vars.selection < #vars.selections then
+						vars.selection = vars.selection + 1
+					else
+						vars.selection = 1
+					end
+					playsound(assets.sfx_move)
+					if vars.resetprogress < 4 then
+						vars.resetprogress = 1
+					end
+				end
+			elseif key == save.secondary then
+				playsound(assets.sfx_back)
+				scenemanager:transitionscene(title, false, 'options')
+				vars.selection = 0
+			elseif key == save.primary then
+				if vars.selections[vars.selection] == "music" then
+					save.music = save.music + 1
+					if save.music > 5 then
+						save.music = 0
+					end
+					if save.music > 0 then
+						if music ~= nil then
+							volume = {save.music / 5}
+						else
+							newmusic('audio/music/title.mp3', true)
 						end
+					else
+						fademusic(1)
 					end
-					save.author_name = ''
-					save.exported_mission = false
+				elseif vars.selections[vars.selection] == "sfx" then
+					save.sfx = save.sfx + 1
+					if save.sfx > 5 then
+						save.sfx = 0
+					end
+				elseif vars.selections[vars.selection] == 'lang' then
+					if save.lang == 'en' then
+						save.lang = 'fr'
+					elseif save.lang == 'fr' then
+						save.lang = 'en'
+					end
+				elseif vars.selections[vars.selection] == 'visuals' then
+					scenemanager:transitionscene(visuals)
+					playsound(assets.sfx_select)
+				elseif vars.selections[vars.selection] == 'keyboard' then
+					vars.handler = 'remap'
+					vars.remap_step = 1
+				elseif vars.selections[vars.selection] == 'rumble' then
+					save.rumble = not save.rumble
+					rumble(1, 1, 0.2)
+				elseif vars.selections[vars.selection] == "flip" then
+					save.flip = not save.flip
+				elseif vars.selections[vars.selection] == "skipfanfare" then
+					save.skipfanfare = not save.skipfanfare
+				elseif vars.selections[vars.selection] == "hardmode" then
+					save.hardmode = not save.hardmode
+				elseif vars.selections[vars.selection] == "reset" then
+					if vars.resetprogress < 3 then
+						vars.resetprogress = vars.resetprogress + 1
+					elseif vars.resetprogress == 3 then
+						playsound(assets.sfx_boom)
+						vars.resetprogress = vars.resetprogress + 1
+						save.score = 0
+						save.hard_score = 0
+						save.swaps = 0
+						save.hexas = 0
+						save.mission_bests = {}
+						save.highest_mission = 1
+						for i = 1, #save.mission_bests do
+							save.mission_bests[i] = save.mission_bests[i] or 0
+						end
+						for i = 1, 50 do
+							if save.mission_bests['mission' .. i] == nil then
+								save.mission_bests['mission' .. i] = 0
+							end
+						end
+						save.author_name = ''
+						save.exported_mission = false
+					end
+				end
+				playsound(assets.sfx_select)
+			end
+		elseif vars.handler == 'remap' then
+			valid = true
+			if vars.remap_step == 1 then
+				save.up = key
+			elseif vars.remap_step == 2 then
+				if save.up == key then
+					valid = false
+				else
+					save.down = key
+				end
+			elseif vars.remap_step == 3 then
+				if save.up == key or save.down == key then
+					valid = false
+				else
+					save.left = key
+				end
+			elseif vars.remap_step == 4 then
+				if save.up == key or save.down == key or save.left == key then
+					valid = false
+				else
+					save.right = key
+				end
+			elseif vars.remap_step == 5 then
+				if save.up == key or save.down == key or save.left == key or save.right == key then
+					valid = false
+				else
+					save.primary = key
+				end
+			elseif vars.remap_step == 6 then
+				if save.up == key or save.down == key or save.left == key or save.right == key or save.primary == key then
+					valid = false
+				else
+					save.secondary = key
+				end
+			elseif vars.remap_step == 7 then
+				if save.up == key or save.down == key or save.left == key or save.right == key or save.primary == key or save.secondary == key then
+					valid = false
+				else
+					save.tertiary = key
+				end
+			elseif vars.remap_step == 8 then
+				if save.up == key or save.down == key or save.left == key or save.right == key or save.primary == key or save.secondary == key or save.tertiary == key then
+					valid = false
+				else
+					save.quaternary = key
 				end
 			end
-			playsound(assets.sfx_select)
+			-- Great pyramid, am i right?
+			if valid then
+				playsound(assets.sfx_select)
+				vars.remap_step = vars.remap_step + 1
+				if vars.remap_step > 8 then
+					vars.handler = 'options'
+				end
+			else
+				playsound(assets.sfx_bonk)
+				shakies()
+			end
 		end
 	end
 end
@@ -195,29 +264,17 @@ function options:draw()
 	gfx.setFont(assets.full_circle_inverted)
 	if save.color == 1 then gfx.setColor(love.math.colorFromBytes(255, 241, 232, 255)) end
 
-	local text = ''
 	for i = 1, #vars.selections do
-		if vars.selections[vars.selection] == 'music' then
-			text = 'Music Volume: ' .. tostring(save.music)
-		elseif vars.selections[vars.selection] == 'sfx' then
-			text = 'SFX Volume: ' .. tostring(save.sfx)
-		elseif vars.selections[vars.selection] == 'visuals' then
-			text = 'Video Options'
-		elseif vars.selections[vars.selection] == 'keyboard' then
-			text = 'Keys: ' .. tostring(save.keyboard == 1 and 'Arrows + Z & X' or save.keyboard == 2 and 'WASD + , & .')
-		elseif vars.selections[vars.selection] == 'rumble' then
-			text = 'Rumble: ' .. tostring(save.rumble and 'ON' or 'OFF')
-		elseif vars.selections[vars.selection] == 'flip' then
-			text = 'Flip Rotation: ' .. tostring(save.flip and 'ON' or 'OFF')
-		elseif vars.selections[vars.selection] == 'skipfanfare' then
-			text = 'Skip Fanfare: ' .. tostring(save.skipfanfare and 'ON' or 'OFF')
-		elseif vars.selections[vars.selection] == 'hardmode' then
-			text = 'Hard Mode: ' .. tostring(save.hardmode and 'ON' or 'OFF')
-		elseif vars.selections[vars.selection] == 'reset' then
-			text = vars.resetprogress == 1 and 'Reset Local Stats' or vars.resetprogress == 2 and 'Are you sure?' or vars.resetprogress == 3 and 'Are you really sure?!' or vars.resetprogress == 4 and 'Local stats reset.'
-		end
 		if vars.selection == i then
-			gfx.printf(text, 0, 5 + (20 * i), 400, 'center')
+			if vars.selections[vars.selection] == 'visuals' or vars.selections[vars.selection] == 'keyboard' then
+				gfx.printf(text('options_' .. vars.selections[vars.selection]), 0, -5 + (20 * i), 400, 'center')
+			elseif vars.selections[vars.selection] == 'reset' then
+				gfx.printf(text('options_' .. vars.selections[vars.selection] .. '_' .. vars.resetprogress), 0, -5 + (20 * i), 400, 'center')
+			elseif vars.selections[vars.selection] == 'music' or vars.selections[vars.selection] == 'sfx' then
+				gfx.printf(text('options_' .. vars.selections[vars.selection]) .. tostring(save[vars.selections[vars.selection]]), 0, -5 + (20 * i), 400, 'center')
+			else
+				gfx.printf(text('options_' .. vars.selections[vars.selection]) .. text(tostring(save[vars.selections[vars.selection]])), 0, -5 + (20 * i), 400, 'center')
+			end
 		end
 	end
 
@@ -227,39 +284,25 @@ function options:draw()
 		gfx.setFont(assets.half_circle_inverted)
 	end
 
-	local text = ''
 	for i = 1, #vars.selections do
-		if vars.selections[i] == 'music' then
-			text = 'Music Volume: ' .. tostring(save.music)
-		elseif vars.selections[i] == 'sfx' then
-			text = 'SFX Volume: ' .. tostring(save.sfx)
-		elseif vars.selections[i] == 'visuals' then
-			text = 'Video Options'
-		elseif vars.selections[i] == 'keyboard' then
-			text = 'Keys: ' .. tostring(save.keyboard == 1 and 'Arrows + Z & X' or save.keyboard == 2 and 'WASD + , & .')
-		elseif vars.selections[i] == 'rumble' then
-			text = 'Rumble: ' .. tostring(save.rumble and 'ON' or 'OFF')
-		elseif vars.selections[i] == 'flip' then
-			text = 'Flip Rotation: ' .. tostring(save.flip and 'ON' or 'OFF')
-		elseif vars.selections[i] == 'skipfanfare' then
-			text = 'Skip Fanfare: ' .. tostring(save.skipfanfare and 'ON' or 'OFF')
-		elseif vars.selections[i] == 'hardmode' then
-			text = 'Hard Mode: ' .. tostring(save.hardmode and 'ON' or 'OFF')
-		elseif vars.selections[i] == 'reset' then
-			text = vars.resetprogress == 1 and 'Reset Local Stats' or vars.resetprogress == 2 and 'Are you sure?' or vars.resetprogress == 3 and 'Are you really sure?!' or vars.resetprogress == 4 and 'Local stats reset.'
-		end
 		if vars.selection ~= i then
-			gfx.printf(text, 0, 5 + (20 * i), 400, 'center')
+			if vars.selections[i] == 'visuals' or vars.selections[i] == 'keyboard' then
+				gfx.printf(text('options_' .. vars.selections[i]), 0, -5 + (20 * i), 400, 'center')
+			elseif vars.selections[i] == 'reset' then
+				gfx.printf(text('options_' .. vars.selections[i] .. '_' .. vars.resetprogress), 0, -5 + (20 * i), 400, 'center')
+			elseif vars.selections[i] == 'music' or vars.selections[i] == 'sfx' then
+				gfx.printf(text('options_' .. vars.selections[i]) .. tostring(save[vars.selections[i]]), 0, -5 + (20 * i), 400, 'center')
+			else
+				gfx.printf(text('options_' .. vars.selections[i]) .. text(tostring(save[vars.selections[i]])), 0, -5 + (20 * i), 400, 'center')
+			end
 		end
 	end
 
 	gfx.print('v' .. version, 65, 205)
 	if save.gamepad then -- Gamepad
-		gfx.print('The D-pad moves. A toggles.', 70, 220)
-	elseif save.keyboard == 1 then -- Arrows + Z & X
-		gfx.print('The arrows move. Z toggles.', 70, 220)
-	elseif save.keyboard == 2 then -- WASD + , & .
-		gfx.print('WASD moves. , toggles.', 70, 220)
+		gfx.print(text('dpad') .. text('moves') .. text('a') .. text('toggle'), 70, 220)
+	else
+		gfx.print(start(save.up) .. text('slash') .. start(save.down) .. text('move') .. start(save.primary) .. text('toggle'), 70, 220)
 	end
 
 	gfx.setColor(1, 1, 1, 1)
@@ -288,6 +331,45 @@ function options:draw()
 	else
 		gfx.draw(assets.fg_hexa_1, 0, floor(vars.fg_hexa))
 		gfx.draw(assets.fg_hexa_2, 0, floor(vars.fg_hexa * 1.2))
+	end
+
+	if vars.handler == 'remap' then
+		gfx.draw(assets.half, 0, 0)
+		gfx.draw(assets.modal_small, 46, 35)
+
+		gfx.setFont(assets.full_circle_inverted)
+		if save.color == 1 then gfx.setColor(love.math.colorFromBytes(255, 241, 232, 255)) end
+
+		button = ''
+		if vars.remap_step == 1 then
+			button = 'up'
+		elseif vars.remap_step == 2 then
+			button = 'down'
+		elseif vars.remap_step == 3 then
+			button = 'left'
+		elseif vars.remap_step == 4 then
+			button = 'right'
+		elseif vars.remap_step == 5 then
+			button = 'primary'
+		elseif vars.remap_step == 6 then
+			button = 'secondary'
+		elseif vars.remap_step == 7 then
+			button = 'tertiary'
+		elseif vars.remap_step == 8 then
+			button = 'quaternary'
+		end
+
+		gfx.printf(text('remap1') .. text(button) .. text('remap2'), 0, 62, 400, 'center')
+
+		if save.color == 1 then
+			gfx.setColor(love.math.colorFromBytes(255, 241, 232, 127))
+		else
+			gfx.setFont(assets.half_circle_inverted)
+		end
+
+		gfx.printf(text('remap_desc') .. text(button .. '_desc'), 0, 110, 400, 'center')
+
+		gfx.setColor(1, 1, 1, 1)
 	end
 
 	draw_on_top()

@@ -3,6 +3,7 @@ local gfx = love.graphics
 local floor = math.floor
 local min = math.min
 local max = math.max
+local text = getLocalizedText
 local mission_command = {}
 
 local tris_x = {140, 170, 200, 230, 260, 110, 140, 170, 200, 230, 260, 290, 110, 140, 170, 200, 230, 260, 290}
@@ -134,15 +135,15 @@ end
 function mission_command:keypressed(key)
 	if not transitioning and not vars.waiting then
 		if vars.handler == 'start' then
-			if (save.keyboard == 1 and key == 'up') or (save.keyboard == 2 and key == 'w') then
+			if key == save.up then
 				vars.start_selection = vars.start_selection - 1
 				if vars.start_selection < 1 then vars.start_selection = #vars.start_selections end
 				playsound(assets.sfx_move)
-			elseif (save.keyboard == 1 and key == 'down') or (save.keyboard == 2 and key == 's') then
+			elseif key == save.down then
 				vars.start_selection = vars.start_selection + 1
 				if vars.start_selection > #vars.start_selections then vars.start_selection = 1 end
 				playsound(assets.sfx_move)
-			elseif (save.keyboard == 1 and key == 'left') or (save.keyboard == 2 and key == 'a') then
+			elseif key == save.left then
 				if vars.start_selections[vars.start_selection] == 'type' then
 					vars.mission_type = vars.mission_type - 1
 					if vars.mission_type < 1 then vars.mission_type = #vars.mission_types end
@@ -166,7 +167,7 @@ function mission_command:keypressed(key)
 						playsound(assets.sfx_bonk)
 					end
 				end
-			elseif (save.keyboard == 1 and key == 'right') or (save.keyboard == 2 and key == 'd') then
+			elseif key == save.right then
 				if vars.start_selections[vars.start_selection] == 'type' then
 					vars.mission_type = vars.mission_type + 1
 					if vars.mission_type > #vars.mission_types then vars.mission_type = 1 end
@@ -190,7 +191,7 @@ function mission_command:keypressed(key)
 						playsound(assets.sfx_bonk)
 					end
 				end
-			elseif (save.keyboard == 1 and key == 'z') or (save.keyboard == 2 and key == ',') then
+			elseif key == save.primary then
 				if vars.start_selections[vars.start_selection] == 'type' then
 					vars.mission_type = vars.mission_type + 1
 					if vars.mission_type > #vars.mission_types then vars.mission_type = 1 end
@@ -250,7 +251,7 @@ function mission_command:keypressed(key)
 						playsound(assets.sfx_bonk)
 					end
 				end
-			elseif (save.keyboard == 1 and key == 'x') or (save.keyboard == 2 and key == '.') then
+			elseif key == save.secondary then
 				fademusic()
 				playsound(assets.sfx_back)
 				scenemanager:transitionscene(missions, vars.custom)
@@ -280,7 +281,7 @@ function mission_command:keypressed(key)
 				end
 			end
 		elseif vars.handler == 'edit' then
-			if (save.keyboard == 1 and key == 'up') or (save.keyboard == 2 and key == 'w') then
+			if key == save.up then
 				if vars.mission_types[vars.mission_type] ~= 'time' then
 					if vars.tri <= 5 then
 						shakies_y()
@@ -329,7 +330,7 @@ function mission_command:keypressed(key)
 						playsound(assets.sfx_move2)
 					end
 				end
-			elseif (save.keyboard == 1 and key == 'down') or (save.keyboard == 2 and key == 's') then
+			elseif key == save.down then
 				if vars.mission_types[vars.mission_type] ~= 'time' then
 					if vars.tri == 1 then
 						vars.tri = 7
@@ -372,7 +373,7 @@ function mission_command:keypressed(key)
 						playsound(assets.sfx_bonk)
 					end
 				end
-			elseif (save.keyboard == 1 and key == 'left') or (save.keyboard == 2 and key == 'a') then
+			elseif key == save.left then
 				if vars.mission_types[vars.mission_type] ~= 'time' then
 					if vars.tri == 1 then
 						shakies()
@@ -433,7 +434,7 @@ function mission_command:keypressed(key)
 						playsound(assets.sfx_move2)
 					end
 				end
-			elseif (save.keyboard == 1 and key == 'right') or (save.keyboard == 2 and key == 'd') then
+			elseif key == save.right then
 				if vars.mission_types[vars.mission_type] ~= 'time' then
 					if vars.tri == 1 then
 						vars.tri = 2
@@ -494,7 +495,7 @@ function mission_command:keypressed(key)
 						playsound(assets.sfx_bonk)
 					end
 				end
-			elseif (save.keyboard == 1 and key == 'z') or (save.keyboard == 2 and key == ',') then
+			elseif key == save.primary then
 				if vars.mission_types[vars.mission_type] ~= 'time' then
 					local powerup = false
 					local nocolor = true
@@ -506,13 +507,13 @@ function mission_command:keypressed(key)
 					mission_command:open_selector(vars.tris[vars.tri], powerup, nocolor)
 					playsound(assets.sfx_select)
 				end
-			elseif (save.keyboard == 1 and key == 'x') or (save.keyboard == 2 and key == '.') then
+			elseif key == save.secondary then
 				vars.mode = 'start'
 				vars.handler = 'start'
 				vars.scroll_x_target = 400
 				vars.error_x_target = -355
 				playsound(assets.sfx_back)
-			elseif key == 'j' then
+			elseif key == save.tertiary then
 				if mission_command:check_validity() then
 					vars.mode = 'save'
 					vars.handler = 'save'
@@ -524,15 +525,15 @@ function mission_command:keypressed(key)
 				end
 			end
 		elseif vars.handler == 'save' then
-			if (save.keyboard == 1 and key == 'up') or (save.keyboard == 2 and key == 'w') then
+			if key == save.up then
 				vars.save_selection = vars.save_selection - 1
 				if vars.save_selection < 1 then vars.save_selection = #vars.save_selections end
 				playsound(assets.sfx_move)
-			elseif (save.keyboard == 1 and key == 'down') or (save.keyboard == 2 and key == 's') then
+			elseif key == save.down then
 				vars.save_selection = vars.save_selection + 1
 				if vars.save_selection > #vars.save_selections then vars.save_selection = 1 end
 				playsound(assets.sfx_move)
-			elseif (save.keyboard == 1 and key == 'z') or (save.keyboard == 2 and key == ',') then
+			elseif key == save.primary then
 				if vars.save_selections[vars.save_selection] == 'picture_name' then
 					if vars.mission_types[vars.mission_type] == 'picture' then
 						vars.handler = 'keyboard'
@@ -562,7 +563,7 @@ function mission_command:keypressed(key)
 					mission_command:save()
 					playsound(assets.sfx_select)
 				end
-			elseif (save.keyboard == 1 and key == 'x') or (save.keyboard == 2 and key == '.') then
+			elseif key == save.secondary then
 				vars.mode = 'edit'
 				vars.handler = 'edit'
 				vars.scroll_x_target = 800
@@ -570,7 +571,7 @@ function mission_command:keypressed(key)
 			end
 		elseif vars.handler == 'selector' then
 			-- TOOD: selector handlers
-			if (save.keyboard == 1 and key == 'up') or (save.keyboard == 2 and key == 'w') then
+			if key == save.up then
 				if vars.selector_rack ~= 1 then
 					vars.selector_rack = 1
 					playsound(assets.sfx_move)
@@ -578,7 +579,7 @@ function mission_command:keypressed(key)
 					shakies_y()
 					playsound(assets.sfx_bonk)
 				end
-			elseif (save.keyboard == 1 and key == 'down') or (save.keyboard == 2 and key == 's') then
+			elseif key == save.down then
 				if vars.selector_show_powerup and vars.selector_rack == 1 then
 					vars.selector_rack = 2
 					playsound(assets.sfx_move)
@@ -586,7 +587,7 @@ function mission_command:keypressed(key)
 					shakies_y()
 					playsound(assets.sfx_bonk)
 				end
-			elseif (save.keyboard == 1 and key == 'left') or (save.keyboard == 2 and key == 'a') then
+			elseif key == save.left then
 				if vars.selector_rack == 1 then
 					if vars.selector_rack2selection ~= 4 then
 						vars.selector_rack1selection = vars.selector_rack1selection - 1
@@ -616,7 +617,7 @@ function mission_command:keypressed(key)
 						playsound(assets.sfx_bonk)
 					end
 				end
-			elseif (save.keyboard == 1 and key == 'right') or (save.keyboard == 2 and key == 'd') then
+			elseif key == save.right then
 				if vars.selector_rack == 1 then
 					if vars.selector_rack2selection ~= 4 then
 						vars.selector_rack1selection = vars.selector_rack1selection + 1
@@ -650,7 +651,7 @@ function mission_command:keypressed(key)
 						playsound(assets.sfx_bonk)
 					end
 				end
-			elseif (save.keyboard == 1 and key == 'z') or (save.keyboard == 2 and key == ',') then
+			elseif key == save.primary then
 				mission_command:close_selector(true)
 				playsound(assets.sfx_select)
 				if mission_command:check_validity() then
@@ -659,7 +660,7 @@ function mission_command:keypressed(key)
 					vars.error_x_target = 5
 					playsound(assets.sfx_bonk)
 				end
-			elseif (save.keyboard == 1 and key == 'x') or (save.keyboard == 2 and key == '.') then
+			elseif key == save.secondary then
 				mission_command:close_selector(false)
 				playsound(assets.sfx_back)
 				if mission_command:check_validity() then
@@ -670,10 +671,10 @@ function mission_command:keypressed(key)
 				end
 			end
 		elseif vars.handler == 'done' then
-			if (save.keyboard == 1 and key == 'x') or (save.keyboard == 2 and key == '.') then
+			if key == save.secondary then
 				scenemanager:transitionscene(missions, vars.custom)
 				fademusic()
-			elseif (save.keyboard == 1 and key == 'z') or (save.keyboard == 2 and key == ',') then
+			elseif key == save.primary then
 				local realdir = love.filesystem.getRealDirectory('missions/')
 				love.system.openURL('file://' .. realdir .. '/missions/')
 			end
@@ -710,52 +711,27 @@ function mission_command:draw()
 		gfx.setFont(assets.full_circle_inverted)
 		gfx.setColor(love.math.colorFromBytes(255, 241, 232, 255))
 	end
-	gfx.print('Mission Command', 10 + x, 10)
+	gfx.print(text('mission_command'), 10 + x, 10)
 	if save.color == 1 then
 		gfx.setFont(assets.full_circle)
 		gfx.setColor(1, 1, 1, 1)
 	end
 
-	gfx.print('Mission Type:', 50 + x, 50)
+	gfx.print(text('mission_type'), 50 + x, 50)
 
-	local text
-	if vars.mission_types[vars.mission_type] == 'logic' then
-		text = 'Logic'
-	elseif vars.mission_types[vars.mission_type] == 'picture' then
-		text = 'Picture'
-	elseif vars.mission_types[vars.mission_type] == 'speedrun' then
-		text = 'Speedrun'
-	elseif vars.mission_types[vars.mission_type] == 'time' then
-		text = 'Time Attack'
-	end
-	gfx.printf(text, x, 50, 546, 'center')
+	gfx.printf(text('command_' .. vars.mission_types[vars.mission_type]), x, 50, 546, 'center')
 
-	gfx.print('Time Limit:', 50 + x, 93)
+	gfx.print(text('time_limit'), 50 + x, 93)
 	gfx.printf(tostring(vars.time_limits[vars.time_limit]) .. 's', x, 100, 546, 'center')
 
-	gfx.print('Clear Goal:', 50 + x, 123)
+	gfx.print(text('clear_goal'), 50 + x, 123)
 
-	if vars.clear_goals[vars.clear_goal] == 'black' then
-		text = 'Dark tris'
-	elseif vars.clear_goals[vars.clear_goal] == 'gray' then
-		text = 'Dithered tris'
-	elseif vars.clear_goals[vars.clear_goal] == 'white' then
-		text = 'Light tris'
-	elseif vars.clear_goals[vars.clear_goal] == 'wild' then
-		text = 'Wild tris'
-	elseif vars.clear_goals[vars.clear_goal] == '2x' then
-		text = '2x tris'
-	elseif vars.clear_goals[vars.clear_goal] == 'bomb' then
-		text = 'Bombs'
-	elseif vars.clear_goals[vars.clear_goal] == 'board' then
-		text = 'HEXAPLEX'
-	end
-	gfx.printf(text, x, 130, 546, 'center')
+	gfx.printf(text('command_' .. vars.clear_goals[vars.clear_goal]), x, 130, 546, 'center')
 
-	gfx.print('Number Seed:', 50 + x, 153)
+	gfx.print(text('number_seed'), 50 + x, 153)
 	gfx.printf(tonumber(vars.seed_string), x, 160, 546, 'center')
 
-	gfx.printf('Start Editing', x, 195, 400, 'center')
+	gfx.printf(text('start_editing'), x, 195, 400, 'center')
 
 	-- Edit
 
@@ -765,11 +741,11 @@ function mission_command:draw()
 	end
 	if vars.error_x < -200 then
 		if vars.mission_types[vars.mission_type] == 'picture' then
-			gfx.print('Create Picture', 410 + x, 10)
+			gfx.print(text('create_picture'), 410 + x, 10)
 		elseif vars.mission_types[vars.mission_type] == 'time' then
-			gfx.print('Review Seeded HEXAPLEX', 410 + x, 10)
+			gfx.print(text('review_seed'), 410 + x, 10)
 		else
-			gfx.print('Create Starting HEXAPLEX', 410 + x, 10)
+			gfx.print(text('create_start'), 410 + x, 10)
 		end
 	end
 	if save.color == 1 then
@@ -783,33 +759,23 @@ function mission_command:draw()
 		gfx.setFont(assets.full_circle_inverted)
 		gfx.setColor(love.math.colorFromBytes(255, 241, 232, 255))
 	end
-	gfx.print('Export', 810 + x, 10)
+	gfx.print(text('export_puzzle'), 810 + x, 10)
 	if save.color == 1 then
 		gfx.setFont(assets.full_circle)
 		gfx.setColor(1, 1, 1, 1)
 	end
 
-	gfx.print('Mission Type:', 850 + x, 50)
+	gfx.print(text('mission_type'), 850 + x, 50)
 
-	local text
-	if vars.mission_types[vars.mission_type] == 'logic' then
-		text = 'Logic'
-	elseif vars.mission_types[vars.mission_type] == 'picture' then
-		text = 'Picture'
-	elseif vars.mission_types[vars.mission_type] == 'speedrun' then
-		text = 'Speedrun'
-	elseif vars.mission_types[vars.mission_type] == 'time' then
-		text = 'Time Attack'
-	end
-	gfx.printf(text, x, 50, 1150, 'right')
+	gfx.printf(text('command_' .. vars.mission_types[vars.mission_type]), x, 50, 1150, 'right')
 
-	gfx.print('Picture Name:', 850 + x, 93)
+	gfx.print(text('picture_name'), 850 + x, 93)
 	gfx.printf(vars.picture_name, x, 100, 2146, 'center')
 
-	gfx.print('Author Name:', 850 + x, 130)
+	gfx.print(text('author_name'), 850 + x, 130)
 	gfx.printf(vars.author_name, x, 130, 2146, 'center')
 
-	gfx.printf('Export', x, 180, 2000, 'center')
+	gfx.printf(text('export_puzzle'), x, 180, 2000, 'center')
 
 	gfx.setColor(0, 0, 0, 1)
 
@@ -856,31 +822,19 @@ function mission_command:draw()
 
 	-- Start
 
-	gfx.print('(Time Attack)', 50 + x, 107)
-	gfx.print('(Logic/Speedrun)', 50 + x, 137)
-	gfx.print('(Time Attack)', 50 + x, 167)
+	gfx.print('(' .. text('command_time') .. ')', 50 + x, 107)
+	gfx.print('(' .. text('command_logic') .. text('slash') .. text('command_speedrun') .. ')', 50 + x, 137)
+	gfx.print('(' .. text('command_time') .. ')', 50 + x, 167)
 
-	if vars.mission_types[vars.mission_type] == 'logic' then
-		text = 'Clear the stuff in as few Swaps as possible!'
-	elseif vars.mission_types[vars.mission_type] == 'picture' then
-		text = 'Make the picture in as few Swaps as possible!'
-	elseif vars.mission_types[vars.mission_type] == 'speedrun' then
-		text = 'Clear the stuff in as little time as possible!'
-	elseif vars.mission_types[vars.mission_type] == 'time' then
-		text = 'Get as many points as you can in the time limit!'
-	end
-
-	gfx.printf(text, 0 + x, 70, 400, 'center')
+	gfx.printf(text('command_' .. vars.mission_types[vars.mission_type] .. '_d'), 0 + x, 70, 400, 'center')
 
 	if vars.handler == 'keyboard' then
-		gfx.print('The keys type. ENTER/Return accepts.', 10 + x, 220)
+		gfx.print(text('keys_type') .. text('return_accept'), 10 + x, 220)
 	else
 		if save.gamepad then
-			gfx.print('The D-pad moves. A scrolls. B goes back.', 10 + x, 220)
-		elseif save.keyboard == 1 then
-			gfx.print('The arrows move. Z scrolls. X goes back.', 10 + x, 220)
-		elseif save.keyboard == 2 then
-			gfx.print('WASD moves. , scrolls. . goes back.', 10 + x, 220)
+			gfx.print(text('dpad') .. text('moves') .. text('a') .. text('scrolls') .. text('b') .. text('back'), 10 + x, 220)
+		else
+			gfx.print(start(save.up) .. text('slash') .. start(save.down) .. text('move') .. start(save.primary) .. text('scrolls') .. start(save.secondary) .. text('back'), 10 + x, 220)
 		end
 	end
 
@@ -888,47 +842,31 @@ function mission_command:draw()
 
 	if vars.mission_types[vars.mission_type] == 'time' then
 		if save.gamepad then
-			gfx.print('B goes back. X exports.', 410 + x, 220)
-		elseif save.keyboard == 1 then
-			gfx.print('X goes back. J exports.', 410 + x, 220)
-		elseif save.keyboard == 2 then
-			gfx.print('. goes back. J exports.', 410 + x, 220)
+			gfx.print(text('b') .. text('back') .. text('x') .. text('exports'), 410 + x, 220)
+		else
+			gfx.print(start(save.secondary) .. text('back') .. start(save.tertiary) .. text('exports'), 410 + x, 220)
 		end
 	else
 		if save.gamepad then
-			gfx.print('The D-pad moves. A picks. B goes back. X exports.', 410 + x, 220)
-		elseif save.keyboard == 1 then
-			gfx.print('The arrows move. Z picks. X goes back. J exports.', 410 + x, 220)
-		elseif save.keyboard == 2 then
-			gfx.print('WASD moves. , picks. . goes back. J exports.', 410 + x, 220)
+			gfx.print(text('dpad') .. text('moves') .. text('a') .. text('select') .. text('b') .. text('back') .. text('x') .. text('exports'), 410 + x, 220)
+		else
+			gfx.print(text('directions_move') .. start(save.primary) .. text('select') .. start(save.secondary) .. text('back') .. start(save.tertiary) .. text('exports'), 410 + x, 220)
 		end
 	end
 
 	-- Save
 
-	if vars.mission_types[vars.mission_type] == 'logic' then
-		text = 'Clear the stuff in as few Swaps as possible!'
-	elseif vars.mission_types[vars.mission_type] == 'picture' then
-		text = 'Make the picture in as few Swaps as possible!'
-	elseif vars.mission_types[vars.mission_type] == 'speedrun' then
-		text = 'Clear the stuff in as little time as possible!'
-	elseif vars.mission_types[vars.mission_type] == 'time' then
-		text = 'Get as many points as you can in the time limit!'
-	end
+	gfx.printf(text('command_' .. vars.mission_types[vars.mission_type] .. '_d'), 0 + x, 70, 2000, 'center')
 
-	gfx.printf(text, 0 + x, 70, 2000, 'center')
-
-	gfx.print('(Picture)', 850 + x, 107)
+	gfx.print('(' .. text('command_picture') .. ')', 850 + x, 107)
 
 	if vars.handler == 'keyboard' then
-		gfx.print('The keys type. ENTER/Return accepts.', 810 + x, 220)
+		gfx.print(text('keys_type') .. text('return_accept'), 810 + x, 220)
 	else
 		if save.gamepad then
-			gfx.print('The D-pad moves. A scrolls. B goes back.', 810 + x, 220)
-		elseif save.keyboard == 1 then
-			gfx.print('The arrows move. Z scrolls. X goes back.', 810 + x, 220)
-		elseif save.keyboard == 2 then
-			gfx.print('WASD moves. , scrolls. . goes back.', 810 + x, 220)
+			gfx.print(text('dpad') .. text('moves') .. text('a') .. text('scrolls') .. text('b') .. text('back'), 810 + x, 220)
+		else
+			gfx.print(start(save.up) .. text('slash') .. start(save.down) .. text('move') .. start(save.primary) .. text('scrolls') .. start(save.secondary) .. text('back'), 10 + x, 220)
 		end
 	end
 
@@ -1025,7 +963,7 @@ function mission_command:draw()
 			gfx.setFont(assets.full_circle)
 			gfx.setColor(1, 1, 1, 1)
 		end
-		gfx.printf('Choose a tri color:', 0, 12 + modal, 400, 'center')
+		gfx.printf(text('choose_color'), 0, 12 + modal, 400, 'center')
 		if vars.selector_rack == 2 then
 			gfx.setFont(assets.full_circle)
 			gfx.setColor(1, 1, 1, 1)
@@ -1033,9 +971,9 @@ function mission_command:draw()
 			gfx.setFont(assets.full_circle_inverted)
 			if save.color == 1 then gfx.setColor(love.math.colorFromBytes(255, 241, 232, 255)) end
 		end
-		gfx.printf('Choose a tri Power-up:', 0, 90 + modal, 400, 'center')
+		gfx.printf(text('choose_powerup'), 0, 90 + modal, 400, 'center')
 	else
-		gfx.printf('Choose a tri color:', 0, 46 + modal, 400, 'center')
+		gfx.printf(text('choose_color'), 0, 46 + modal, 400, 'center')
 	end
 	gfx.setColor(1, 1, 1, 1)
 	if vars.selector_show_powerup then
@@ -1193,7 +1131,7 @@ function mission_command:draw()
 		gfx.setFont(assets.full_circle_outline)
 	end
 	gfx.draw(assets.error, 5 + floor(vars.error_x), 3)
-	gfx.print('Can\'t clear the mission in this state!', 36 + floor(vars.error_x), 8)
+	gfx.print(text('command_error'), 36 + floor(vars.error_x), 8)
 
 	if vars.puzzle_exported then
 		gfx.draw(assets.export_complete, 800 + x, 0)
@@ -1202,7 +1140,7 @@ function mission_command:draw()
 		if save.color == 1 then gfx.setColor(love.math.colorFromBytes(255, 241, 232, 255)) end
 
 		local realdir = love.filesystem.getRealDirectory('missions/')
-		gfx.printf('Your Mission\'s been saved to:\n' .. realdir .. '/missions/' .. tostring(vars.export.mission) .. '.json', 800 + x, 128, 400, 'center')
+		gfx.printf(text('savedto') .. '\n' .. realdir .. '/missions/' .. tostring(vars.export.mission) .. text('missionspath3'), 800 + x, 128, 400, 'center')
 
 		if save.color == 1 then
 			gfx.setColor(love.math.colorFromBytes(255, 241, 232, 127))
@@ -1210,7 +1148,7 @@ function mission_command:draw()
 			gfx.setFont(assets.half_circle_inverted)
 		end
 
-		gfx.printf('Share it! https://rae.wtf/blog/hexa-manual', x, 187, 2000, 'center')
+		gfx.printf(text('shareit') .. text('nocustommissions_4'), x, 187, 2000, 'center')
 
 		if save.color == 1 then
 			gfx.setColor(love.math.colorFromBytes(95, 87, 79, 255))
@@ -1220,11 +1158,9 @@ function mission_command:draw()
 		end
 
 		if save.gamepad then
-			gfx.print('A opens Mission directory. B goes back.', 810 + x, 220)
-		elseif save.keyboard == 1 then
-			gfx.print('Z opens Mission directory. X goes back.', 810 + x, 220)
-		elseif save.keyboard == 2 then
-			gfx.print(', opens Mission directory. . goes back.', 810 + x, 220)
+			gfx.print(text('a') .. text('open_directory') .. text('b') .. text('back'), 810 + x, 220)
+		else
+			gfx.print(start(save.primary) .. text('open_directory') .. start(save.secondary) .. text('back'), 810 + x, 220)
 		end
 	end
 

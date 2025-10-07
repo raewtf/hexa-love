@@ -1,6 +1,7 @@
 local gfx = love.graphics
 local floor = math.floor
 local abs = math.abs
+local text = getLocalizedText
 missions = {}
 missions_list = require 'missions_list'
 mission_command = require('mission_command')
@@ -113,7 +114,7 @@ end
 
 function missions:keypressed(key)
 	if not transitioning and not vars.waiting then
-		if (save.keyboard == 1 and key == 'left') or (save.keyboard == 2 and key == 'a') then
+		if key == save.left then
 			if vars.custom and #vars.custom_files > 0 then
 				if vars.custom_selection == 1 then
 					shakies()
@@ -133,7 +134,7 @@ function missions:keypressed(key)
 					vars.offset = -211
 				end
 			end
-		elseif (save.keyboard == 1 and key == 'right') or (save.keyboard == 2 and key == 'd') then
+		elseif key == save.right then
 			if vars.custom and #vars.custom_files > 0 then
 				if vars.custom_selection == #vars.custom_files then
 					shakies()
@@ -153,15 +154,15 @@ function missions:keypressed(key)
 					vars.offset = 211
 				end
 			end
-		elseif (save.keyboard == 1 and key == 'up') or (save.keyboard == 2 and key == 'w') then
+		elseif key == save.up then
 			if vars.custom then
 				local realdir = love.filesystem.getRealDirectory('missions/')
 				love.system.openURL('file://' .. realdir .. '/missions/')
 			end
-		elseif (save.keyboard == 1 and key == 'x') or (save.keyboard == 2 and key == '.') then
+		elseif key == save.secondary then
 			playsound(assets.sfx_back)
 			scenemanager:transitionscene(title, false, 'missions')
-		elseif (save.keyboard == 1 and key == 'z') or (save.keyboard == 2 and key == ',') then
+		elseif key == save.primary then
 			if vars.custom then
 				playsound(assets.sfx_select)
 				scenemanager:transitionscene(game, vars.custom_missions[vars.custom_selection].type, vars.custom_missions[vars.custom_selection].mission, vars.custom_missions[vars.custom_selection].modifier or nil, vars.custom_missions[vars.custom_selection].start or nil, vars.custom_missions[vars.custom_selection].goal or nil, vars.custom_missions[vars.custom_selection].seed or nil, vars.custom_missions[vars.custom_selection].name or nil)
@@ -176,10 +177,10 @@ function missions:keypressed(key)
 					fademusic()
 				end
 			end
-		elseif key == 'c' and vars.custom_missions_enabled then
+		elseif key == save.quaternary then
 			vars.custom = not vars.custom
 			playsound(assets.sfx_select)
-		elseif key == 'j' and vars.custom_missions_enabled then
+		elseif key == save.tertiary then
 			scenemanager:transitionscene(mission_command, vars.custom)
 			fademusic()
 			playsound(assets.sfx_select)
@@ -215,8 +216,8 @@ function missions:draw()
 			gfx.setFont(assets.full_circle_inverted)
 			if save.color == 1 then gfx.setColor(love.math.colorFromBytes(255, 241, 232, 255)) end
 
-			gfx.printf('You have no custom missions!', 0, 70, 400, 'center')
-			gfx.printf('Please load some to continue.', 0, 85, 400, 'center')
+			gfx.printf(text('nocustommissions_1'), 0, 70, 400, 'center')
+			gfx.printf(text('nocustommissions_2'), 0, 85, 400, 'center')
 
 			if save.color == 1 then
 				gfx.setColor(love.math.colorFromBytes(255, 241, 232, 127))
@@ -224,8 +225,8 @@ function missions:draw()
 				gfx.setFont(assets.half_circle_inverted)
 			end
 
-			gfx.printf('More info can be found here:', 0, 120, 400, 'center')
-			gfx.printf('https://rae.wtf/blog/hexa-manual', 0, 135, 400, 'center')
+			gfx.printf(text('nocustommissions_3'), 0, 120, 400, 'center')
+			gfx.printf(text('nocustommissions_4'), 0, 135, 400, 'center')
 		end
 	else
 		for i = 1, 50 do
@@ -250,22 +251,16 @@ function missions:draw()
 
 	if save.gamepad then -- Gamepad
 		if vars.custom_missions_enabled then
-			gfx.print('Y toggles custom Missions.' .. (vars.custom and ' Up opens directory.' or ''), 10, 190)
-			gfx.print('X opens Mission Command.', 10, 205)
+			gfx.print(text('y') .. text('toggles_missions') .. (vars.custom and text('up') .. text('open_directory') or ''), 10, 190)
+			gfx.print(text('x') .. text('open_command'), 10, 205)
 		end
-		gfx.print('The D-pad moves. A picks. B goes back.', 10, 220)
-	elseif save.keyboard == 1 then -- Arrows + Z & X
+		gfx.print(text('dpad') .. text('moves') .. text('a') .. text('select') .. text('b') .. text('back'), 10, 220)
+	else
 		if vars.custom_missions_enabled then
-			gfx.print('C toggles custom Missions.' .. (vars.custom and ' Up opens directory.' or ''), 10, 190)
-			gfx.print('J opens Mission Command.', 10, 205)
+			gfx.print(start(save.quaternary) .. text('toggles_missions') .. (vars.custom and start(save.up) .. text('open_directory') or ''), 10, 190)
+			gfx.print(start(save.tertiary) .. text('open_command'), 10, 205)
 		end
-		gfx.print('The arrows move. Z picks. X goes back.', 10, 220)
-	elseif save.keyboard == 2 then -- WASD + , & .
-		if vars.custom_missions_enabled then
-			gfx.print('C toggles custom Missions.' .. (vars.custom and ' W opens directory.' or ''), 10, 190)
-			gfx.print('J opens Mission Command.', 10, 205)
-		end
-		gfx.print('WASD moves. , picks. . goes back.', 10, 220)
+		gfx.print(start(save.left) .. text('slash') .. start(save.right) .. text('move') .. start(save.primary) .. text('select') .. start(save.secondary) .. text('back'), 10, 220)
 	end
 
 	draw_on_top()
@@ -282,28 +277,28 @@ function missions:draw_cell(column, custom)
 		if custom then
 			gfx.setFont(assets.full_circle)
 			gfx.setColor(0, 0, 0, 1)
-			gfx.printf('By ' .. vars.custom_missions[column].author, 0, 8, 202, 'center')
+			gfx.printf(text('mission_by') .. vars.custom_missions[column].author, 0, 8, 202, 'center')
 			if vars.custom_missions[column].type == 'picture' then
-				gfx.printf('- Picture -\nMake the ' .. vars.custom_missions[column].name .. '\nin as few Swaps\nas possible!', 0, 34, 202, 'center')
-				gfx.printf('Swaps: ' .. commalize(save.mission_bests['mission' .. vars.custom_missions[column].mission] or 0), 0, 103, 202, 'center')
+				gfx.printf(text('mission_picture1') .. vars.custom_missions[column].name .. text('mission_picture2'), 0, 34, 202, 'center')
+				gfx.printf(text('swaps') .. text('divvy') .. commalize(save.mission_bests['mission' .. vars.custom_missions[column].mission] or 0), 0, 103, 202, 'center')
 			elseif vars.custom_missions[column].type == 'logic' then
 				local mod = vars.custom_missions[column].modifier
-				gfx.printf('- Logic -\nClear the ' .. (mod == 'board' and 'HEXAPLEX' or mod == 'black' and 'Dark tris' or mod == 'gray' and 'Dithered tris' or mod == 'white' and 'Light tris' or mod == '2x' and '2x tris' or mod == 'bomb' and 'Bombs' or mod == 'wild' and 'Wild tris') .. '\nin as few Swaps\nas posssible!', 0, 34, 202, 'center')
-				gfx.printf('Swaps: ' .. commalize(save.mission_bests['mission' .. vars.custom_missions[column].mission] or 0), 0, 103, 202, 'center')
+				gfx.printf(text('mission_logic_' .. mod), 0, 34, 202, 'center')
+				gfx.printf(text('swaps') .. text('divvy') .. commalize(save.mission_bests['mission' .. vars.custom_missions[column].mission] or 0), 0, 103, 202, 'center')
 			elseif vars.custom_missions[column].type == 'speedrun' then
 				local mod = vars.custom_missions[column].modifier
-				gfx.printf('- Speedrun -\nClear the ' .. (mod == 'board' and 'HEXAPLEX' or mod == 'black' and 'Dark tris' or mod == 'gray' and 'Dithered tris' or mod == 'white' and 'Light tris' or mod == '2x' and '2x tris' or mod == 'bomb' and 'Bombs' or mod == 'wild' and 'Wild tris') .. '\nin as little time\nas posssible!', 0, 34, 202, 'center')
+				gfx.printf(text('mission_speedrun_' .. mod), 0, 34, 202, 'center')
 				local mins, secs, mils = timecalc(save.mission_bests['mission' .. vars.custom_missions[column].mission])
-				gfx.printf('Time: ' .. mins .. ':' .. secs .. '.' .. mils, 0, 103, 202, 'center')
+				gfx.printf(text('time') .. text('divvy') .. mins .. ':' .. secs .. '.' .. mils, 0, 103, 202, 'center')
 			elseif vars.custom_missions[column].type == 'time' then
-				gfx.printf('- Time Attack -\nGet as many points\nas you can in\nthe time limit!', 0, 34, 202, 'center')
-				gfx.printf('Score: ' .. commalize(save.mission_bests['mission' .. vars.custom_missions[column].mission] or 0), 0, 103, 202, 'center')
+				gfx.printf(text('mission_time'), 0, 34, 202, 'center')
+				gfx.printf(text('score') .. text('divvy') .. commalize(save.mission_bests['mission' .. vars.custom_missions[column].mission] or 0), 0, 103, 202, 'center')
 			end
 		else
 			if column > save.highest_mission then
 				gfx.setFont(assets.half_circle)
 				gfx.setColor(0, 0, 0, 1)
-				gfx.printf('🔒 ' .. 'Mission ' .. column, 0, 8, 202, 'center')
+				gfx.printf('🔒 ' .. text('mission_label') .. column, 0, 8, 202, 'center')
 				if save.color == 1 then
 					gfx.setFont(assets.full_circle)
 					gfx.setColor(0, 0, 0, 0.5)
@@ -311,26 +306,26 @@ function missions:draw_cell(column, custom)
 					gfx.setFont(assets.half_circle)
 					gfx.setColor(0, 0, 0, 1)
 				end
-				gfx.printf('Complete the\nprior Missions\nto unlock!', 0, 41, 202, 'center')
+				gfx.printf(text('mission_locked'), 0, 41, 202, 'center')
 			else
 				gfx.setFont(assets.full_circle)
 				gfx.setColor(0, 0, 0, 1)
-				gfx.printf('Mission ' .. column, 0, 8, 202, 'center')
+				gfx.printf(text('mission_label') .. column, 0, 8, 202, 'center')
 				if missions_list[column].type == 'picture' then
-					gfx.printf('- Picture -\nMake the ' .. missions_list[column].name .. '\nin as few Swaps\nas possible!', 0, 34, 202, 'center')
-					gfx.printf('Swaps: ' .. commalize(save.mission_bests['mission' .. column] or 0), 0, 103, 202, 'center')
+					gfx.printf(text('mission_picture1') .. missions_list[column].name .. text('mission_picture2'), 0, 34, 202, 'center')
+					gfx.printf(text('swaps') .. text('divvy') .. commalize(save.mission_bests['mission' .. column] or 0), 0, 103, 202, 'center')
 				elseif missions_list[column].type == 'logic' then
 					local mod = missions_list[column].modifier
-					gfx.printf('- Logic -\nClear the ' .. (mod == 'board' and 'HEXAPLEX' or mod == 'black' and 'Dark tris' or mod == 'gray' and 'Dithered tris' or mod == 'white' and 'Light tris' or mod == '2x' and '2x tris' or mod == 'bomb' and 'Bombs' or mod == 'wild' and 'Wild tris') .. '\nin as few Swaps\nas posssible!', 0, 34, 202, 'center')
-					gfx.printf('Swaps: ' .. commalize(save.mission_bests['mission' .. column] or 0), 0, 103, 202, 'center')
+					gfx.printf(text('mission_logic_' .. mod), 0, 34, 202, 'center')
+					gfx.printf(text('swaps') .. text('divvy') .. commalize(save.mission_bests['mission' .. column] or 0), 0, 103, 202, 'center')
 				elseif missions_list[column].type == 'speedrun' then
 					local mod = missions_list[column].modifier
-					gfx.printf('- Speedrun -\nClear the ' .. (mod == 'board' and 'HEXAPLEX' or mod == 'black' and 'Dark tris' or mod == 'gray' and 'Dithered tris' or mod == 'white' and 'Light tris' or mod == '2x' and '2x tris' or mod == 'bomb' and 'Bombs' or mod == 'wild' and 'Wild tris') .. '\nin as little time\nas posssible!', 0, 34, 202, 'center')
+					gfx.printf(text('mission_speedrun_' .. mod), 0, 34, 202, 'center')
 					local mins, secs, mils = timecalc(save.mission_bests['mission' .. column])
-					gfx.printf('Time: ' .. mins .. ':' .. secs .. '.' .. mils, 0, 103, 202, 'center')
+					gfx.printf(text('time') .. text('divvy') .. mins .. ':' .. secs .. '.' .. mils, 0, 103, 202, 'center')
 				elseif missions_list[column].type == 'time' then
-					gfx.printf('- Time Attack -\nGet as many points\nas you can in\nthe time limit!', 0, 34, 202, 'center')
-					gfx.printf('Score: ' .. commalize(save.mission_bests['mission' .. column] or 0), 0, 103, 202, 'center')
+					gfx.printf(text('mission_time'), 0, 34, 202, 'center')
+					gfx.printf(text('score') .. text('divvy') .. commalize(save.mission_bests['mission' .. column] or 0), 0, 103, 202, 'center')
 				end
 			end
 		end

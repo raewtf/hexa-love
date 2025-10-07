@@ -3,6 +3,7 @@ local floor = math.floor
 local ceil = math.ceil
 local min = math.min
 local exp = math.exp
+local text = getLocalizedText
 local game = {}
 
 local tris_x = {140, 170, 200, 230, 260, 110, 140, 170, 200, 230, 260, 290, 110, 140, 170, 200, 230, 260, 290}
@@ -111,6 +112,7 @@ function game:enter(current, ...)
 		handlers = 'game', -- can be game, losing, or lose, or pause. or nothing
 		messagerand = rng:random(1, 10),
 		white_is_white = false,
+		-- TODO: vvv remove vvv
 		arcade_messages = {'You\'re on your way to\nruler of the universe!', 'Match those HEXAs,\nmatch \'em real good!', 'Hexagons are the\nbestagons.', 'All will bow to their\nnew hexagonal ruler.', 'Hit more Bombs next time!', 'Go for a bigger score;\nconquer more planets!', 'Hit those 2x tris!', 'Those squares never knew\nwhat hit \'em.', 'Mission clear, over.\nReport back to base.', 'Starship HEXA ready for\nthe next launch!'},
 		zen_messages = {'Good practice run! Now,\ntime for the real thing!', 'Make sure to take some\ngood, deep breaths.', 'Did you get a good amount\nof sleep last night?', 'Make sure you\'re drinking\nenough water lately!', 'Come back any time for\nchill HEXA-matching!', 'See you later!', 'Have a good day!', 'Have you heard of\n"hexaflexagons"?', 'Let\'s gooooooo!!', 'Go grab a snack or\nsomethin\'!'},
 		dailyrun_messages = {'Check back in\ntomorrow!', 'See you later!', 'Good run today!', 'HEXA-good run!', 'Now get out there &\ntake on the day!', 'Nice work today!', 'See you tomorrow!', 'Have a good rest\nof your day!', 'Check how your high\nscores compare!', 'Prepare for the day ahead!'},
@@ -390,7 +392,7 @@ end
 
 function game:keypressed(key)
 	if vars.handlers == 'game' then
-		if (save.keyboard == 1 and key == 'left') or (save.keyboard == 2 and key == 'a') then
+		if key == save.left then
 			if vars.can_do_stuff then
 				vars.lastdir = false
 				if vars.slot == 2 then
@@ -418,7 +420,7 @@ function game:keypressed(key)
 					playsound(assets.sfx_bonk)
 				end
 			end
-		elseif (save.keyboard == 1 and key == 'right') or (save.keyboard == 2 and key == 'd') then
+		elseif key == save.right then
 			if vars.can_do_stuff then
 				vars.lastdir = true
 				if vars.slot == 1 then
@@ -446,7 +448,7 @@ function game:keypressed(key)
 					playsound(assets.sfx_bonk)
 				end
 			end
-		elseif (save.keyboard == 1 and key == 'up') or (save.keyboard == 2 and key == 'w') then
+		elseif key == save.up then
 			if vars.can_do_stuff then
 				if vars.slot == 3 or vars.slot == 4 or vars.slot == 5 then
 					if vars.lastdir then
@@ -468,7 +470,7 @@ function game:keypressed(key)
 					playsound(assets.sfx_bonk)
 				end
 			end
-		elseif (save.keyboard == 1 and key == 'down') or (save.keyboard == 2 and key == 's') then
+		elseif key == save.down then
 			if vars.can_do_stuff then
 				if vars.slot == 1 then
 					vars.slot = 3
@@ -488,7 +490,7 @@ function game:keypressed(key)
 					playsound(assets.sfx_bonk)
 				end
 			end
-		elseif (save.keyboard == 1 and key == 'z') or (save.keyboard == 2 and key == ',') then
+		elseif key == save.primary then
 			if vars.can_do_stuff then
 				if save.flip then
 					self:swap(vars.slot, true)
@@ -496,7 +498,7 @@ function game:keypressed(key)
 					self:swap(vars.slot, false)
 				end
 			end
-		elseif (save.keyboard == 1 and key == 'x') or (save.keyboard == 2 and key == '.') then
+		elseif key == save.secondary then
 			if vars.can_do_stuff then
 				if save.flip then
 					self:swap(vars.slot, false)
@@ -510,46 +512,46 @@ function game:keypressed(key)
 				vars.handlers = 'pause'
 				vars.pause_selection = 1
 				playsound(assets.sfx_move)
-				if music ~= nil then music:setVolume(0.3) end
+				if music ~= nil then volume = {(save.music / 5) * 0.3} end
 			end
 		end
 	elseif vars.handlers == 'losing' then
-		if (save.keyboard == 1 and key == 'z' or key == 'x') or (save.keyboard == 2 and key == ',' or key == '.') then
+		if key == save.primary or key == save.secondary then
 			if vars.ended and not vars.skippedfanfare then
 				self:ersi()
 			end
 		end
 	elseif vars.handlers == 'lose' then
-		if (save.keyboard == 1 and key == 'z') or (save.keyboard == 2 and key == ',') then
+		if key == save.primary then
 			if vars.mode == 'dailyrun' then
 				-- LEADERBOARDS: transition to highscores, vars.mode if true
 			else
 				fademusic()
 				scenemanager:transitionscene(game, vars.mode)
 			end
-		elseif (save.keyboard == 1 and key == 'x') or (save.keyboard == 2 and key == '.') then
+		elseif key == save.secondary then
 			fademusic(100)
 			scenemanager:transitionscene(title, false, vars.mode)
 		end
 	elseif vars.handlers == 'pause' then
-		if (save.keyboard == 1 and key == 'left') or (save.keyboard == 2 and key == 'a') then
+		if key == save.left then
 			if vars.pause_selection == 1 then
 				playsound(assets.sfx_bonk)
 			else
 				vars.pause_selection = vars.pause_selection - 1
 				playsound(assets.sfx_swap)
 			end
-		elseif (save.keyboard == 1 and key == 'right') or (save.keyboard == 2 and key == 'd') then
+		elseif key == save.right then
 			if vars.pause_selection == #vars.pause_selections then
 				playsound(assets.sfx_bonk)
 			else
 				vars.pause_selection = vars.pause_selection + 1
 				playsound(assets.sfx_swap)
 			end
-		elseif (save.keyboard == 1 and key == 'z') or (save.keyboard == 2 and key == ',') then
+		elseif key == save.primary then
 			vars.paused = false
 			vars.handlers = 'game'
-			if music ~= nil then music:setVolume(1) end
+			if music ~= nil then volume = {save.music / 5} end
 			if vars.pause_selections[vars.pause_selection] == 'continue' then
 				playsound(assets.sfx_select)
 			elseif vars.pause_selections[vars.pause_selection] == 'restart' then
@@ -572,11 +574,23 @@ function game:keypressed(key)
 					self:endround()
 				end
 			end
-		elseif (save.keyboard == 1 and key == 'x') or (save.keyboard == 2 and key == '.') or key == 'escape' then
+		elseif key == save.secondary or key == 'escape' then
 			vars.paused = false
-			vars.handlers = 'game'
-			if music ~= nil then music:setVolume(1) end
+			if not vars.active_hexa then
+				vars.handlers = 'game'
+			end
+			if music ~= nil then volume = {save.music / 5} end
 			playsound(assets.sfx_back)
+		end
+	elseif vars.handlers == '' then
+		if key == 'escape' then
+			if (vars.can_do_stuff and not vars.paused) then
+				vars.paused = true
+				vars.handlers = 'pause'
+				vars.pause_selection = 1
+				playsound(assets.sfx_move)
+				if music ~= nil then volume = {(save.music / 5) * 0.3} end
+			end
 		end
 	end
 end
@@ -710,27 +724,27 @@ function game:draw()
 	end
 
 	if vars.mode == 'arcade' or vars.mode == 'dailyrun' then
-		gfx.print('Score', 10, 10)
+		gfx.print(text('score'), 10, 10)
 		if vars.mode == 'arcade' then
-			gfx.print('High', 10, 45)
+			gfx.print(text('high'), 10, 45)
 		else
-			gfx.print('Seed', 10, 45)
+			gfx.print(text('seed'), 10, 45)
 		end
 		if save.hardmode then
-			gfx.print('HARD\nMODE', 10, 80)
+			gfx.print(text('hardmodeg'), 10, 80)
 		end
 	elseif vars.mode == 'zen' then
-		gfx.print('Swaps', 10, 10)
-		gfx.print('HEXAs', 10, 45)
+		gfx.print(text('swaps'), 10, 10)
+		gfx.print(text('hexas'), 10, 45)
 	elseif vars.mode == 'picture' or vars.mode == 'logic' then
-		gfx.print('Swaps', 10, 10)
-		gfx.print('Best', 10, 45)
+		gfx.print(text('swaps'), 10, 10)
+		gfx.print(text('best'), 10, 45)
 	elseif vars.mode == 'time' then
-		gfx.print('Score', 10, 10)
-		gfx.print('High', 10, 45)
+		gfx.print(text('score'), 10, 10)
+		gfx.print(text('high'), 10, 45)
 	elseif vars.mode == 'speedrun' then
-		gfx.print('Time', 10, 10)
-		gfx.print('Best', 10, 45)
+		gfx.print(text('time'), 10, 10)
+		gfx.print(text('best'), 10, 45)
 	end
 
 	gfx.setFont(assets.clock)
@@ -768,9 +782,9 @@ function game:draw()
 		gfx.setFont(assets.full_circle_inverted)
 
 		if vars.pause_selections[vars.pause_selection] == 'continue' then
-			gfx.printf('Continue', vars.pos1, 112, vars.length1, 'center')
+			gfx.printf(text('continue'), vars.pos1, 112, vars.length1, 'center')
 		elseif vars.pause_selections[vars.pause_selection] == 'restart' then
-			gfx.printf('Restart Game', vars.pos2, 112, vars.length2, 'center')
+			gfx.printf(text('restart'), vars.pos2, 112, vars.length2, 'center')
 		elseif vars.pause_selections[vars.pause_selection] == 'quit' then
 			local pos
 			local length
@@ -782,11 +796,11 @@ function game:draw()
 				length = vars.length3
 			end
 			if vars.mode == 'logic' or vars.mode == 'time' or vars.mode == 'picture' or vars.mode == 'speedrun' then
-				gfx.printf('Exit Mission', pos, 112, length, 'center')
+				gfx.printf(text('exitmission'), pos, 112, length, 'center')
 			elseif vars.mode == 'arcade' or vars.mode == 'dailyrun' then
-				gfx.printf('End Game', pos, 112, length, 'center')
+				gfx.printf(text('endgame'), pos, 112, length, 'center')
 			elseif vars.mode == 'zen' then
-				gfx.printf('I\'m Done!', pos, 112, length, 'center')
+				gfx.printf(text('imdone'), pos, 112, length, 'center')
 			end
 		end
 
@@ -802,29 +816,29 @@ function game:draw()
 		end
 
 		if vars.pause_selections[vars.pause_selection] ~= 'continue' then
-			gfx.printf('Continue', vars.pos1, 112, vars.length1, 'center')
+			gfx.printf(text('continue'), vars.pos1, 112, vars.length1, 'center')
 		end
 		if #vars.pause_selections == 2 then
 			if vars.pause_selections[vars.pause_selection] ~= 'quit' then
 				if vars.mode == 'logic' or vars.mode == 'time' or vars.mode == 'picture' or vars.mode == 'speedrun' then
-					gfx.printf('Exit Mission', vars.pos2, 112, vars.length2, 'center')
+					gfx.printf(text('exitmission'), vars.pos2, 112, vars.length2, 'center')
 				elseif vars.mode == 'arcade' or vars.mode == 'dailyrun' then
-					gfx.printf('End Game', vars.pos2, 112, vars.length2, 'center')
+					gfx.printf(text('endgame'), vars.pos2, 112, vars.length2, 'center')
 				elseif vars.mode == 'zen' then
-					gfx.printf('I\'m Done!', vars.pos2, 112, vars.length2, 'center')
+					gfx.printf(text('imdone'), vars.pos2, 112, vars.length2, 'center')
 				end
 			end
 		else
 			if vars.pause_selections[vars.pause_selection] ~= 'restart' then
-				gfx.printf('Restart Game', vars.pos2, 112, vars.length2, 'center')
+				gfx.printf(text('restart'), vars.pos2, 112, vars.length2, 'center')
 			end
 			if vars.pause_selections[vars.pause_selection] ~= 'quit' then
 				if vars.mode == 'logic' or vars.mode == 'time' or vars.mode == 'picture' or vars.mode == 'speedrun' then
-					gfx.printf('Exit Mission', vars.pos3, 112, vars.length3, 'center')
+					gfx.printf(text('exitmission'), vars.pos3, 112, vars.length3, 'center')
 				elseif vars.mode == 'arcade' or vars.mode == 'dailyrun' then
-					gfx.printf('End Game', vars.pos3, 112, vars.length3, 'center')
+					gfx.printf(text('endgame'), vars.pos3, 112, vars.length3, 'center')
 				elseif vars.mode == 'zen' then
-					gfx.printf('I\'m Done!', vars.pos3, 112, vars.length3, 'center')
+					gfx.printf(text('imdone'), vars.pos3, 112, vars.length3, 'center')
 				end
 			end
 		end
@@ -1422,18 +1436,18 @@ function game:ersi()
 			gfx.setFont(assets.full_circle_inverted)
 			if save.color == 1 then gfx.setColor(love.math.colorFromBytes(255, 241, 232, 255)) end
 
-			gfx.printf('Great run today!', 0, 50, 480, 'center')
+			gfx.printf(text('zen1'), 0, 50, 480, 'center')
 			if vars.moves == 1 then
-				gfx.printf('You made ' .. commalize(vars.moves) .. ' swap,', 0, 90, 480, 'center')
+				gfx.printf(text('stats1') .. commalize(vars.moves) .. text('stats2b'), 0, 90, 480, 'center')
 			else
-				gfx.printf('You made ' .. commalize(vars.moves) .. ' swaps,', 0, 90, 480, 'center')
+				gfx.printf(text('stats1') .. commalize(vars.moves) .. text('stats2a'), 0, 90, 480, 'center')
 			end
 			if vars.hexas == 1 then
-				gfx.printf('and scored ' .. commalize(vars.hexas) .. ' HEXA.', 0, 105, 480, 'center')
+				gfx.printf(text('stats3') .. commalize(vars.hexas) .. text('stats4b'), 0, 105, 480, 'center')
 			else
-				gfx.printf('and scored ' .. commalize(vars.hexas) .. ' HEXAs.', 0, 105, 480, 'center')
+				gfx.printf(text('stats3') .. commalize(vars.hexas) .. text('stats4a'), 0, 105, 480, 'center')
 			end
-			gfx.printf(vars[vars.mode .. '_messages'][vars.messagerand], 0, 150, 380, 'center')
+			gfx.printf(text(vars.mode .. '_message' .. vars.messagerand), 0, 150, 380, 'center')
 
 			if save.color == 1 then
 				gfx.setColor(love.math.colorFromBytes(255, 241, 232, 127))
@@ -1442,11 +1456,9 @@ function game:ersi()
 			end
 
 			if save.gamepad then -- Gamepad
-				gfx.print('A starts a new game. B goes back.', 40, 205)
-			elseif save.keyboard == 1 then -- Arrows + Z & X
-				gfx.print('Z starts a new game. X goes back.', 40, 205)
-			elseif save.keyboard == 2 then -- WASD + , & .
-				gfx.print(', starts a new game. . goes back.', 40, 205)
+				gfx.print(text('a') .. text('newgame') .. text('b') .. text('back'), 40, 205)
+			else
+				gfx.print(start(save.primary) .. text('newgame') .. start(save.secondary) .. text('back'), 40, 205)
 			end
 			gfx.setScissor(sx, sy, sw, sh)
 			gfx.pop()
@@ -1462,18 +1474,18 @@ function game:ersi()
 			gfx.setFont(assets.full_circle_inverted)
 			if save.color == 1 then gfx.setColor(love.math.colorFromBytes(255, 241, 232, 255)) end
 
-			gfx.printf('You scored ' .. commalize(vars.score) .. ' points.', 0, 50, 480, 'center')
+			gfx.printf(text('score1') .. commalize(vars.score) .. text('score2'), 0, 50, 480, 'center')
 			if vars.moves == 1 then
-				gfx.printf('You made ' .. commalize(vars.moves) .. ' swap,', 0, 90, 480, 'center')
+				gfx.printf(text('stats1') .. commalize(vars.moves) .. text('stats2b'), 0, 90, 480, 'center')
 			else
-				gfx.printf('You made ' .. commalize(vars.moves) .. ' swaps,', 0, 90, 480, 'center')
+				gfx.printf(text('stats1') .. commalize(vars.moves) .. text('stats2a'), 0, 90, 480, 'center')
 			end
 			if vars.hexas == 1 then
-				gfx.printf('and scored ' .. commalize(vars.hexas) .. ' HEXA.', 0, 105, 480, 'center')
+				gfx.printf(text('stats3') .. commalize(vars.hexas) .. text('stats4b'), 0, 105, 480, 'center')
 			else
-				gfx.printf('and scored ' .. commalize(vars.hexas) .. ' HEXAs.', 0, 105, 480, 'center')
+				gfx.printf(text('stats3') .. commalize(vars.hexas) .. text('stats4a'), 0, 105, 480, 'center')
 			end
-			gfx.printf(vars[vars.mode .. '_messages'][vars.messagerand], 0, 150, 380, 'center')
+			gfx.printf(text(vars.mode .. '_message' .. vars.messagerand), 0, 150, 380, 'center')
 
 			if save.color == 1 then
 				gfx.setColor(love.math.colorFromBytes(255, 241, 232, 127))
@@ -1483,20 +1495,16 @@ function game:ersi()
 
 			if vars.mode == 'dailyrun' then
 				if save.gamepad then -- Gamepad
-					gfx.print('B goes back.', 40, 205)
-				elseif save.keyboard == 1 then -- Arrows + Z & X
-					gfx.print('X goes back.', 40, 205)
-				elseif save.keyboard == 2 then -- WASD + , & .
-					gfx.print('. goes back.', 40, 205)
+					gfx.print(text('b') .. text('back'), 40, 205)
+				else
+					gfx.print(start(save.secondary) .. text('back'), 40, 205)
 				end
 				-- LEADERBOARDS: "Z shows scores for today. X goes back." if true
 			else
 				if save.gamepad then -- Gamepad
-					gfx.print('A starts a new game. B goes back.', 40, 205)
-				elseif save.keyboard == 1 then -- Arrows + Z & X
-					gfx.print('Z starts a new game. X goes back.', 40, 205)
-				elseif save.keyboard == 2 then -- WASD + , & .
-					gfx.print(', starts a new game. . goes back.', 40, 205)
+					gfx.print(text('a') .. text('newgame') .. text('b') .. text('back'), 40, 205)
+				else
+					gfx.print(start(save.primary) .. text('newgame') .. start(save.secondary) .. text('back'), 40, 205)
 				end
 			end
 			gfx.setScissor(sx, sy, sw, sh)
@@ -1568,7 +1576,7 @@ function game:endround()
 							gfx.setFont(assets.full_circle_inverted)
 							if save.color == 1 then gfx.setColor(love.math.colorFromBytes(255, 241, 232, 255)) end
 
-							gfx.printf('You scored ' .. commalize(vars.score) .. ' points.', 0, 50, 480, 'center')
+							gfx.printf(text('score1') .. commalize(vars.score) .. text('score2'), 0, 50, 480, 'center')
 							gfx.setScissor(sx, sy, sw, sh)
 							gfx.pop()
 						gfx.setCanvas()
@@ -1587,9 +1595,9 @@ function game:endround()
 							if save.color == 1 then gfx.setColor(love.math.colorFromBytes(255, 241, 232, 255)) end
 
 							if vars.moves == 1 then
-								gfx.printf('You made ' .. commalize(vars.moves) .. ' swap,', 0, 90, 480, 'center')
+								gfx.printf(text('stats1') .. commalize(vars.moves) .. text('stats2b'), 0, 90, 480, 'center')
 							else
-								gfx.printf('You made ' .. commalize(vars.moves) .. ' swaps,', 0, 90, 480, 'center')
+								gfx.printf(text('stats1') .. commalize(vars.moves) .. text('stats2a'), 0, 90, 480, 'center')
 							end
 							gfx.setScissor(sx, sy, sw, sh)
 							gfx.pop()
@@ -1609,9 +1617,9 @@ function game:endround()
 							if save.color == 1 then gfx.setColor(love.math.colorFromBytes(255, 241, 232, 255)) end
 
 							if vars.hexas == 1 then
-								gfx.printf('and scored ' .. commalize(vars.hexas) .. ' HEXA.', 0, 105, 480, 'center')
+								gfx.printf(text('stats3') .. commalize(vars.hexas) .. text('stats4b'), 0, 105, 480, 'center')
 							else
-								gfx.printf('and scored ' .. commalize(vars.hexas) .. ' HEXAs.', 0, 105, 480, 'center')
+								gfx.printf(text('stats3') .. commalize(vars.hexas) .. text('stats4a'), 0, 105, 480, 'center')
 							end
 							gfx.setScissor(sx, sy, sw, sh)
 							gfx.pop()
@@ -1630,7 +1638,7 @@ function game:endround()
 							gfx.setFont(assets.full_circle_inverted)
 							if save.color == 1 then gfx.setColor(love.math.colorFromBytes(255, 241, 232, 255)) end
 
-							gfx.printf(vars[vars.mode .. '_messages'][vars.messagerand], 0, 150, 380, 'center')
+							gfx.printf(text(vars.mode .. '_message' .. vars.messagerand), 0, 150, 380, 'center')
 							gfx.setScissor(sx, sy, sw, sh)
 							gfx.pop()
 						gfx.setCanvas()
@@ -1647,6 +1655,7 @@ function game:endround()
 							gfx.setColor(1, 1, 1, 1)
 
 							if save.color == 1 then
+								gfx.setFont(assets.full_circle_inverted)
 								gfx.setColor(love.math.colorFromBytes(255, 241, 232, 127))
 							else
 								gfx.setFont(assets.half_circle_inverted)
@@ -1654,20 +1663,16 @@ function game:endround()
 
 							if vars.mode == 'dailyrun' then
 								if save.gamepad then -- Gamepad
-									gfx.print('B goes back.', 40, 205)
-								elseif save.keyboard == 1 then -- Arrows + Z & X
-									gfx.print('X goes back.', 40, 205)
-								elseif save.keyboard == 2 then -- WASD + , & .
-									gfx.print('. goes back.', 40, 205)
+									gfx.print(text('b') .. text('back'), 40, 205)
+								else
+									gfx.print(start(save.secondary) .. text('back'), 40, 205)
 								end
 								-- LEADERBOARDS: "Z shows scores for today. X goes back.", if true
 							else
 								if save.gamepad then -- Gamepad
-									gfx.print('A starts a new game. B goes back.', 40, 205)
-								elseif save.keyboard == 1 then -- Arrows + Z & X
-									gfx.print('Z starts a new game. X goes back.', 40, 205)
-								elseif save.keyboard == 2 then -- WASD + , & .
-									gfx.print(', starts a new game. . goes back.', 40, 205)
+									gfx.print(text('a') .. text('newgame') .. text('b') .. text('back'), 40, 205)
+								else
+									gfx.print(start(save.primary) .. text('newgame') .. start(save.secondary) .. text('back'), 40, 205)
 								end
 							end
 							gfx.setScissor(sx, sy, sw, sh)
@@ -1707,7 +1712,7 @@ function game:endround()
 							gfx.setFont(assets.full_circle_inverted)
 							if save.color == 1 then gfx.setColor(love.math.colorFromBytes(255, 241, 232, 255)) end
 
-							gfx.printf('Great run today!', 0, 50, 480, 'center')
+							gfx.printf(text('zen1'), 0, 50, 480, 'center')
 							gfx.setScissor(sx, sy, sw, sh)
 							gfx.pop()
 						gfx.setCanvas()
@@ -1726,9 +1731,9 @@ function game:endround()
 							if save.color == 1 then gfx.setColor(love.math.colorFromBytes(255, 241, 232, 255)) end
 
 							if vars.moves == 1 then
-								gfx.printf('You made ' .. commalize(vars.moves) .. ' swap,', 0, 90, 480, 'center')
+								gfx.printf(text('stats1') .. commalize(vars.moves) .. text('stats2b'), 0, 90, 480, 'center')
 							else
-								gfx.printf('You made ' .. commalize(vars.moves) .. ' swaps,', 0, 90, 480, 'center')
+								gfx.printf(text('stats1') .. commalize(vars.moves) .. text('stats2a'), 0, 90, 480, 'center')
 							end
 							gfx.setScissor(sx, sy, sw, sh)
 							gfx.pop()
@@ -1748,9 +1753,9 @@ function game:endround()
 							if save.color == 1 then gfx.setColor(love.math.colorFromBytes(255, 241, 232, 255)) end
 
 							if vars.hexas == 1 then
-								gfx.printf('and scored ' .. commalize(vars.hexas) .. ' HEXA.', 0, 105, 480, 'center')
+								gfx.printf(text('stats3') .. commalize(vars.hexas) .. text('stats4b'), 0, 105, 480, 'center')
 							else
-								gfx.printf('and scored ' .. commalize(vars.hexas) .. ' HEXAs.', 0, 105, 480, 'center')
+								gfx.printf(text('stats3') .. commalize(vars.hexas) .. text('stats4a'), 0, 105, 480, 'center')
 							end
 							gfx.setScissor(sx, sy, sw, sh)
 							gfx.pop()
@@ -1769,7 +1774,7 @@ function game:endround()
 							gfx.setFont(assets.full_circle_inverted)
 							if save.color == 1 then gfx.setColor(love.math.colorFromBytes(255, 241, 232, 255)) end
 
-							gfx.printf(vars[vars.mode .. '_messages'][vars.messagerand], 0, 150, 380, 'center')
+							gfx.printf(text(vars.mode .. '_message' .. vars.messagerand), 0, 150, 380, 'center')
 							gfx.setScissor(sx, sy, sw, sh)
 							gfx.pop()
 						gfx.setCanvas()
@@ -1785,15 +1790,17 @@ function game:endround()
 							gfx.setScissor()
 							gfx.setColor(1, 1, 1, 1)
 
-							gfx.setFont(assets.half_circle_inverted)
-							if save.color == 1 then gfx.setColor(love.math.colorFromBytes(194, 195, 199, 255)) end
+							if save.color == 1 then
+								gfx.setFont(assets.full_circle_inverted)
+								gfx.setColor(love.math.colorFromBytes(255, 241, 232, 127))
+							else
+								gfx.setFont(assets.half_circle_inverted)
+							end
 
 							if save.gamepad then -- Gamepad
-								gfx.print('A starts a new game. B goes back.', 40, 205)
-							elseif save.keyboard == 1 then -- Arrows + Z & X
-								gfx.print('Z starts a new game. X goes back.', 40, 205)
-							elseif save.keyboard == 2 then -- WASD + , & .
-								gfx.print(', starts a new game. . goes back.', 40, 205)
+								gfx.print(text('a') .. text('newgame') .. text('b') .. text('back'), 40, 205)
+							else
+								gfx.print(start(save.primary) .. text('newgame') .. start(save.secondary) .. text('back'), 40, 205)
 							end
 							gfx.setScissor(sx, sy, sw, sh)
 							gfx.pop()

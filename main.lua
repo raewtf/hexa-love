@@ -1,3 +1,14 @@
+en, fr = require 'langs'
+function getLocalizedText(key)
+	local data
+	if save.lang == 'en' then
+		data = en
+	elseif save.lang == 'fr' then
+		data = fr
+	end
+	return data and data[key] or key
+end
+
 rng = love.math.newRandomGenerator()
 scenemanager = require('scenemanager')
 gamestate = require 'gamestate'
@@ -15,7 +26,7 @@ local scale
 quit = 0
 local fullscreen = false
 
-version = '2.1.7'
+version = '2.2.0'
 
 gfx.setLineWidth(3)
 gfx.setLineStyle('rough')
@@ -155,13 +166,44 @@ function savecheck()
 	if save == nil then save = {} end
 	save.scale = save.scale or 1
 	if save.gamepad == nil then save.gamepad = false end
-	save.keyboard = save.keyboard or 1
-	-- 1 = arrow keys, Z and X
-	-- 2 = WASD, , and .
+
+	if save.keyboard ~= nil then
+		if save.keyboard == 1 then
+			save.up = 'up'
+			save.down = 'down'
+			save.left = 'left'
+			save.right = 'right'
+			save.primary = 'z'
+			save.secondary = 'x'
+			save.tertiary = 'j'
+			save.quaternary = 'c'
+		elseif save.keyboard == 2 then
+			save.up = 'w'
+			save.down = 's'
+			save.left = 'a'
+			save.right = 'd'
+			save.primary = ','
+			save.secondary = '.'
+			save.tertiary = 'j'
+			save.quaternary = 'c'
+		end
+		save.keyboard = nil
+	else
+		save.up = 'up'
+		save.down = 'down'
+		save.left = 'left'
+		save.right = 'right'
+		save.primary = 'z'
+		save.secondary = 'x'
+		save.tertiary = 'j'
+		save.quaternary = 'c'
+	end
+
 	save.color = save.color or 1
 	-- 1 = colorful
 	-- 2 = classic
 	save.hexaplex_color = save.hexaplex_color or 1
+	if save.clean_scaling == nil then save.clean_scaling = true end
 	if save.rumble == nil then save.rumble = true end
 	if save.reduceflashing == nil then save.reduceflashing = false end
 
@@ -188,6 +230,7 @@ function savecheck()
 		save.sfx = 3
 	end
 
+	if save.lang == nil then save.lang = 'en' end
 	if save.flip == nil then save.flip = false end
 	if save.skipfanfare == nil then save.skipfanfare = false end
 	if save.lastdaily == nil then save.lastdaily = {} end
@@ -276,13 +319,13 @@ function ordinal(num)
 	local m10 = num % 10 -- This is the number, modulo'd by 10.
 	local m100 = num % 100 -- This is the number, modulo'd by 100.
 	if m10 == 1 and m100 ~= 11 then -- If the number ends in 1 but NOT 11...
-		return tostring(num) .. 'st' -- add "st" on.
+		return tostring(num) .. text('st') -- add "st" on.
 	elseif m10 == 2 and m100 ~= 12 then -- If the number ends in 2 but NOT 12...
-		return tostring(num) .. 'nd' -- add "nd" on,
+		return tostring(num) .. text('nd') -- add "nd" on,
 	elseif m10 == 3 and m100 ~= 13 then -- and if the number ends in 3 but NOT 13...
-		return tostring(num) .. 'rd' -- add "rd" on.
+		return tostring(num) .. text('rd') -- add "rd" on.
 	else -- If all those checks passed us by,
-		return tostring(num) .. 'th' -- then it ends in "th".
+		return tostring(num) .. text('th') -- then it ends in "th".
 	end
 end
 
@@ -296,6 +339,10 @@ function commalize(amount)
 	end
   end
   return formatted
+end
+
+function start(string)
+	return (string:gsub("^%l", string.upper))
 end
 
 -- http://lua-users.org/wiki/CopyTable
@@ -431,68 +478,38 @@ function love.keypressed(key)
 end
 
 function love.gamepadpressed(joystick, button)
-	if joystick ~= connected_joystick then return end
-	local key
-	if button == 'start' then
-		key = 'escape'
-	elseif button == 'x' then
-		key = 'j'
-	elseif button == 'y' then
-		key = 'c'
-	elseif save.keyboard == 1 then
-		if button == 'dpup' then
-			key = 'up'
+	if vars.handler ~= "remap" then
+		current_joystick = joystick
+		local key
+		if button == 'start' then
+			key = 'escape'
+		elseif button == 'x' then
+			key = save.tertiary
+		elseif button == 'y' then
+			key = save.quaternary
+		elseif button == 'dpup' then
+			key = save.up
 		elseif button == 'dpdown' then
-			key = 'down'
+			key = save.down
 		elseif button == 'dpleft' then
-			key = 'left'
+			key = save.left
 		elseif button == 'dpright' then
-			key = 'right'
+			key = save.right
 		elseif button == 'a' then
-			key = 'z'
+			key = save.primary
 		elseif button == 'b' then
-			key = 'x'
+			key = save.secondary
 		end
-	elseif save.keyboard == 2 then
-		if button == 'dpup' then
-			key = 'w'
-		elseif button == 'dpdown' then
-			key = 's'
-		elseif button == 'dpleft' then
-			key = 'a'
-		elseif button == 'dpright' then
-			key = 'd'
-		elseif button == 'a' then
-			key = ','
-		elseif button == 'b' then
-			key = '.'
-		end
-	end
-	gamepad = true
-	love.keypressed(key)
-end
-
-function love.joystickadded(joystick)
-	if connected_joystick == nil then
-		connected_joystick = joystick
-	end
-end
-
-function love.joystickremoved(joystick)
-	if joystick == connected_joystick then
-		connected_joystick = nil
+		gamepad = true
+		love.keypressed(key)
 	end
 end
 
 function rumble(left, right, duration)
-	if save.rumble and save.gamepad and connected_joystick:isVibrationSupported() then
-		connected_joystick:setVibration(left, right, duration)
+	if save.rumble and save.gamepad and current_joystick:isVibrationSupported() then
+		current_joystick:setVibration(left, right, duration)
 	end
 end
-
--- TODO: fix weird scissor sometimes-bug in maximize on windows
--- TODO: boom during game
--- TODO: re-implement localized text parsing
 
 function love.update(dt)
 	next_time = next_time + min_dt
@@ -531,8 +548,6 @@ function love.draw()
 
 	gfx.setScissor((lbw and (((floor(ww / 2) * 2) - (400 * scale)) / 2)) or 0, (lbh and (((floor(wh / 2) * 2) - (240 * scale)) / 2)) or 0, 400 * scale, 240 * scale)
 
-	gfx.clear(0, 0, 0, 1)
-
 	gfx.scale(scale)
 
 	if vars ~= nil then
@@ -555,8 +570,15 @@ function love.focus(f)
 end
 
 function love.resize(w, h)
-	local fw = floor(w / 400)
-	local fh = floor(h / 240)
+	local fw
+	local fh
+	if save.clean_scaling then
+		fw = floor(w / 400)
+		fh = floor(h / 240)
+	else
+		fw = w / 400
+		fh = h / 240
+	end
 	if fw < fh and fw >= save.scale then
 		scale = fw
 	elseif fh < fw and fh >= save.scale then
@@ -575,9 +597,9 @@ function draw_on_top()
 		gfx.setFont(half_circle)
 		if save.color == 1 then gfx.setColor(love.math.colorFromBytes(194, 195, 199, 255)) else gfx.setColor(1, 1, 1, 1) end
 		if save.gamepad then
-			gfx.printf('Press Start again to quit. See ya later!', 0, 5, 400, 'center')
+			gfx.printf(text('quit_start'), 0, 5, 400, 'center')
 		else
-			gfx.printf('Press ESC again to quit. See ya later!', 0, 5, 400, 'center')
+			gfx.printf(text('quit_esc'), 0, 5, 400, 'center')
 		end
 		gfx.setColor(1, 1, 1, 1)
 	end
@@ -586,6 +608,8 @@ function draw_on_top()
 		gfx.draw(podbaydoor, math.floor(podbaydoorstatus.pos1 / 2) * 2, 0)
 		gfx.draw(podbaydoor, (math.floor(podbaydoorstatus.pos2 / 2) * 2) + 220, 0, 0, -1, 1)
 	end
+
+	gfx.setScissor()
 
 	local cur_time = love.timer.getTime()
 	if next_time <= cur_time then
