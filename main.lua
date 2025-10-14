@@ -1,12 +1,12 @@
-en, fr = require 'langs'
+langs = require 'langs'
 function getLocalizedText(key)
-	local data
-	if save.lang == 'en' then
-		data = en
-	elseif save.lang == 'fr' then
-		data = fr
-	end
-	return data and data[key] or key
+    local data
+    if save.lang == 'en' then
+        data = langs.en
+    elseif save.lang == 'fr' then
+        data = langs.fr
+    end
+    return data and data[key] or key
 end
 
 rng = love.math.newRandomGenerator()

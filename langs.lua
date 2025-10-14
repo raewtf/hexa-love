@@ -1,5 +1,5 @@
 -- TODO: localize window labels
-
+langs = {
 en = {
 	-- Straight transfer
 	["arcade"] = "Arcade Mode",
@@ -245,10 +245,10 @@ en = {
 	["options_keyboard"] = "Remap Keyboard",
 	["remap1"] = "Please press your preferred\n",
 	["remap2"] = " button.",
-	["up"] = "Up Directional",
-	["down"] = "Down Directional",
-	["left"] = "Left Directional",
-	["right"] = "Right Directional",
+	["upd"] = "Up Directional",
+	["downd"] = "Down Directional",
+	["leftd"] = "Left Directional",
+	["rightd"] = "Right Directional",
 	["primary"] = "Primary Action",
 	["secondary"] = "Secondary Action",
 	["tertiary"] = "Tertiary Action",
@@ -306,7 +306,7 @@ en = {
 	--["export"] = "export",
 	--["menu_save"] = "The menu can export.",
 	--["dash"] = " - ",
-}
+},
 
 fr = {
 	-- Straight transfer
@@ -333,7 +333,7 @@ fr = {
 	["credits2"] = "\n\n\n\nMerci à...\nVoxy, Toad, scizzorz, superfunc, mag,\nhunty, Scenic, Schyzo, DRD, Drew-Lo,\nIGDATC, et Panic!\n\nMerci aux merveilleux testeurs PC :\nOrchid, Maddy, Toad, Seb, Winter,\nVoxy, Diego, Roxby, et Scenic Route!",
 	["true"] = "OUI",
 	["false"] = "NON",
-["totalswaps"] = "Coups joués :",
+	["totalswaps"] = "Coups joués :",
 	["totalhexas"] = "HEXAs réalisés :",
 	["swapshexas"] = "Ratio Coups/HEXAs :",
 	["highscore"] = "Meilleur score :",
@@ -490,7 +490,7 @@ fr = {
 	["quit_sure_1"] = "Êtes-vous sûr de\nvouloir quitter ?",
 	["quit_sure_2_start"] = "(Vous pouvez quitter n'importe quand\nen appuyant deux fois sur Start\nen dehors de la fenêtre.)",
 	["quit_sure_2_esc"] = "(Vous pouvez quitter n'importe quand\nen appuyant deux fois sur Échap\nen dehors de la fenêtre.)",
-	["dpad"] = "La croix",
+	["dpad"] = "Croix",
 	["a"] = "A",
 	["b"] = "B",
 	["x"] = "X",
@@ -509,19 +509,19 @@ fr = {
 	["toggles_missions"] = " : missions persos. ",
 	["open_directory"] = " : ouvrir le dossier. ",
 	["open_command"] = " : ouvrir le créateur de mission. ",
-	["newgame"] = " : démarrer une nouvelle partie. ",
+	["newgame"] = " : nouvelle partie. ",
 	["quit_start"] = "Appuyez à nouveau sur Start pour quitter. À plus !",
 	["quit_esc"] = "Appuyez à nouveau sur Échap pour quitter. À plus !",
 	["scale"] = "Échelle minimum : ",
-	["clean_scaling"] = "Window Scaling: ",
-	["clean_scalingtrue"] = "Pixels entiers",
-	["clean_scalingfalse"] = "Pixels non-entiers",
+	["clean_scaling"] = "Échelle par pixels entiers : ",
+	["clean_scalingtrue"] = "OUI",
+	["clean_scalingfalse"] = "NON",
 	["reduceflashing"] = "Réduire clignotements : ",
 	["color"] = "Graphismes : ",
 	["color1"] = "Colorés",
 	["color2"] = "Classiques",
 	["hexaplex_color"] = "Style de l'HEXAPLEX : ",
-	["hexaplex_color_locked"] = "Débloquez\ndes styles\navec vos meilleurs\nscores !",
+	["hexaplex_color_locked"] = "Débloquez\nplus de styles\nen marquant\ndes points !",
 	["hexaplex_color_all"] = "Félicitations !\n\nVous êtes le maître\n d'HEXA !",
 	["unlocked"] = " débloqué",
 	["hexaplex_1"] = "Athlétique",
@@ -553,12 +553,12 @@ fr = {
 	["options_rumble"] = "Vibrations : ",
 	["options_visuals"] = "Options vidéo",
 	["options_keyboard"] = "Config. touches",
-	["remap1"] = "Appuyez sur la nouvelle\n",
-	["remap2"] = " touche.",
-	["up"] = "Direction (haut)",
-	["down"] = "Direction (bas)",
-	["left"] = "Direction (gauche)",
-	["right"] = "Direction (droite)",
+	["remap1"] = "Appuyez sur la nouvelle\ntouche ",
+	["remap2"] = " ",
+	["upd"] = "Direction (haut)",
+	["downd"] = "Direction (bas)",
+	["leftd"] = "Direction (gauche)",
+	["rightd"] = "Direction (droite)",
 	["primary"] = "Action principale",
 	["secondary"] = "Action secondaire",
 	["tertiary"] = "Action tertiaire",
@@ -578,7 +578,8 @@ fr = {
 	["scrolls"] = " : défiler. ",
 	["exports"] = " : exporter. ",
 	["directions_move"] = "Directions : déplacer. ",
-	["command_error"] = "La mission est impossible dans cette configuration !",
+	["command_error"] = "Cette configuration ne peut être résolue !",
+}
 }
 
-return en, fr
+return langs
