@@ -1,10 +1,10 @@
-en, fr = require 'langs'
+langs = require 'langs'
 function getLocalizedText(key)
 	local data
 	if save.lang == 'en' then
-		data = en
+		data = langs.en
 	elseif save.lang == 'fr' then
-		data = fr
+		data = langs.fr
 	end
 	return data and data[key] or key
 end
@@ -546,7 +546,7 @@ function love.draw()
 	if lbw then gfx.translate(((floor(ww / 2) * 2) - (400 * scale)) / 2, 0) end
 	if lbh then gfx.translate(0, ((floor(wh / 2) * 2) - (240 * scale)) / 2) end
 
-	gfx.setScissor((lbw and (((floor(ww / 2) * 2) - (400 * scale)) / 2)) or 0, (lbh and (((floor(wh / 2) * 2) - (240 * scale)) / 2)) or 0, 400 * scale, 240 * scale)
+	gfx.setScissor(((lbw and (((floor(ww / 2) * 2) - (400 * scale)) / 2)) or 0) + (vars.anim_shakies ~= nil and (floor(vars.shakies) * scale) or 0), ((lbh and (((floor(wh / 2) * 2) - (240 * scale)) / 2)) or 0) + (vars.anim_shakies_y ~= nil and (floor(vars.shakies_y) * scale) or 0), 400 * scale, 240 * scale)
 
 	gfx.scale(scale)
 

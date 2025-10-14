@@ -12,7 +12,7 @@ local text = getLocalizedText
 local title = {}
 
 function title:enter(current, ...)
-	love.window.setTitle('HEXA')
+	love.window.setTitle(text('hexa'))
 	local args = {...} -- Arguments passed in through the scene management will arrive here
 
 	assets = {
@@ -29,6 +29,7 @@ function title:enter(current, ...)
 		sfx_select = love.audio.newSource('audio/sfx/select.mp3', 'static'),
 		half = gfx.newImage('images/half.png'),
 		modal_small = gfx.newImage('images/' .. tostring(save.color) .. '/modal_small.png'),
+		timer = gfx.newImage('images/' .. tostring(save.color) .. '/timer.png'),
 	}
 
 	vars = {
@@ -235,24 +236,30 @@ function title:draw()
 		gfx.print(start(save.up) .. text('slash') .. start(save.down) .. text('move') .. start(save.primary) .. text('select'), 10 - floor(vars.title), 220)
 	end
 
-	if save.color == 1 then
-		gfx.setColor(love.math.colorFromBytes(255, 241, 232, 127))
-		gfx.setFont(assets.half_circle_inverted)
-	end
+	gfx.setColor(1, 1, 1, 1)
 
-	if time.hour < 23 then
-		gfx.print(((vars.dailyrunnable and '⏰ ') or '🔒 ') .. (24 - time.hour) .. text('hrs'), 265 + floor(vars.title), 90)
-	else
-		if time.min < 59 then
-			gfx.print(((vars.dailyrunnable and '⏰ ') or '🔒 ') .. (60 - time.min) .. text('mins'), 265 + floor(vars.title), 90)
+	gfx.draw(assets.logo, 0, 0)
+
+	if vars.selections[vars.selection] == 'dailyrun' then
+		gfx.draw(assets.timer, 206 + floor(vars.title), 82)
+
+		if save.color == 1 then
+			gfx.setColor(love.math.colorFromBytes(255, 241, 232, 255))
+			gfx.setFont(assets.half_circle_inverted)
+		end
+
+		if time.hour < 23 then
+			gfx.printf(((vars.dailyrunnable and '⏰ ') or '🔒 ') .. (24 - time.hour) .. text('hrs'), 0 + floor(vars.title), 90, 478, 'center')
 		else
-			gfx.print(((vars.dailyrunnable and '⏰ ') or '🔒 ') .. (60 - time.sec) .. text('s'), 265 + floor(vars.title), 90)
+			if time.min < 59 then
+				gfx.printf(((vars.dailyrunnable and '⏰ ') or '🔒 ') .. (60 - time.min) .. text('mins'), 0 + floor(vars.title), 90, 478, 'center')
+			else
+				gfx.printf(((vars.dailyrunnable and '⏰ ') or '🔒 ') .. (60 - time.sec) .. text('secs'), 0 + floor(vars.title), 90, 478, 'center')
+			end
 		end
 	end
 
 	gfx.setColor(1, 1, 1, 1)
-
-	gfx.draw(assets.logo, 0, 0)
 
 	if vars.handler == 'quit' then
 		gfx.draw(assets.half, 0, 0)

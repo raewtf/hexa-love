@@ -4,7 +4,7 @@ local text = getLocalizedText
 local howtoplay = {}
 
 function howtoplay:enter(current, ...)
-	love.window.setTitle('HEXA — How to Play')
+	love.window.setTitle(text('hexa') .. text('dash_long') .. text('howtoplay'))
 	local args = {...} -- Arguments passed in through the scene management will arrive here
 
 	assets = {

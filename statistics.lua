@@ -4,7 +4,7 @@ local text = getLocalizedText
 local statistics = {}
 
 function statistics:enter(current, ...)
-	love.window.setTitle('HEXA — Statistics')
+	love.window.setTitle(text('hexa') .. text('dash_long') .. text('statistics'))
 	local args = {...} -- Arguments passed in through the scene management will arrive here
 
 	assets = {

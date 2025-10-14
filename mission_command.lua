@@ -11,7 +11,7 @@ local tris_y = {70, 70, 70, 70, 70, 120, 120, 120, 120, 120, 120, 120, 170, 170,
 local tris_flip = {true, false, true, false, true, true, false, true, false, true, false, true, false, true, false, true, false, true, false}
 
 function mission_command:enter(current, ...)
-	love.window.setTitle('HEXA — Mission Command')
+	love.window.setTitle(text('hexa') .. text('dash_long') .. text('mission_command'))
 	local args = {...} -- Arguments passed in through the scene management will arrive here
 
 	assets = {
@@ -28,7 +28,7 @@ function mission_command:enter(current, ...)
 		x = gfx.newImage('images/' .. tostring(save.color) .. '/x.png'),
 		command_banner = gfx.newImage('images/' .. tostring(save.color) .. '/command_banner.png'),
 		command_hide = gfx.newImage('images/' .. tostring(save.color) .. '/command_hide.png'),
-		export_complete = gfx.newImage('images/' .. tostring(save.color) .. '/export_complete.png'),
+		export_complete = gfx.newImage('images/' .. tostring(save.color) .. '/export_complete_' .. tostring(save.lang) .. '.png'),
 		cursor_white = gfx.newImage('images/' .. tostring(save.color) .. '/cursor_white.png'),
 		cursor_black = gfx.newImage('images/' .. tostring(save.color) .. '/cursor_black.png'),
 		powerup_bomb_up = gfx.newImage('images/' .. tostring(save.color) .. '/powerup_bomb_up.png'),
@@ -848,9 +848,11 @@ function mission_command:draw()
 		end
 	else
 		if save.gamepad then
-			gfx.print(text('dpad') .. text('moves') .. text('a') .. text('select') .. text('b') .. text('back') .. text('x') .. text('exports'), 410 + x, 220)
+			gfx.print(text('dpad') .. text('moves') .. text('a') .. text('select'), 410 + x, 206)
+			gfx.print(text('b') .. text('back') .. text('x') .. text('exports'), 410 + x, 220)
 		else
-			gfx.print(text('directions_move') .. start(save.primary) .. text('select') .. start(save.secondary) .. text('back') .. start(save.tertiary) .. text('exports'), 410 + x, 220)
+			gfx.print(text('directions_move') .. start(save.primary) .. text('select'), 410 + x, 206)
+			gfx.print(start(save.secondary) .. text('back') .. start(save.tertiary) .. text('exports'), 410 + x, 220)
 		end
 	end
 

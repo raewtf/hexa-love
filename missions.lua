@@ -7,7 +7,7 @@ missions_list = require 'missions_list'
 mission_command = require('mission_command')
 
 function missions:enter(current, ...)
-	love.window.setTitle('HEXA — Mission Mode')
+	love.window.setTitle(text('hexa') .. text('dash_long') .. text('missions'))
 	local args = {...} -- Arguments passed in through the scene management will arrive here
 
 	assets = {

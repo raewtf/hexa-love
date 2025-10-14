@@ -4,7 +4,7 @@ local text = getLocalizedText
 local jukebox = {}
 
 function jukebox:enter(current, ...)
-	love.window.setTitle('HEXA — Jukebox')
+	love.window.setTitle(text('hexa') .. text('dash_long') .. text('jukebox'))
 	local args = {...} -- Arguments passed in through the scene management will arrive here
 
 	assets = {

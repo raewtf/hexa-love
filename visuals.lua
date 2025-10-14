@@ -13,7 +13,7 @@ function visuals:reload_images()
 end
 
 function visuals:enter(current, ...)
-	love.window.setTitle('HEXA — Video Options')
+	love.window.setTitle(text('hexa') .. text('dash_long') .. text('options_visuals'))
 	local args = {...} -- Arguments passed in through the scene management will arrive here
 
 	assets = {
@@ -95,6 +95,82 @@ function visuals:keypressed(key)
 			scenemanager:transitionscene(options, 'visuals')
 			vars.selection = 0
 		elseif key == save.primary then
+			if vars.selections[vars.selection] == 'scale' then
+				save.scale = save.scale + 1
+				if save.scale > 4 then
+					save.scale = 1
+				end
+				rescale(save.scale)
+				playsound(assets.sfx_select)
+			elseif vars.selections[vars.selection] == 'clean_scaling' then
+				save.clean_scaling = not save.clean_scaling
+				playsound(assets.sfx_select)
+				local w, h, _ = love.window.getMode()
+				love.resize(w, h)
+			elseif vars.selections[vars.selection] == 'reduceflashing' then
+				save.reduceflashing = not save.reduceflashing
+				playsound(assets.sfx_select)
+			elseif vars.selections[vars.selection] == 'color' then
+				save.color = save.color + 1
+				if save.color > 2 then
+					save.color = 1
+				end
+				self:reload_images()
+				playsound(assets.sfx_select)
+			elseif vars.selections[vars.selection] == 'hexaplex_color' then
+				if save.color == 1 then
+					save.hexaplex_color = save.hexaplex_color + 1
+					local score = save.score
+					if save.hard_score > save.score then score = save.hard_score end
+					if save.hexaplex_color > min(1 + floor(score / 1000), 26) then
+						save.hexaplex_color = 1
+					end
+					self:reload_images()
+					playsound(assets.sfx_select)
+				elseif save.color == 2 then
+					shakies()
+					playsound(assets.sfx_bonk)
+				end
+			end
+		elseif key == save.left then
+			if vars.selections[vars.selection] == 'scale' then
+				save.scale = save.scale - 1
+				if save.scale < 1 then
+					save.scale = 4
+				end
+				rescale(save.scale)
+				playsound(assets.sfx_select)
+			elseif vars.selections[vars.selection] == 'clean_scaling' then
+				save.clean_scaling = not save.clean_scaling
+				playsound(assets.sfx_select)
+				local w, h, _ = love.window.getMode()
+				love.resize(w, h)
+			elseif vars.selections[vars.selection] == 'reduceflashing' then
+				save.reduceflashing = not save.reduceflashing
+				playsound(assets.sfx_select)
+			elseif vars.selections[vars.selection] == 'color' then
+				save.color = save.color - 1
+				if save.color < 1 then
+					save.color = 2
+				end
+				self:reload_images()
+				playsound(assets.sfx_select)
+			elseif vars.selections[vars.selection] == 'hexaplex_color' then
+				if save.color == 1 then
+					save.hexaplex_color = save.hexaplex_color - 1
+					local score = save.score
+					if save.hard_score > save.score then score = save.hard_score end
+					if save.hexaplex_color < 1 then
+						save.hexaplex_color = min(1 + floor(score / 1000), 26)
+					end
+					self:reload_images()
+					playsound(assets.sfx_select)
+				elseif save.color == 2 then
+					shakies()
+					playsound(assets.sfx_bonk)
+				end
+			end
+		elseif key == save.right then
 			if vars.selections[vars.selection] == 'scale' then
 				save.scale = save.scale + 1
 				if save.scale > 4 then

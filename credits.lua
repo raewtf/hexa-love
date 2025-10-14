@@ -4,7 +4,7 @@ local text = getLocalizedText
 local credits = {}
 
 function credits:enter(current, ...)
-	love.window.setTitle('HEXA — Credits')
+	love.window.setTitle(text('hexa') .. text('dash_long') .. text('credits'))
 	local args = {...} -- Arguments passed in through the scene management will arrive here
 
 	assets = {
