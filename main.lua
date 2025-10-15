@@ -150,7 +150,9 @@ hexaplex_whites = {
 	{love.math.colorFromBytes(255, 241, 232, 255)},
 }
 
-local half_circle = gfx.newImageFont('fonts/half-circle-inverted.png', '0123456789 !"#$%&\'()*+,-./:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\\]™_`abcdefghijklmnopqrstuvwxyz{|}~≠⏰🔒')
+local half_circle = gfx.newImageFont('fonts/half-circle-inverted.png', '0123456789 !"#$%&\'()*+,-./:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\\]™_`abcdefghijklmnopqrstuvwxyz{|}~≠⏰🔒ÀÇÉÈÊÎÔÛàçéèêîôû')
+icon_color = love.image.newImageData('images/2/icon.png')
+icon_peedee = love.image.newImageData('images/1/icon.png')
 
 function savecheck()
 	-- old save file check
@@ -405,6 +407,7 @@ end
 
 function love.load()
 	savecheck()
+	love.window.setIcon((save.color == 2 and icon_color or icon_peedee))
 	-- CHEEVOS: run init function here
 
 	if love.filesystem.getInfo('missions') == nil then
