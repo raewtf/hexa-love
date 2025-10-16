@@ -81,7 +81,7 @@ function mission_command:enter(current, ...)
 		tri = 1,
 		scroll_x_target = 400,
 		scroll_x = 400,
-		error_x_target = -355,
+		error_x_target = -400,
 		error_x = -355,
 		modal = 400,
 		powerup = 1,
@@ -245,7 +245,7 @@ function mission_command:keypressed(key)
 					vars.scroll_x_target = 800
 					playsound(assets.sfx_select)
 					if mission_command:check_validity() then
-						vars.error_x_target = -355
+						vars.error_x_target = -400
 					elseif vars.error_x_target ~= 5 then
 						vars.error_x_target = 5
 						playsound(assets.sfx_bonk)
@@ -511,7 +511,7 @@ function mission_command:keypressed(key)
 				vars.mode = 'start'
 				vars.handler = 'start'
 				vars.scroll_x_target = 400
-				vars.error_x_target = -355
+				vars.error_x_target = -400
 				playsound(assets.sfx_back)
 			elseif key == save.tertiary then
 				if mission_command:check_validity() then
@@ -655,7 +655,7 @@ function mission_command:keypressed(key)
 				mission_command:close_selector(true)
 				playsound(assets.sfx_select)
 				if mission_command:check_validity() then
-					vars.error_x_target = -355
+					vars.error_x_target = -400
 				elseif vars.error_x_target ~= 5 then
 					vars.error_x_target = 5
 					playsound(assets.sfx_bonk)
@@ -664,7 +664,7 @@ function mission_command:keypressed(key)
 				mission_command:close_selector(false)
 				playsound(assets.sfx_back)
 				if mission_command:check_validity() then
-					vars.error_x_target = -355
+					vars.error_x_target = -400
 				elseif vars.error_x_target ~= 5 then
 					vars.error_x_target = 5
 					playsound(assets.sfx_bonk)
