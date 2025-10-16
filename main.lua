@@ -151,6 +151,7 @@ hexaplex_whites = {
 }
 
 local half_circle = gfx.newImageFont('fonts/half-circle-inverted.png', '0123456789 !"#$%&\'()*+,-./:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\\]™_`abcdefghijklmnopqrstuvwxyz{|}~≠⏰🔒ÀÇÉÈÊÎÔÛàçéèêîôû')
+local text
 icon_color = love.image.newImageData('images/2/icon.png')
 icon_peedee = love.image.newImageData('images/1/icon.png')
 
@@ -408,6 +409,8 @@ end
 function love.load()
 	savecheck()
 	love.window.setIcon((save.color == 2 and icon_color or icon_peedee))
+	text = getLocalizedText
+
 	-- CHEEVOS: run init function here
 
 	if love.filesystem.getInfo('missions') == nil then
@@ -423,36 +426,38 @@ function love.load()
 end
 
 function shakies(time, int)
+	if time == nil then time = 0.5 end
+	if int == nil then int = 20 end
 	if save.reduceflashing then return end
 	if vars.anim_shakies ~= nil then
 		timer.cancel(vars.anim_shakies)
 		timer.cancel(vars.anim_shakies_stop)
 	end
-	vars.shakies = int or 10
-	vars.anim_shakies = timer.tween(time or 0.75, vars, {shakies = 0}, 'out-elastic', function()
-		vars.shakies = nil
+	vars.shakies = -int
+	vars.anim_shakies = timer.tween(time, vars, {shakies = 0}, 'out-elastic')
+	vars.anim_shakies_stop = timer.after((time / 2), function()
 		timer.cancel(vars.anim_shakies)
 		vars.anim_shakies = nil
-	end)
-	vars.anim_shakies_stop = timer.after((time or 0.75 / 1.5), function()
-		timer.cancel(vars.anim_shakies)
-		vars.anim_shakies = nil
+		timer.cancel(vars.anim_shakies_stop)
 		vars.anim_shakies_stop = nil
 		vars.shakies = 0
 	end)
 end
 
 function shakies_y(time, int)
+	if time == nil then time = 0.75 end
+	if int == nil then int = 20 end
 	if save.reduceflashing then return end
 	if vars.anim_shakies_y ~= nil then
 		timer.cancel(vars.anim_shakies_y)
 		timer.cancel(vars.anim_shakies_y_stop)
 	end
-	vars.shakies_y = int or 10
-	vars.anim_shakies_y = timer.tween(time or 0.75, vars, {shakies_y = 0}, 'out-elastic')
-	vars.anim_shakies_y_stop = timer.after((time or 0.75 / 1.5), function()
+	vars.shakies_y = -int
+	vars.anim_shakies_y = timer.tween(time, vars, {shakies_y = 0}, 'out-elastic')
+	vars.anim_shakies_y_stop = timer.after((time / 2), function()
 		timer.cancel(vars.anim_shakies_y)
 		vars.anim_shakies_y = nil
+		timer.cancel(vars.anim_shakies_y_stop)
 		vars.anim_shakies_y_stop = nil
 		vars.shakies_y = 0
 	end)
@@ -465,6 +470,13 @@ function love.keypressed(key)
 		save.gamepad = false
 	end
 	gamepad = false
+	if vars ~= nil and vars.sequence ~= nil and vars.sequenceindex ~= nil then
+		if vars.sequence[vars.sequenceindex] == key then
+			vars.sequenceindex = vars.sequenceindex + 1
+		else
+			vars.sequenceindex = 1
+		end
+	end
 	if key == 'escape' and vars ~= nil then
 		if not vars.can_do_stuff and vars.handler ~= 'quit' and vars.handler ~= 'keyboard' then
 			quit = quit + 1
@@ -555,11 +567,10 @@ function love.draw()
 
 	if vars ~= nil then
 		if vars.anim_shakies ~= nil then
-			gfx.translate(floor(vars.shakies), offsety)
+			gfx.translate(floor(vars.shakies), 0)
 		end
-		offsetx, offsety = 0 + floor(vars.shakies or 0), 0 + floor(vars.shakies_y or 0)
 		if vars.anim_shakies_y ~= nil then
-			gfx.translate(offsetx, floor(vars.shakies_y))
+			gfx.translate(0, floor(vars.shakies_y))
 		end
 	end
 end

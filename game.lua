@@ -111,10 +111,8 @@ function game:enter(current, ...)
 		handlers = 'game', -- can be game, losing, or lose, or pause. or nothing
 		messagerand = rng:random(1, 10),
 		white_is_white = false,
-		-- TODO: vvv remove vvv
-		arcade_messages = {'You\'re on your way to\nruler of the universe!', 'Match those HEXAs,\nmatch \'em real good!', 'Hexagons are the\nbestagons.', 'All will bow to their\nnew hexagonal ruler.', 'Hit more Bombs next time!', 'Go for a bigger score;\nconquer more planets!', 'Hit those 2x tris!', 'Those squares never knew\nwhat hit \'em.', 'Mission clear, over.\nReport back to base.', 'Starship HEXA ready for\nthe next launch!'},
-		zen_messages = {'Good practice run! Now,\ntime for the real thing!', 'Make sure to take some\ngood, deep breaths.', 'Did you get a good amount\nof sleep last night?', 'Make sure you\'re drinking\nenough water lately!', 'Come back any time for\nchill HEXA-matching!', 'See you later!', 'Have a good day!', 'Have you heard of\n"hexaflexagons"?', 'Let\'s gooooooo!!', 'Go grab a snack or\nsomethin\'!'},
-		dailyrun_messages = {'Check back in\ntomorrow!', 'See you later!', 'Good run today!', 'HEXA-good run!', 'Now get out there &\ntake on the day!', 'Nice work today!', 'See you tomorrow!', 'Have a good rest\nof your day!', 'Check how your high\nscores compare!', 'Prepare for the day ahead!'},
+		sequence = {save.right, save.up, save.secondary, save.down, save.up, save.secondary, save.down, save.up, save.secondary},
+		sequenceindex = 1,
 	}
 
 	for i = 1, 19 do
@@ -663,6 +661,13 @@ function game:update(dt)
 	end
 	if vars.can_do_stuff then
 		save.gametime = save.gametime + 1
+	end
+	if vars.sequenceindex > #vars.sequence and not vars.boomed then
+		if vars.can_do_stuff then
+			self:boom(true)
+		else
+			vars.sequenceindex = 1
+		end
 	end
 end
 
@@ -1258,9 +1263,6 @@ function game:boom(boomed)
 			rumble(1, 1, 0.8)
 			shakies()
 			shakies_y()
-			if boomed then
-				vars.boomed = true
-			end
 			for i = 1, 19 do
 				newcolor, newpowerup = self:randomizetri()
 				vars.tris[i] = {index = i, color = newcolor, powerup = newpowerup}
@@ -1273,6 +1275,10 @@ function game:boom(boomed)
 				vars.anim_label = timer.tween(1.2, vars, {label = -200}, 'linear', function()
 					assets.draw_label = nil
 				end)
+			end
+			if boomed then
+				vars.boomed = true
+				self:check()
 			end
 		end
 	end

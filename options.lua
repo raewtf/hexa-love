@@ -445,7 +445,7 @@ function options:draw()
 			button = 'quaternary'
 		end
 
-		gfx.printf(text('remap1') .. text(button) .. text('remap2'), 0, 62, 400, 'center')
+		gfx.printf(text('remap1') .. text(button .. 'd') .. text('remap2'), 0, 62, 400, 'center')
 
 		if save.color == 1 then
 			gfx.setColor(love.math.colorFromBytes(255, 241, 232, 127))
