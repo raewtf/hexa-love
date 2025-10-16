@@ -4,7 +4,7 @@ local text = getLocalizedText
 local statistics = {}
 
 function statistics:enter(current, ...)
-	love.window.setTitle('HEXA — Statistics')
+	love.window.setTitle(text('hexa') .. text('dash_long') .. text('statistics'))
 	local args = {...} -- Arguments passed in through the scene management will arrive here
 
 	assets = {
@@ -13,8 +13,8 @@ function statistics:enter(current, ...)
 		fg = gfx.newImage('images/' .. tostring(save.color) .. '/fg.png'),
 		bg = gfx.newImage('images/' .. tostring(save.color) .. '/bg.png'),
 		img25 = gfx.newImage('images/' .. tostring(save.color) .. '/25.png'),
-		full_circle_inverted = gfx.newImageFont('fonts/full-circle-inverted.png', '0123456789 !"#$%&\'()*+,-./:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\\]™_`abcdefghijklmnopqrstuvwxyz{|}~≠🎵'),
-		half_circle_inverted = gfx.newImageFont('fonts/half-circle-inverted.png', '0123456789 !"#$%&\'()*+,-./:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\\]™_`abcdefghijklmnopqrstuvwxyz{|}~≠⏰🔒'),
+		full_circle_inverted = gfx.newImageFont('fonts/full-circle-inverted.png', '0123456789 !"#$%&\'()*+,-./:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\\]™_`abcdefghijklmnopqrstuvwxyz{|}~≠🎵ÀÇÉÈÊÎÔÛàçéèêîôû'),
+		half_circle_inverted = gfx.newImageFont('fonts/half-circle-inverted.png', '0123456789 !"#$%&\'()*+,-./:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\\]™_`abcdefghijklmnopqrstuvwxyz{|}~≠⏰🔒ÀÇÉÈÊÎÔÛàçéèêîôû'),
 		sfx_back = love.audio.newSource('audio/sfx/back.mp3', 'static'),
 	}
 

@@ -16,9 +16,8 @@ function game:enter(current, ...)
 	assets = {
 		cursor = gfx.newImage('images/' ..tostring(save.color) .. '/cursor.png'),
 		cursor_pick = gfx.newImage('images/' ..tostring(save.color) .. '/cursor_pick.png'),
-		full_circle_inverted = gfx.newImageFont('fonts/full-circle-inverted.png', '0123456789 !"#$%&\'()*+,-./:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\\]™_`abcdefghijklmnopqrstuvwxyz{|}~≠🎵'),
-		half_circle_inverted = gfx.newImageFont('fonts/half-circle-inverted.png', '0123456789 !"#$%&\'()*+,-./:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\\]™_`abcdefghijklmnopqrstuvwxyz{|}~≠⏰🔒'),
-		full_circle_outline = gfx.newImageFont('fonts/full-circle-outline.png', '0123456789 !"#$%&\'()*+,-./:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\\]™_`abcdefghijklmnopqrstuvwxyz{|}~≠🎵', -2),
+		full_circle_inverted = gfx.newImageFont('fonts/full-circle-inverted.png', '0123456789 !"#$%&\'()*+,-./:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\\]™_`abcdefghijklmnopqrstuvwxyz{|}~≠🎵ÀÇÉÈÊÎÔÛàçéèêîôû'),
+		half_circle_inverted = gfx.newImageFont('fonts/half-circle-inverted.png', '0123456789 !"#$%&\'()*+,-./:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\\]™_`abcdefghijklmnopqrstuvwxyz{|}~≠⏰🔒ÀÇÉÈÊÎÔÛàçéèêîôû'),
 		clock = gfx.newImageFont('fonts/clock.png', '0123456789:'),
 		hexa = gfx.newImage('images/' .. tostring(save.color) .. '/hexa_' .. tostring(save.reduceflashing) .. '.png'),
 		sfx_move = love.audio.newSource('audio/sfx/move.mp3', 'static'),
@@ -43,15 +42,15 @@ function game:enter(current, ...)
 		label_3 = gfx.newImage('images/' .. tostring(save.color) .. '/label_3.png'),
 		label_2 = gfx.newImage('images/' .. tostring(save.color) .. '/label_2.png'),
 		label_1 = gfx.newImage('images/' .. tostring(save.color) .. '/label_1.png'),
-		label_go = gfx.newImage('images/' .. tostring(save.color) .. '/label_go.png'),
-		label_bomb = gfx.newImage('images/' .. tostring(save.color) .. '/label_bomb.png'),
-		label_double = gfx.newImage('images/' .. tostring(save.color) .. '/label_double.png'),
+		label_go = gfx.newImage('images/' .. tostring(save.color) .. '/label_go_' .. tostring(save.lang) .. '.png'),
+		label_bomb = gfx.newImage('images/' .. tostring(save.color) .. '/label_bomb_' .. tostring(save.lang) .. '.png'),
+		label_double = gfx.newImage('images/' .. tostring(save.color) .. '/label_double_' .. tostring(save.lang) .. '.png'),
 		modal = gfx.newImage('images/' .. tostring(save.color) .. '/modal.png'),
 		modal_canvas = gfx.newCanvas(400, 240),
 		bg_tile = gfx.newImage('images/' .. tostring(save.color) ..'/bg_tile.png'),
 		stars = gfx.newImage('images/' .. tostring(save.color) .. '/stars_large.png'),
 		half = gfx.newImage('images/half.png'),
-		mission_complete = gfx.newImage('images/' .. tostring(save.color) .. '/mission_complete.png'),
+		mission_complete = gfx.newImage('images/' .. tostring(save.color) .. '/mission_complete_' .. tostring(save.lang) .. '.png'),
 		gray = gfx.newImage('images/' .. tostring(save.color) .. tostring(save.color == 1 and '/tris/' .. save.hexaplex_color or '') .. '/gray.png'),
 		grid_up = gfx.newImage('images/grid_up.png'),
 		grid_down = gfx.newImage('images/grid_down.png'),
@@ -145,13 +144,13 @@ function game:enter(current, ...)
 	end)
 
 	if vars.mode == 'arcade' then
-		love.window.setTitle('HEXA — Arcade Mode')
+		love.window.setTitle(text('hexa') .. text('dash_long') .. text('arcade'))
 	elseif vars.mode == 'zen' then
-		love.window.setTitle('HEXA — Chill Mode')
+		love.window.setTitle(text('hexa') .. text('dash_long') .. text('zen'))
 	elseif vars.mode == 'dailyrun' then
-		love.window.setTitle('HEXA — Daily Run')
+		love.window.setTitle(text('hexa') .. text('dash_long') .. text('dailyrun'))
 	elseif vars.mode == 'picture' or vars.mode == 'time' or vars.mode == 'logic' or vars.mode == 'speedrun' then
-		love.window.setTitle('HEXA — Mission Mode')
+		love.window.setTitle(text('hexa') .. text('dash_long') .. text('missions'))
 	end
 
 	if vars.mode == 'arcade' then

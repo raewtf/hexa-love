@@ -11,24 +11,24 @@ local tris_y = {70, 70, 70, 70, 70, 120, 120, 120, 120, 120, 120, 120, 170, 170,
 local tris_flip = {true, false, true, false, true, true, false, true, false, true, false, true, false, true, false, true, false, true, false}
 
 function mission_command:enter(current, ...)
-	love.window.setTitle('HEXA — Mission Command')
+	love.window.setTitle(text('hexa') .. text('dash_long') .. text('mission_command'))
 	local args = {...} -- Arguments passed in through the scene management will arrive here
 
 	assets = {
 
-		full_circle = gfx.newImageFont('fonts/full-circle.png', '0123456789 !"#$%&\'()*+,-./:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\\]™_`abcdefghijklmnopqrstuvwxyz{|}~≠🎵'),
-		half_circle = gfx.newImageFont('fonts/half-circle.png', '0123456789 !"#$%&\'()*+,-./:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\\]™_`abcdefghijklmnopqrstuvwxyz{|}~≠⏰🔒'),
-		full_circle_inverted = gfx.newImageFont('fonts/full-circle-inverted.png', '0123456789 !"#$%&\'()*+,-./:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\\]™_`abcdefghijklmnopqrstuvwxyz{|}~≠🎵'),
-		half_circle_inverted = gfx.newImageFont('fonts/half-circle-inverted.png', '0123456789 !"#$%&\'()*+,-./:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\\]™_`abcdefghijklmnopqrstuvwxyz{|}~≠⏰🔒'),
-		full_circle_outline = gfx.newImageFont('fonts/full-circle-outline.png', '0123456789 !"#$%&\'()*+,-./:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\\]™_`abcdefghijklmnopqrstuvwxyz{|}~≠🎵', -2),
-		full_circle_outline_color = gfx.newImageFont('fonts/full-circle-outline-color.png', '0123456789 !"#$%&\'()*+,-./:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\\]™_`abcdefghijklmnopqrstuvwxyz{|}~≠🎵', -2),
+		full_circle = gfx.newImageFont('fonts/full-circle.png', '0123456789 !"#$%&\'()*+,-./:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\\]™_`abcdefghijklmnopqrstuvwxyz{|}~≠🎵ÀÇÉÈÊÎÔÛàçéèêîôû'),
+		half_circle = gfx.newImageFont('fonts/half-circle.png', '0123456789 !"#$%&\'()*+,-./:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\\]™_`abcdefghijklmnopqrstuvwxyz{|}~≠⏰🔒ÀÇÉÈÊÎÔÛàçéèêîôû'),
+		full_circle_inverted = gfx.newImageFont('fonts/full-circle-inverted.png', '0123456789 !"#$%&\'()*+,-./:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\\]™_`abcdefghijklmnopqrstuvwxyz{|}~≠🎵ÀÇÉÈÊÎÔÛàçéèêîôû'),
+		half_circle_inverted = gfx.newImageFont('fonts/half-circle-inverted.png', '0123456789 !"#$%&\'()*+,-./:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\\]™_`abcdefghijklmnopqrstuvwxyz{|}~≠⏰🔒ÀÇÉÈÊÎÔÛàçéèêîôû'),
+		full_circle_outline = gfx.newImageFont('fonts/full-circle-outline.png', '0123456789 !"#$%&\'()*+,-./:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\\]™_`abcdefghijklmnopqrstuvwxyz{|}~≠🎵ÀÇÉÈÊÎÔÛàçéèêîôû', -2),
+		full_circle_outline_color = gfx.newImageFont('fonts/full-circle-outline-color.png', '0123456789 !"#$%&\'()*+,-./:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\\]™_`abcdefghijklmnopqrstuvwxyz{|}~≠🎵ÀÇÉÈÊÎÔÛàçéèêîôû', -2),
 		mcsel = gfx.newImage('images/mcsel.png'),
 		ui = gfx.newImage('images/' .. tostring(save.color) .. '/ui_create.png'),
 		modal = gfx.newImage('images/' .. tostring(save.color) .. '/modal_small.png'),
 		x = gfx.newImage('images/' .. tostring(save.color) .. '/x.png'),
 		command_banner = gfx.newImage('images/' .. tostring(save.color) .. '/command_banner.png'),
 		command_hide = gfx.newImage('images/' .. tostring(save.color) .. '/command_hide.png'),
-		export_complete = gfx.newImage('images/' .. tostring(save.color) .. '/export_complete.png'),
+		export_complete = gfx.newImage('images/' .. tostring(save.color) .. '/export_complete_' .. tostring(save.lang) .. '.png'),
 		cursor_white = gfx.newImage('images/' .. tostring(save.color) .. '/cursor_white.png'),
 		cursor_black = gfx.newImage('images/' .. tostring(save.color) .. '/cursor_black.png'),
 		powerup_bomb_up = gfx.newImage('images/' .. tostring(save.color) .. '/powerup_bomb_up.png'),
@@ -848,9 +848,11 @@ function mission_command:draw()
 		end
 	else
 		if save.gamepad then
-			gfx.print(text('dpad') .. text('moves') .. text('a') .. text('select') .. text('b') .. text('back') .. text('x') .. text('exports'), 410 + x, 220)
+			gfx.print(text('dpad') .. text('moves') .. text('a') .. text('select'), 410 + x, 206)
+			gfx.print(text('b') .. text('back') .. text('x') .. text('exports'), 410 + x, 220)
 		else
-			gfx.print(text('directions_move') .. start(save.primary) .. text('select') .. start(save.secondary) .. text('back') .. start(save.tertiary) .. text('exports'), 410 + x, 220)
+			gfx.print(text('directions_move') .. start(save.primary) .. text('select'), 410 + x, 206)
+			gfx.print(start(save.secondary) .. text('back') .. start(save.tertiary) .. text('exports'), 410 + x, 220)
 		end
 	end
 

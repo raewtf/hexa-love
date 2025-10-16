@@ -6,7 +6,7 @@ local options = {}
 visuals = require('visuals')
 
 function options:enter(current, ...)
-	love.window.setTitle('HEXA — Options')
+	love.window.setTitle(text('hexa') .. text('dash_long') .. text('options'))
 	local args = {...} -- Arguments passed in through the scene management will arrive here
 
 	assets = {
@@ -26,8 +26,8 @@ function options:enter(current, ...)
 		fg_hexa_2_5 = gfx.newImage('images/1/fg_hexa_2_5.png'),
 		img25 = gfx.newImage('images/' .. tostring(save.color) .. '/25.png'),
 		bg = gfx.newImage('images/' .. tostring(save.color) .. '/bg.png'),
-		full_circle_inverted = gfx.newImageFont('fonts/full-circle-inverted.png', '0123456789 !"#$%&\'()*+,-./:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\\]™_`abcdefghijklmnopqrstuvwxyz{|}~≠🎵'),
-		half_circle_inverted = gfx.newImageFont('fonts/half-circle-inverted.png', '0123456789 !"#$%&\'()*+,-./:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\\]™_`abcdefghijklmnopqrstuvwxyz{|}~≠⏰🔒'),
+		full_circle_inverted = gfx.newImageFont('fonts/full-circle-inverted.png', '0123456789 !"#$%&\'()*+,-./:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\\]™_`abcdefghijklmnopqrstuvwxyz{|}~≠🎵ÀÇÉÈÊÎÔÛàçéèêîôû'),
+		half_circle_inverted = gfx.newImageFont('fonts/half-circle-inverted.png', '0123456789 !"#$%&\'()*+,-./:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\\]™_`abcdefghijklmnopqrstuvwxyz{|}~≠⏰🔒ÀÇÉÈÊÎÔÛàçéèêîôû'),
 		sfx_move = love.audio.newSource('audio/sfx/swap.mp3', 'static'),
 		sfx_select = love.audio.newSource('audio/sfx/select.mp3', 'static'),
 		sfx_back = love.audio.newSource('audio/sfx/back.mp3', 'static'),
@@ -192,6 +192,92 @@ function options:keypressed(key)
 					end
 				end
 				playsound(assets.sfx_select)
+			elseif key == save.left then
+				if vars.selections[vars.selection] == "music" then
+					save.music = save.music - 1
+					if save.music < 0 then
+						save.music = 5
+					end
+					if save.music > 0 then
+						if music ~= nil then
+							volume = {save.music / 5}
+						else
+							newmusic('audio/music/title.mp3', true)
+						end
+					else
+						fademusic(1)
+					end
+					playsound(assets.sfx_select)
+				elseif vars.selections[vars.selection] == "sfx" then
+					save.sfx = save.sfx - 1
+					if save.sfx < 0 then
+						save.sfx = 5
+					end
+					playsound(assets.sfx_select)
+				elseif vars.selections[vars.selection] == 'lang' then
+					if save.lang == 'en' then
+						save.lang = 'fr'
+					elseif save.lang == 'fr' then
+						save.lang = 'en'
+					end
+					playsound(assets.sfx_select)
+				elseif vars.selections[vars.selection] == 'rumble' then
+					save.rumble = not save.rumble
+					rumble(1, 1, 0.2)
+					playsound(assets.sfx_select)
+				elseif vars.selections[vars.selection] == "flip" then
+					save.flip = not save.flip
+					playsound(assets.sfx_select)
+				elseif vars.selections[vars.selection] == "skipfanfare" then
+					save.skipfanfare = not save.skipfanfare
+					playsound(assets.sfx_select)
+				elseif vars.selections[vars.selection] == "hardmode" then
+					save.hardmode = not save.hardmode
+					playsound(assets.sfx_select)
+				end
+			elseif key == save.right then
+				if vars.selections[vars.selection] == "music" then
+					save.music = save.music + 1
+					if save.music > 5 then
+						save.music = 0
+					end
+					if save.music > 0 then
+						if music ~= nil then
+							volume = {save.music / 5}
+						else
+							newmusic('audio/music/title.mp3', true)
+						end
+					else
+						fademusic(1)
+					end
+					playsound(assets.sfx_select)
+				elseif vars.selections[vars.selection] == "sfx" then
+					save.sfx = save.sfx + 1
+					if save.sfx > 5 then
+						save.sfx = 0
+					end
+					playsound(assets.sfx_select)
+				elseif vars.selections[vars.selection] == 'lang' then
+					if save.lang == 'en' then
+						save.lang = 'fr'
+					elseif save.lang == 'fr' then
+						save.lang = 'en'
+					end
+					playsound(assets.sfx_select)
+				elseif vars.selections[vars.selection] == 'rumble' then
+					save.rumble = not save.rumble
+					rumble(1, 1, 0.2)
+					playsound(assets.sfx_select)
+				elseif vars.selections[vars.selection] == "flip" then
+					save.flip = not save.flip
+					playsound(assets.sfx_select)
+				elseif vars.selections[vars.selection] == "skipfanfare" then
+					save.skipfanfare = not save.skipfanfare
+					playsound(assets.sfx_select)
+				elseif vars.selections[vars.selection] == "hardmode" then
+					save.hardmode = not save.hardmode
+					playsound(assets.sfx_select)
+				end
 			end
 		elseif vars.handler == 'remap' then
 			valid = true

@@ -4,7 +4,7 @@ local text = getLocalizedText
 local howtoplay = {}
 
 function howtoplay:enter(current, ...)
-	love.window.setTitle('HEXA — How to Play')
+	love.window.setTitle(text('hexa') .. text('dash_long') .. text('howtoplay'))
 	local args = {...} -- Arguments passed in through the scene management will arrive here
 
 	assets = {
@@ -12,8 +12,8 @@ function howtoplay:enter(current, ...)
 		stars_small = gfx.newImage('images/' .. tostring(save.color) .. '/stars_small.png'),
 		stars_large = gfx.newImage('images/' .. tostring(save.color) .. '/stars_large.png'),
 		img25 = gfx.newImage('images/' .. tostring(save.color) .. '/25.png'),
-		full_circle_inverted = gfx.newImageFont('fonts/full-circle-inverted.png', '0123456789 !"#$%&\'()*+,-./:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\\]™_`abcdefghijklmnopqrstuvwxyz{|}~≠🎵'),
-		half_circle_inverted = gfx.newImageFont('fonts/half-circle-inverted.png', '0123456789 !"#$%&\'()*+,-./:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\\]™_`abcdefghijklmnopqrstuvwxyz{|}~≠⏰🔒'),
+		full_circle_inverted = gfx.newImageFont('fonts/full-circle-inverted.png', '0123456789 !"#$%&\'()*+,-./:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\\]™_`abcdefghijklmnopqrstuvwxyz{|}~≠🎵ÀÇÉÈÊÎÔÛàçéèêîôû'),
+		half_circle_inverted = gfx.newImageFont('fonts/half-circle-inverted.png', '0123456789 !"#$%&\'()*+,-./:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\\]™_`abcdefghijklmnopqrstuvwxyz{|}~≠⏰🔒ÀÇÉÈÊÎÔÛàçéèêîôû'),
 		manual1 = gfx.newImage('images/' .. tostring(save.color) .. '/manual-table-1.png'),
 		manual2 = gfx.newImage('images/2/manual-table-2.png'),
 		manual2_1 = gfx.newImage('images/1/manual-table-2_1.png'),

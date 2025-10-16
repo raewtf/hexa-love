@@ -1,12 +1,12 @@
 langs = require 'langs'
 function getLocalizedText(key)
-    local data
-    if save.lang == 'en' then
-        data = langs.en
-    elseif save.lang == 'fr' then
-        data = langs.fr
-    end
-    return data and data[key] or key
+	local data
+	if save.lang == 'en' then
+		data = langs.en
+	elseif save.lang == 'fr' then
+		data = langs.fr
+	end
+	return data and data[key] or key
 end
 
 rng = love.math.newRandomGenerator()
@@ -150,7 +150,9 @@ hexaplex_whites = {
 	{love.math.colorFromBytes(255, 241, 232, 255)},
 }
 
-local half_circle = gfx.newImageFont('fonts/half-circle-inverted.png', '0123456789 !"#$%&\'()*+,-./:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\\]™_`abcdefghijklmnopqrstuvwxyz{|}~≠⏰🔒')
+local half_circle = gfx.newImageFont('fonts/half-circle-inverted.png', '0123456789 !"#$%&\'()*+,-./:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\\]™_`abcdefghijklmnopqrstuvwxyz{|}~≠⏰🔒ÀÇÉÈÊÎÔÛàçéèêîôû')
+icon_color = love.image.newImageData('images/2/icon.png')
+icon_peedee = love.image.newImageData('images/1/icon.png')
 
 function savecheck()
 	-- old save file check
@@ -405,6 +407,7 @@ end
 
 function love.load()
 	savecheck()
+	love.window.setIcon((save.color == 2 and icon_color or icon_peedee))
 	-- CHEEVOS: run init function here
 
 	if love.filesystem.getInfo('missions') == nil then
@@ -546,7 +549,7 @@ function love.draw()
 	if lbw then gfx.translate(((floor(ww / 2) * 2) - (400 * scale)) / 2, 0) end
 	if lbh then gfx.translate(0, ((floor(wh / 2) * 2) - (240 * scale)) / 2) end
 
-	gfx.setScissor((lbw and (((floor(ww / 2) * 2) - (400 * scale)) / 2)) or 0, (lbh and (((floor(wh / 2) * 2) - (240 * scale)) / 2)) or 0, 400 * scale, 240 * scale)
+	gfx.setScissor(((lbw and (((floor(ww / 2) * 2) - (400 * scale)) / 2)) or 0) + (vars.anim_shakies ~= nil and (floor(vars.shakies) * scale) or 0), ((lbh and (((floor(wh / 2) * 2) - (240 * scale)) / 2)) or 0) + (vars.anim_shakies_y ~= nil and (floor(vars.shakies_y) * scale) or 0), 400 * scale, 240 * scale)
 
 	gfx.scale(scale)
 

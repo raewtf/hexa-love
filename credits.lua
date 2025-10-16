@@ -4,7 +4,7 @@ local text = getLocalizedText
 local credits = {}
 
 function credits:enter(current, ...)
-	love.window.setTitle('HEXA — Credits')
+	love.window.setTitle(text('hexa') .. text('dash_long') .. text('credits'))
 	local args = {...} -- Arguments passed in through the scene management will arrive here
 
 	assets = {
@@ -13,8 +13,8 @@ function credits:enter(current, ...)
 		fg = gfx.newImage('images/' .. tostring(save.color) .. '/fg_credits.png'),
 		bg = gfx.newImage('images/' .. tostring(save.color) .. '/bg.png'),
 		img25 = gfx.newImage('images/' .. tostring(save.color) .. '/25.png'),
-		full_circle_inverted = gfx.newImageFont('fonts/full-circle-inverted.png', '0123456789 !"#$%&\'()*+,-./:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\\]™_`abcdefghijklmnopqrstuvwxyz{|}~≠🎵'),
-		half_circle_inverted = gfx.newImageFont('fonts/half-circle-inverted.png', '0123456789 !"#$%&\'()*+,-./:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\\]™_`abcdefghijklmnopqrstuvwxyz{|}~≠⏰🔒'),
+		full_circle_inverted = gfx.newImageFont('fonts/full-circle-inverted.png', '0123456789 !"#$%&\'()*+,-./:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\\]™_`abcdefghijklmnopqrstuvwxyz{|}~≠🎵ÀÇÉÈÊÎÔÛàçéèêîôû'),
+		half_circle_inverted = gfx.newImageFont('fonts/half-circle-inverted.png', '0123456789 !"#$%&\'()*+,-./:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\\]™_`abcdefghijklmnopqrstuvwxyz{|}~≠⏰🔒ÀÇÉÈÊÎÔÛàçéèêîôû'),
 		sfx_back = love.audio.newSource('audio/sfx/back.mp3', 'static'),
 		sfx_move = love.audio.newSource('audio/sfx/swap.mp3', 'static'),
 		sfx_bonk = love.audio.newSource('audio/sfx/bonk.mp3', 'static'),
