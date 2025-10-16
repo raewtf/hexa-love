@@ -332,6 +332,7 @@ function options:keypressed(key)
 				vars.remap_step = vars.remap_step + 1
 				if vars.remap_step > 8 then
 					vars.handler = 'options'
+					love.filesystem.write('data.json', json.encode(save))
 				end
 			else
 				playsound(assets.sfx_bonk)

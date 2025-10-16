@@ -192,14 +192,14 @@ function savecheck()
 		end
 		save.keyboard = nil
 	else
-		save.up = 'up'
-		save.down = 'down'
-		save.left = 'left'
-		save.right = 'right'
-		save.primary = 'z'
-		save.secondary = 'x'
-		save.tertiary = 'j'
-		save.quaternary = 'c'
+		save.up = save.up or 'up'
+		save.down = save.down or 'down'
+		save.left = save.left or 'left'
+		save.right = save.right or 'right'
+		save.primary = save.primary or 'z'
+		save.secondary = save.secondary or 'x'
+		save.tertiary = save.tertiary or 'j'
+		save.quaternary = save.quaternary or 'c'
 	end
 
 	save.color = save.color or 1
