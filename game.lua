@@ -16,8 +16,8 @@ function game:enter(current, ...)
 	assets = {
 		cursor = gfx.newImage('images/' ..tostring(save.color) .. '/cursor.png'),
 		cursor_pick = gfx.newImage('images/' ..tostring(save.color) .. '/cursor_pick.png'),
-		full_circle_inverted = gfx.newImageFont('fonts/full-circle-inverted.png', '0123456789 !"#$%&\'()*+,-./:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\\]™_`abcdefghijklmnopqrstuvwxyz{|}~≠🎵ÀÇÉÈÊÎÔÛàçéèêîôû'),
-		half_circle_inverted = gfx.newImageFont('fonts/half-circle-inverted.png', '0123456789 !"#$%&\'()*+,-./:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\\]™_`abcdefghijklmnopqrstuvwxyz{|}~≠⏰🔒ÀÇÉÈÊÎÔÛàçéèêîôû'),
+		full_circle_inverted = gfx.newImageFont('fonts/full-circle-inverted.png', '0123456789 !"#$%&\'()*+,-./:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\\]™_`abcdefghijklmnopqrstuvwxyz{|}~≠🎵ÀÇÉÈÊÎÔÛàçéèêîôû△✕º◻'),
+		half_circle_inverted = gfx.newImageFont('fonts/half-circle-inverted.png', '0123456789 !"#$%&\'()*+,-./:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\\]™_`abcdefghijklmnopqrstuvwxyz{|}~≠⏰🔒ÀÇÉÈÊÎÔÛàçéèêîôû△✕º◻'),
 		clock = gfx.newImageFont('fonts/clock.png', '0123456789:'),
 		hexa = gfx.newImage('images/' .. tostring(save.color) .. '/hexa_' .. tostring(save.reduceflashing) .. '.png'),
 		sfx_move = love.audio.newSource('audio/sfx/move.mp3', 'static'),
@@ -1461,7 +1461,11 @@ function game:ersi()
 			end
 
 			if save.gamepad then -- Gamepad
-				gfx.print(text('a') .. text('newgame') .. text('b') .. text('back'), 40, 205)
+				if current_vendor == 1356 then -- playstation controller (or otherwise sony)
+					gfx.print(text('cross') .. text('newgame') .. text('circle') .. text('back'), 40, 205)
+				else
+					gfx.print(text('a') .. text('newgame') .. text('b') .. text('back'), 40, 205)
+				end
 			else
 				gfx.print(start(save.primary) .. text('newgame') .. start(save.secondary) .. text('back'), 40, 205)
 			end
@@ -1500,14 +1504,22 @@ function game:ersi()
 
 			if vars.mode == 'dailyrun' then
 				if save.gamepad then -- Gamepad
-					gfx.print(text('b') .. text('back'), 40, 205)
+					if current_vendor == 1356 then -- playstation controller (or otherwise sony)
+						gfx.print(text('circle') .. text('back'), 40, 205)
+					else
+						gfx.print(text('b') .. text('back'), 40, 205)
+					end
 				else
 					gfx.print(start(save.secondary) .. text('back'), 40, 205)
 				end
 				-- LEADERBOARDS: "Z shows scores for today. X goes back." if true
 			else
 				if save.gamepad then -- Gamepad
-					gfx.print(text('a') .. text('newgame') .. text('b') .. text('back'), 40, 205)
+					if current_vendor == 1356 then -- playstation controller (or otherwise sony)
+						gfx.print(text('cross') .. text('newgame') .. text('circle') .. text('back'), 40, 205)
+					else
+						gfx.print(text('a') .. text('newgame') .. text('b') .. text('back'), 40, 205)
+					end
 				else
 					gfx.print(start(save.primary) .. text('newgame') .. start(save.secondary) .. text('back'), 40, 205)
 				end
@@ -1668,14 +1680,22 @@ function game:endround()
 
 							if vars.mode == 'dailyrun' then
 								if save.gamepad then -- Gamepad
-									gfx.print(text('b') .. text('back'), 40, 205)
+									if current_vendor == 1356 then -- playstation controller (or otherwise sony)
+										gfx.print(text('circle') .. text('back'), 40, 205)
+									else
+										gfx.print(text('b') .. text('back'), 40, 205)
+									end
 								else
 									gfx.print(start(save.secondary) .. text('back'), 40, 205)
 								end
 								-- LEADERBOARDS: "Z shows scores for today. X goes back.", if true
 							else
 								if save.gamepad then -- Gamepad
-									gfx.print(text('a') .. text('newgame') .. text('b') .. text('back'), 40, 205)
+									if current_vendor == 1356 then -- playstation controller (or otherwise sony)
+										gfx.print(text('cross') .. text('newgame') .. text('circle') .. text('back'), 40, 205)
+									else
+										gfx.print(text('a') .. text('newgame') .. text('b') .. text('back'), 40, 205)
+									end
 								else
 									gfx.print(start(save.primary) .. text('newgame') .. start(save.secondary) .. text('back'), 40, 205)
 								end
@@ -1803,7 +1823,11 @@ function game:endround()
 							end
 
 							if save.gamepad then -- Gamepad
-								gfx.print(text('a') .. text('newgame') .. text('b') .. text('back'), 40, 205)
+								if current_vendor == 1356 then -- playstation controller (or otherwise sony)
+									gfx.print(text('cross') .. text('newgame') .. text('circle') .. text('back'), 40, 205)
+								else
+									gfx.print(text('a') .. text('newgame') .. text('b') .. text('back'), 40, 205)
+								end
 							else
 								gfx.print(start(save.primary) .. text('newgame') .. start(save.secondary) .. text('back'), 40, 205)
 							end

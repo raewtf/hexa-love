@@ -5,6 +5,28 @@ local options = {}
 
 visuals = require('visuals')
 
+function options:holdbuttons()
+	vars.heldup = save.up
+	vars.helddown = save.down
+	vars.heldleft = save.left
+	vars.heldright = save.right
+	vars.heldprimary = save.primary
+	vars.heldsecondary = save.secondary
+	vars.heldtertiary = save.tertiary
+	vars.heldquaternary = save.quaternary
+end
+
+function options:restorebuttons()
+	save.up = vars.heldup
+	save.down = vars.helddown
+	save.left = vars.heldleft
+	save.right = vars.heldright
+	save.primary = vars.heldprimary
+	save.secondary = vars.heldsecondary
+	save.tertiary = vars.heldtertiary
+	save.quaternary = vars.heldquaternary
+end
+
 function options:enter(current, ...)
 	love.window.setTitle(text('hexa') .. text('dash_long') .. text('options'))
 	local args = {...} -- Arguments passed in through the scene management will arrive here
@@ -26,11 +48,12 @@ function options:enter(current, ...)
 		fg_hexa_2_5 = gfx.newImage('images/1/fg_hexa_2_5.png'),
 		img25 = gfx.newImage('images/' .. tostring(save.color) .. '/25.png'),
 		bg = gfx.newImage('images/' .. tostring(save.color) .. '/bg.png'),
-		full_circle_inverted = gfx.newImageFont('fonts/full-circle-inverted.png', '0123456789 !"#$%&\'()*+,-./:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\\]™_`abcdefghijklmnopqrstuvwxyz{|}~≠🎵ÀÇÉÈÊÎÔÛàçéèêîôû'),
-		half_circle_inverted = gfx.newImageFont('fonts/half-circle-inverted.png', '0123456789 !"#$%&\'()*+,-./:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\\]™_`abcdefghijklmnopqrstuvwxyz{|}~≠⏰🔒ÀÇÉÈÊÎÔÛàçéèêîôû'),
+		full_circle_inverted = gfx.newImageFont('fonts/full-circle-inverted.png', '0123456789 !"#$%&\'()*+,-./:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\\]™_`abcdefghijklmnopqrstuvwxyz{|}~≠🎵ÀÇÉÈÊÎÔÛàçéèêîôû△✕º◻'),
+		half_circle_inverted = gfx.newImageFont('fonts/half-circle-inverted.png', '0123456789 !"#$%&\'()*+,-./:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\\]™_`abcdefghijklmnopqrstuvwxyz{|}~≠⏰🔒ÀÇÉÈÊÎÔÛàçéèêîôû△✕º◻'),
 		sfx_move = love.audio.newSource('audio/sfx/swap.mp3', 'static'),
 		sfx_select = love.audio.newSource('audio/sfx/select.mp3', 'static'),
 		sfx_back = love.audio.newSource('audio/sfx/back.mp3', 'static'),
+		sfx_bonk = love.audio.newSource('audio/sfx/bonk.mp3', 'static'),
 		sfx_boom = love.audio.newSource('audio/sfx/boom.mp3', 'static'),
 		half = gfx.newImage('images/half.png'),
 		modal_small = gfx.newImage('images/' .. tostring(save.color) .. '/modal_small.png'),
@@ -93,6 +116,8 @@ function options:enter(current, ...)
 			vars.anim_fg = timer.tween(3, vars, {fg_hexa = 0}, 'in-out-sine')
 		end
 	end)
+
+	self:holdbuttons()
 end
 
 function options:keypressed(key)
@@ -141,34 +166,51 @@ function options:keypressed(key)
 					else
 						fademusic(1)
 					end
+					playsound(assets.sfx_select)
 				elseif vars.selections[vars.selection] == "sfx" then
 					save.sfx = save.sfx + 1
 					if save.sfx > 5 then
 						save.sfx = 0
 					end
+					playsound(assets.sfx_select)
 				elseif vars.selections[vars.selection] == 'lang' then
 					if save.lang == 'en' then
 						save.lang = 'fr'
 					elseif save.lang == 'fr' then
+						save.lang = 'en' -- TODO: set to jp
+					elseif save.lang == 'jp' then
 						save.lang = 'en'
 					end
+					playsound(assets.sfx_select)
 				elseif vars.selections[vars.selection] == 'visuals' then
 					scenemanager:transitionscene(visuals)
 					playsound(assets.sfx_select)
+					playsound(assets.sfx_select)
 				elseif vars.selections[vars.selection] == 'keyboard' then
-					vars.handler = 'remap'
-					vars.remap_step = 1
+					if save.gamepad then
+						playsound(assets.sfx_bonk)
+						shakies()
+					else
+						vars.remap_step = 1
+						vars.handler = 'remap'
+						playsound(assets.sfx_select)
+					end
 				elseif vars.selections[vars.selection] == 'rumble' then
 					save.rumble = not save.rumble
 					rumble(1, 1, 0.2)
+					playsound(assets.sfx_select)
 				elseif vars.selections[vars.selection] == "flip" then
 					save.flip = not save.flip
+					playsound(assets.sfx_select)
 				elseif vars.selections[vars.selection] == "skipfanfare" then
 					save.skipfanfare = not save.skipfanfare
+					playsound(assets.sfx_select)
 				elseif vars.selections[vars.selection] == "hardmode" then
 					save.hardmode = not save.hardmode
+					playsound(assets.sfx_select)
 				elseif vars.selections[vars.selection] == "reset" then
 					if vars.resetprogress < 3 then
+						playsound(assets.sfx_select)
 						vars.resetprogress = vars.resetprogress + 1
 					elseif vars.resetprogress == 3 then
 						playsound(assets.sfx_boom)
@@ -191,7 +233,6 @@ function options:keypressed(key)
 						save.exported_mission = false
 					end
 				end
-				playsound(assets.sfx_select)
 			elseif key == save.left then
 				if vars.selections[vars.selection] == "music" then
 					save.music = save.music - 1
@@ -216,9 +257,11 @@ function options:keypressed(key)
 					playsound(assets.sfx_select)
 				elseif vars.selections[vars.selection] == 'lang' then
 					if save.lang == 'en' then
-						save.lang = 'fr'
+						save.lang = 'fr' -- TODO: set to jp
 					elseif save.lang == 'fr' then
 						save.lang = 'en'
+					elseif save.lang == 'jp' then
+						save.lang = 'fr'
 					end
 					playsound(assets.sfx_select)
 				elseif vars.selections[vars.selection] == 'rumble' then
@@ -261,6 +304,8 @@ function options:keypressed(key)
 					if save.lang == 'en' then
 						save.lang = 'fr'
 					elseif save.lang == 'fr' then
+						save.lang = 'en' -- TODO: set to jp
+					elseif save.lang == 'jp' then
 						save.lang = 'en'
 					end
 					playsound(assets.sfx_select)
@@ -332,6 +377,7 @@ function options:keypressed(key)
 				vars.remap_step = vars.remap_step + 1
 				if vars.remap_step > 8 then
 					vars.handler = 'options'
+					self:holdbuttons()
 					love.filesystem.write('data.json', json.encode(save))
 				end
 			else
@@ -387,7 +433,11 @@ function options:draw()
 
 	gfx.print('v' .. version, 65, 205)
 	if save.gamepad then -- Gamepad
-		gfx.print(text('dpad') .. text('moves') .. text('a') .. text('toggle'), 70, 220)
+		if current_vendor == 1356 then -- playstation controller (or otherwise sony)
+			gfx.print(text('dpad') .. text('moves') .. text('cross') .. text('toggle'), 70, 220)
+		else
+			gfx.print(text('dpad') .. text('moves') .. text('a') .. text('toggle'), 70, 220)
+		end
 	else
 		gfx.print(start(save.up) .. text('slash') .. start(save.down) .. text('move') .. start(save.primary) .. text('toggle'), 70, 220)
 	end
@@ -446,7 +496,7 @@ function options:draw()
 			button = 'quaternary'
 		end
 
-		gfx.printf(text('remap1') .. text(button .. 'd') .. text('remap2'), 0, 62, 400, 'center')
+		gfx.printf(text('remap1') .. text(button .. 'd') .. text('remap2'), 0, 57, 400, 'center')
 
 		if save.color == 1 then
 			gfx.setColor(love.math.colorFromBytes(255, 241, 232, 127))
@@ -454,7 +504,9 @@ function options:draw()
 			gfx.setFont(assets.half_circle_inverted)
 		end
 
-		gfx.printf(text('remap_desc') .. text(button .. '_desc'), 0, 110, 400, 'center')
+		gfx.printf(text('remap_desc') .. text(button .. '_desc'), 0, 98, 400, 'center')
+
+		gfx.printf(text('remap_quit_' .. tostring(save.gamepad and 'start' or 'esc')), 0, 153, 400, 'center')
 
 		gfx.setColor(1, 1, 1, 1)
 	end

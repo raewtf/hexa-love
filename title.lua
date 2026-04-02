@@ -21,8 +21,8 @@ function title:enter(current, ...)
 		stars_large = gfx.newImage('images/' .. tostring(save.color) .. '/stars_large.png'),
 		logo = gfx.newImage('images/' .. tostring(save.color) .. '/logo.png'),
 		half_1x = gfx.newImage('images/half_1x.png'),
-		full_circle_inverted = gfx.newImageFont('fonts/full-circle-inverted.png', '0123456789 !"#$%&\'()*+,-./:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\\]™_`abcdefghijklmnopqrstuvwxyz{|}~≠🎵ÀÇÉÈÊÎÔÛàçéèêîôû'),
-		half_circle_inverted = gfx.newImageFont('fonts/half-circle-inverted.png', '0123456789 !"#$%&\'()*+,-./:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\\]™_`abcdefghijklmnopqrstuvwxyz{|}~≠⏰🔒ÀÇÉÈÊÎÔÛàçéèêîôû'),
+		full_circle_inverted = gfx.newImageFont('fonts/full-circle-inverted.png', '0123456789 !"#$%&\'()*+,-./:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\\]™_`abcdefghijklmnopqrstuvwxyz{|}~≠🎵ÀÇÉÈÊÎÔÛàçéèêîôû△✕º◻'),
+		half_circle_inverted = gfx.newImageFont('fonts/half-circle-inverted.png', '0123456789 !"#$%&\'()*+,-./:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\\]™_`abcdefghijklmnopqrstuvwxyz{|}~≠⏰🔒ÀÇÉÈÊÎÔÛàçéèêîôû△✕º◻'),
 		sfx_move = love.audio.newSource('audio/sfx/swap.mp3', 'static'),
 		sfx_bonk = love.audio.newSource('audio/sfx/bonk.mp3', 'static'),
 		sfx_back = love.audio.newSource('audio/sfx/back.mp3', 'static'),
@@ -231,7 +231,11 @@ function title:draw()
 	end
 
 	if save.gamepad then -- Gamepad
-		gfx.print(text('dpad') .. text('moves') .. text('a') .. text('select'), 10 - floor(vars.title), 220)
+		if current_vendor == 1356 then -- playstation controller (or otherwise sony)
+			gfx.print(text('dpad') .. text('moves') .. text('cross') .. text('select'), 10 - floor(vars.title), 220)
+		else
+			gfx.print(text('dpad') .. text('moves') .. text('a') .. text('select'), 10 - floor(vars.title), 220)
+		end
 	else
 		gfx.print(start(save.up) .. text('slash') .. start(save.down) .. text('move') .. start(save.primary) .. text('select'), 10 - floor(vars.title), 220)
 	end
@@ -277,13 +281,21 @@ function title:draw()
 		end
 
 		if save.gamepad then
-			gfx.printf(text('quit_sure_2_start'), 0, 103, 400, 'center')
+			if current_vendor == 1356 then -- playstation controller (or otherwise sony)
+				gfx.printf(text('quit_sure_2_options'), 0, 103, 400, 'center')
+			else
+				gfx.printf(text('quit_sure_2_start'), 0, 103, 400, 'center')
+			end
 		else
 			gfx.printf(text('quit_sure_2_esc'), 0, 103, 400, 'center')
 		end
 
 		if save.gamepad then
-			gfx.printf(text('a') .. text('quits') .. text('b') .. text('back'), 0, 160, 400, 'center')
+			if current_vendor == 1356 then -- playstation controller (or otherwise sony)
+				gfx.printf(text('cross') .. text('quits') .. text('circle') .. text('back'), 0, 160, 400, 'center')
+			else
+				gfx.printf(text('a') .. text('quits') .. text('b') .. text('back'), 0, 160, 400, 'center')
+			end
 		else
 			gfx.printf(start(save.primary) .. text('quits') .. start(save.secondary) .. text('back'), 0, 160, 400, 'center')
 		end

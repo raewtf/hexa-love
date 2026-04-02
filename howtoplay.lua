@@ -12,8 +12,8 @@ function howtoplay:enter(current, ...)
 		stars_small = gfx.newImage('images/' .. tostring(save.color) .. '/stars_small.png'),
 		stars_large = gfx.newImage('images/' .. tostring(save.color) .. '/stars_large.png'),
 		img25 = gfx.newImage('images/' .. tostring(save.color) .. '/25.png'),
-		full_circle_inverted = gfx.newImageFont('fonts/full-circle-inverted.png', '0123456789 !"#$%&\'()*+,-./:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\\]™_`abcdefghijklmnopqrstuvwxyz{|}~≠🎵ÀÇÉÈÊÎÔÛàçéèêîôû'),
-		half_circle_inverted = gfx.newImageFont('fonts/half-circle-inverted.png', '0123456789 !"#$%&\'()*+,-./:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\\]™_`abcdefghijklmnopqrstuvwxyz{|}~≠⏰🔒ÀÇÉÈÊÎÔÛàçéèêîôû'),
+		full_circle_inverted = gfx.newImageFont('fonts/full-circle-inverted.png', '0123456789 !"#$%&\'()*+,-./:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\\]™_`abcdefghijklmnopqrstuvwxyz{|}~≠🎵ÀÇÉÈÊÎÔÛàçéèêîôû△✕º◻'),
+		half_circle_inverted = gfx.newImageFont('fonts/half-circle-inverted.png', '0123456789 !"#$%&\'()*+,-./:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\\]™_`abcdefghijklmnopqrstuvwxyz{|}~≠⏰🔒ÀÇÉÈÊÎÔÛàçéèêîôû△✕º◻'),
 		manual1 = gfx.newImage('images/' .. tostring(save.color) .. '/manual-table-1.png'),
 		manual2 = gfx.newImage('images/2/manual-table-2.png'),
 		manual2_1 = gfx.newImage('images/1/manual-table-2_1.png'),
@@ -146,7 +146,11 @@ function howtoplay:draw()
 	end
 
 	if save.gamepad then -- Gamepad
-		gfx.print(text('dpad') .. text('pages') .. text('b') .. text('back'), 10, 220)
+		if current_vendor == 1356 then -- playstation controller (or otherwise sony)
+			gfx.print(text('dpad') .. text('pages') .. text('circle') .. text('back'), 10, 220)
+		else
+			gfx.print(text('dpad') .. text('pages') .. text('b') .. text('back'), 10, 220)
+		end
 	else
 		gfx.print(start(save.left) .. text('slash') .. start(save.right) .. text('page') .. start(save.secondary) .. text('back'), 10, 220)
 	end

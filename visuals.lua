@@ -18,8 +18,8 @@ function visuals:enter(current, ...)
 	local args = {...} -- Arguments passed in through the scene management will arrive here
 
 	assets = {
-		full_circle_inverted = gfx.newImageFont('fonts/full-circle-inverted.png', '0123456789 !"#$%&\'()*+,-./:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\\]™_`abcdefghijklmnopqrstuvwxyz{|}~≠🎵ÀÇÉÈÊÎÔÛàçéèêîôû'),
-		half_circle_inverted = gfx.newImageFont('fonts/half-circle-inverted.png', '0123456789 !"#$%&\'()*+,-./:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\\]™_`abcdefghijklmnopqrstuvwxyz{|}~≠⏰🔒ÀÇÉÈÊÎÔÛàçéèêîôû'),
+		full_circle_inverted = gfx.newImageFont('fonts/full-circle-inverted.png', '0123456789 !"#$%&\'()*+,-./:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\\]™_`abcdefghijklmnopqrstuvwxyz{|}~≠🎵ÀÇÉÈÊÎÔÛàçéèêîôû△✕º◻'),
+		half_circle_inverted = gfx.newImageFont('fonts/half-circle-inverted.png', '0123456789 !"#$%&\'()*+,-./:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\\]™_`abcdefghijklmnopqrstuvwxyz{|}~≠⏰🔒ÀÇÉÈÊÎÔÛàçéèêîôû△✕º◻'),
 		sfx_move = love.audio.newSource('audio/sfx/swap.mp3', 'static'),
 		sfx_select = love.audio.newSource('audio/sfx/select.mp3', 'static'),
 		sfx_back = love.audio.newSource('audio/sfx/back.mp3', 'static'),
@@ -42,7 +42,7 @@ function visuals:enter(current, ...)
 		ly = 0,
 		waiting = true,
 		selection = 0,
-		selections = {'scale', 'clean_scaling', 'reduceflashing', 'color', 'hexaplex_color'},
+		selections = {'scale', 'clean_scaling', 'fullscreen', 'reduceflashing', 'color', 'hexaplex_color'},
 	}
 	vars.input_wait = timer.after(transitiontime, function()
 		vars.waiting = false
@@ -108,6 +108,10 @@ function visuals:keypressed(key)
 				playsound(assets.sfx_select)
 				local w, h, _ = love.window.getMode()
 				love.resize(w, h)
+			elseif vars.selections[vars.selection] == 'fullscreen' then
+				save.fullscreen = not save.fullscreen
+				playsound(assets.sfx_select)
+				love.window.setFullscreen(save.fullscreen)
 			elseif vars.selections[vars.selection] == 'reduceflashing' then
 				save.reduceflashing = not save.reduceflashing
 				playsound(assets.sfx_select)
@@ -126,7 +130,6 @@ function visuals:keypressed(key)
 					if save.hexaplex_color > min(1 + floor(score / 1000), 26) then
 						save.hexaplex_color = 1
 					end
-					self:reload_images()
 					playsound(assets.sfx_select)
 				elseif save.color == 2 then
 					shakies()
@@ -146,6 +149,10 @@ function visuals:keypressed(key)
 				playsound(assets.sfx_select)
 				local w, h, _ = love.window.getMode()
 				love.resize(w, h)
+			elseif vars.selections[vars.selection] == 'fullscreen' then
+				save.fullscreen = not save.fullscreen
+				playsound(assets.sfx_select)
+				love.window.setFullscreen(save.fullscreen)
 			elseif vars.selections[vars.selection] == 'reduceflashing' then
 				save.reduceflashing = not save.reduceflashing
 				playsound(assets.sfx_select)
@@ -164,7 +171,6 @@ function visuals:keypressed(key)
 					if save.hexaplex_color < 1 then
 						save.hexaplex_color = min(1 + floor(score / 1000), 26)
 					end
-					self:reload_images()
 					playsound(assets.sfx_select)
 				elseif save.color == 2 then
 					shakies()
@@ -184,6 +190,10 @@ function visuals:keypressed(key)
 				playsound(assets.sfx_select)
 				local w, h, _ = love.window.getMode()
 				love.resize(w, h)
+			elseif vars.selections[vars.selection] == 'fullscreen' then
+				save.fullscreen = not save.fullscreen
+				playsound(assets.sfx_select)
+				love.window.setFullscreen(save.fullscreen)
 			elseif vars.selections[vars.selection] == 'reduceflashing' then
 				save.reduceflashing = not save.reduceflashing
 				playsound(assets.sfx_select)
@@ -202,7 +212,6 @@ function visuals:keypressed(key)
 					if save.hexaplex_color > min(1 + floor(score / 1000), 26) then
 						save.hexaplex_color = 1
 					end
-					self:reload_images()
 					playsound(assets.sfx_select)
 				elseif save.color == 2 then
 					shakies()
@@ -211,6 +220,10 @@ function visuals:keypressed(key)
 			end
 		end
 	end
+end
+
+function visuals:update()
+	save.fullscreen = love.window.getFullscreen()
 end
 
 function visuals:draw()
@@ -225,13 +238,13 @@ function visuals:draw()
 	for i = 1, #vars.selections do
 		if vars.selection == i then
 			if vars.selections[vars.selection] == 'scale' then
-				gfx.printf(text(vars.selections[vars.selection]) .. tostring(save[vars.selections[vars.selection]]), 0, -10 + (20 * i), 400, 'center')
-			elseif vars.selections[vars.selection] == 'reduceflashing' then
-				gfx.printf(text(vars.selections[vars.selection]) .. text(tostring(save[vars.selections[vars.selection]])), 0, -10 + (20 * i), 400, 'center')
+				gfx.printf(text(vars.selections[vars.selection]) .. tostring(save[vars.selections[vars.selection]]), 0, -5 + (15 * i), 400, 'center')
+			elseif vars.selections[vars.selection] == 'reduceflashing' or vars.selections[vars.selection] == 'fullscreen' then
+				gfx.printf(text(vars.selections[vars.selection]) .. text(tostring(save[vars.selections[vars.selection]])), 0, -5 + (15 * i), 400, 'center')
 			elseif vars.selections[vars.selection] == 'hexaplex_color' then
-				gfx.printf(text('hexaplex_color') .. text('hexaplex_' .. save.hexaplex_color), 0, -10 + (20 * i), 400, 'center')
+				gfx.printf(text('hexaplex_color') .. text('hexaplex_' .. save.hexaplex_color), 0, -5 + (15 * i), 400, 'center')
 			else
-				gfx.printf(text(vars.selections[vars.selection]) .. text(vars.selections[vars.selection] .. tostring(save[vars.selections[vars.selection]])), 0, -10 + (20 * i), 400, 'center')
+				gfx.printf(text(vars.selections[vars.selection]) .. text(vars.selections[vars.selection] .. tostring(save[vars.selections[vars.selection]])), 0, -5 + (15 * i), 400, 'center')
 			end
 		end
 	end
@@ -245,21 +258,15 @@ function visuals:draw()
 	for i = 1, #vars.selections do
 		if vars.selection ~= i then
 			if vars.selections[i] == 'scale' then
-				gfx.printf(text(vars.selections[i]) .. tostring(save[vars.selections[i]]), 0, -10 + (20 * i), 400, 'center')
-			elseif vars.selections[i] == 'reduceflashing' then
-				gfx.printf(text(vars.selections[i]) .. text(tostring(save[vars.selections[i]])), 0, -10 + (20 * i), 400, 'center')
+				gfx.printf(text(vars.selections[i]) .. tostring(save[vars.selections[i]]), 0, -5 + (15 * i), 400, 'center')
+			elseif vars.selections[i] == 'reduceflashing' or vars.selections[i] == 'fullscreen' then
+				gfx.printf(text(vars.selections[i]) .. text(tostring(save[vars.selections[i]])), 0, -5 + (15 * i), 400, 'center')
 			elseif vars.selections[i] == 'hexaplex_color' then
-				gfx.printf(text('hexaplex_color') .. text('hexaplex_' .. save.hexaplex_color), 0, -10 + (20 * i), 400, 'center')
+				gfx.printf(text('hexaplex_color') .. text('hexaplex_' .. save.hexaplex_color), 0, -5 + (15 * i), 400, 'center')
 			else
-				gfx.printf(text(vars.selections[i]) .. text(vars.selections[i] .. tostring(save[vars.selections[i]])), 0, -10 + (20 * i), 400, 'center')
+				gfx.printf(text(vars.selections[i]) .. text(vars.selections[i] .. tostring(save[vars.selections[i]])), 0, -5 + (15 * i), 400, 'center')
 			end
 		end
-	end
-
-	if save.gamepad then -- Gamepad
-		gfx.print(text('dpad') .. text('moves') .. text('a') .. text('toggle'), 70, 220)
-	else
-		gfx.print(start(save.up) .. text('slash') .. start(save.down) .. text('move') .. start(save.primary) .. text('toggle'), 70, 220)
 	end
 
 	if save.color == 1 then
@@ -288,10 +295,20 @@ function visuals:draw()
 		gfx.draw(assets.hexaplex5, 165, 80)
 	else
 		gfx.draw(assets.hexaplex, 115, 80)
-		gfx.draw(assets.img25, assets.quad, 0, 83)
+		gfx.draw(assets.img25, assets.quad, 0, 86)
 	end
 	gfx.setColor(1, 1, 1, 1)
 	gfx.draw(assets.fg, 0, 0)
+
+	if save.gamepad then -- Gamepad
+		if current_vendor == 1356 then -- playstation controller (or otherwise sony)
+			gfx.print(text('dpad') .. text('moves') .. text('cross') .. text('toggle'), 70, 220)
+		else
+			gfx.print(text('dpad') .. text('moves') .. text('a') .. text('toggle'), 70, 220)
+		end
+	else
+		gfx.print(start(save.up) .. text('slash') .. start(save.down) .. text('move') .. start(save.primary) .. text('toggle'), 70, 220)
+	end
 
 	draw_on_top()
 end

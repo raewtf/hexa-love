@@ -16,10 +16,10 @@ function mission_command:enter(current, ...)
 
 	assets = {
 
-		full_circle = gfx.newImageFont('fonts/full-circle.png', '0123456789 !"#$%&\'()*+,-./:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\\]™_`abcdefghijklmnopqrstuvwxyz{|}~≠🎵ÀÇÉÈÊÎÔÛàçéèêîôû'),
-		half_circle = gfx.newImageFont('fonts/half-circle.png', '0123456789 !"#$%&\'()*+,-./:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\\]™_`abcdefghijklmnopqrstuvwxyz{|}~≠⏰🔒ÀÇÉÈÊÎÔÛàçéèêîôû'),
-		full_circle_inverted = gfx.newImageFont('fonts/full-circle-inverted.png', '0123456789 !"#$%&\'()*+,-./:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\\]™_`abcdefghijklmnopqrstuvwxyz{|}~≠🎵ÀÇÉÈÊÎÔÛàçéèêîôû'),
-		half_circle_inverted = gfx.newImageFont('fonts/half-circle-inverted.png', '0123456789 !"#$%&\'()*+,-./:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\\]™_`abcdefghijklmnopqrstuvwxyz{|}~≠⏰🔒ÀÇÉÈÊÎÔÛàçéèêîôû'),
+		full_circle = gfx.newImageFont('fonts/full-circle.png', '0123456789 !"#$%&\'()*+,-./:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\\]™_`abcdefghijklmnopqrstuvwxyz{|}~≠🎵ÀÇÉÈÊÎÔÛàçéèêîôû△✕º◻'),
+		half_circle = gfx.newImageFont('fonts/half-circle.png', '0123456789 !"#$%&\'()*+,-./:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\\]™_`abcdefghijklmnopqrstuvwxyz{|}~≠⏰🔒ÀÇÉÈÊÎÔÛàçéèêîôû△✕º◻'),
+		full_circle_inverted = gfx.newImageFont('fonts/full-circle-inverted.png', '0123456789 !"#$%&\'()*+,-./:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\\]™_`abcdefghijklmnopqrstuvwxyz{|}~≠🎵ÀÇÉÈÊÎÔÛàçéèêîôû△✕º◻'),
+		half_circle_inverted = gfx.newImageFont('fonts/half-circle-inverted.png', '0123456789 !"#$%&\'()*+,-./:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\\]™_`abcdefghijklmnopqrstuvwxyz{|}~≠⏰🔒ÀÇÉÈÊÎÔÛàçéèêîôû△✕º◻'),
 		full_circle_outline = gfx.newImageFont('fonts/full-circle-outline.png', '0123456789 !"#$%&\'()*+,-./:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\\]™_`abcdefghijklmnopqrstuvwxyz{|}~≠🎵ÀÇÉÈÊÎÔÛàçéèêîôû', -2),
 		full_circle_outline_color = gfx.newImageFont('fonts/full-circle-outline-color.png', '0123456789 !"#$%&\'()*+,-./:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\\]™_`abcdefghijklmnopqrstuvwxyz{|}~≠🎵ÀÇÉÈÊÎÔÛàçéèêîôû', -2),
 		mcsel = gfx.newImage('images/mcsel.png'),
@@ -832,7 +832,11 @@ function mission_command:draw()
 		gfx.print(text('keys_type') .. text('return_accept'), 10 + x, 220)
 	else
 		if save.gamepad then
-			gfx.print(text('dpad') .. text('moves') .. text('a') .. text('scrolls') .. text('b') .. text('back'), 10 + x, 220)
+			if current_vendor == 1356 then -- playstation controller (or otherwise sony)
+				gfx.print(text('dpad') .. text('moves') .. text('cross') .. text('scrolls') .. text('circle') .. text('back'), 10 + x, 220)
+			else
+				gfx.print(text('dpad') .. text('moves') .. text('a') .. text('scrolls') .. text('b') .. text('back'), 10 + x, 220)
+			end
 		else
 			gfx.print(start(save.up) .. text('slash') .. start(save.down) .. text('move') .. start(save.primary) .. text('scrolls') .. start(save.secondary) .. text('back'), 10 + x, 220)
 		end
@@ -842,14 +846,23 @@ function mission_command:draw()
 
 	if vars.mission_types[vars.mission_type] == 'time' then
 		if save.gamepad then
-			gfx.print(text('b') .. text('back') .. text('x') .. text('exports'), 410 + x, 220)
+			if current_vendor == 1356 then -- playstation controller (or otherwise sony)
+				gfx.print(text('circle') .. text('back') .. text('square') .. text('exports'), 410 + x, 220)
+			else
+				gfx.print(text('b') .. text('back') .. text('x') .. text('exports'), 410 + x, 220)
+			end
 		else
 			gfx.print(start(save.secondary) .. text('back') .. start(save.tertiary) .. text('exports'), 410 + x, 220)
 		end
 	else
 		if save.gamepad then
-			gfx.print(text('dpad') .. text('moves') .. text('a') .. text('select'), 410 + x, 206)
-			gfx.print(text('b') .. text('back') .. text('x') .. text('exports'), 410 + x, 220)
+			if current_vendor == 1356 then -- playstation controller (or otherwise sony)
+				gfx.print(text('dpad') .. text('moves') .. text('cross') .. text('select'), 410 + x, 206)
+				gfx.print(text('circle') .. text('back') .. text('square') .. text('exports'), 410 + x, 220)
+			else
+				gfx.print(text('dpad') .. text('moves') .. text('a') .. text('select'), 410 + x, 206)
+				gfx.print(text('b') .. text('back') .. text('x') .. text('exports'), 410 + x, 220)
+			end
 		else
 			gfx.print(text('directions_move') .. start(save.primary) .. text('select'), 410 + x, 206)
 			gfx.print(start(save.secondary) .. text('back') .. start(save.tertiary) .. text('exports'), 410 + x, 220)
@@ -866,7 +879,11 @@ function mission_command:draw()
 		gfx.print(text('keys_type') .. text('return_accept'), 810 + x, 220)
 	else
 		if save.gamepad then
-			gfx.print(text('dpad') .. text('moves') .. text('a') .. text('scrolls') .. text('b') .. text('back'), 810 + x, 220)
+			if current_vendor == 1356 then -- playstation controller (or otherwise sony)
+				gfx.print(text('dpad') .. text('moves') .. text('cross') .. text('scrolls') .. text('circle') .. text('back'), 810 + x, 220)
+			else
+				gfx.print(text('dpad') .. text('moves') .. text('a') .. text('scrolls') .. text('b') .. text('back'), 810 + x, 220)
+			end
 		else
 			gfx.print(start(save.up) .. text('slash') .. start(save.down) .. text('move') .. start(save.primary) .. text('scrolls') .. start(save.secondary) .. text('back'), 10 + x, 220)
 		end
@@ -1160,7 +1177,11 @@ function mission_command:draw()
 		end
 
 		if save.gamepad then
-			gfx.print(text('a') .. text('open_directory') .. text('b') .. text('back'), 810 + x, 220)
+			if current_vendor == 1356 then -- playstation controller (or otherwise sony)
+				gfx.print(text('cross') .. text('open_directory') .. text('circle') .. text('back'), 810 + x, 220)
+			else
+				gfx.print(text('a') .. text('open_directory') .. text('b') .. text('back'), 810 + x, 220)
+			end
 		else
 			gfx.print(start(save.primary) .. text('open_directory') .. start(save.secondary) .. text('back'), 810 + x, 220)
 		end

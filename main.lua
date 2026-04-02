@@ -5,6 +5,8 @@ function getLocalizedText(key)
 		data = langs.en
 	elseif save.lang == 'fr' then
 		data = langs.fr
+	elseif save.lang == 'jp' then
+		data = langs.jp
 	end
 	return data and data[key] or key
 end
@@ -16,6 +18,10 @@ timer = require 'timer'
 json = require 'json'
 local offsetx, offsety = 0, 0
 
+-- so the dang thingy can load right
+local windows = package.config:sub(1, 1) == '\\'
+package.cpath = string.format("%s;%s/?.%s", package.cpath, love.filesystem.getSourceBaseDirectory(), (windows and "dll" or "so"))
+
 title = require('title')
 
 local gfx = love.graphics
@@ -24,9 +30,14 @@ local floor = math.floor
 local max = math.max
 local scale
 quit = 0
-local fullscreen = false
 
-version = '2.2.0'
+-- for the sticks
+lstick_up = false
+lstick_down = false
+lstick_left = false
+lstick_right = false
+
+version = '2.3.0'
 
 gfx.setLineWidth(3)
 gfx.setLineStyle('rough')
@@ -168,6 +179,7 @@ function savecheck()
 	end
 	if save == nil then save = {} end
 	save.scale = save.scale or 1
+	if save.fullscreen == nil then save.fullscreen = true end
 	if save.gamepad == nil then save.gamepad = false end
 
 	if save.keyboard ~= nil then
@@ -421,6 +433,7 @@ function love.load()
 	next_time = love.timer.getTime()
 
 	rescale(save.scale)
+	love.window.setFullscreen(save.fullscreen)
 	gamestate.registerEvents()
 	scenemanager:switchscene(title, true)
 end
@@ -464,11 +477,7 @@ function shakies_y(time, int)
 end
 
 function love.keypressed(key)
-	if gamepad then
-		save.gamepad = true
-	else
-		save.gamepad = false
-	end
+	save.gamepad = gamepad
 	gamepad = false
 	if vars ~= nil and vars.sequence ~= nil and vars.sequenceindex ~= nil then
 		if vars.sequence[vars.sequenceindex] == key then
@@ -478,7 +487,13 @@ function love.keypressed(key)
 		end
 	end
 	if key == 'escape' and vars ~= nil then
-		if not vars.can_do_stuff and vars.handler ~= 'quit' and vars.handler ~= 'keyboard' then
+		if vars.handler == 'remap' then
+			options:restorebuttons()
+			playsound(assets.sfx_back)
+			vars.remap_step = 1
+			vars.handler = 'options'
+			love.filesystem.write('data.json', json.encode(save))
+		elseif not vars.can_do_stuff and vars.handler ~= 'quit' and vars.handler ~= 'keyboard' then
 			quit = quit + 1
 			vars.quit_timer = timer.after(2, function() quit = 0 end)
 			if quit == 2 then
@@ -487,18 +502,25 @@ function love.keypressed(key)
 		end
 	end
 	if key == 'f11' then
-		fullscreen = not fullscreen
-		love.window.setFullscreen(fullscreen)
+		save.fullscreen = not save.fullscreen
+		love.window.setFullscreen(save.fullscreen)
 	end
 end
 
+function love.keyreleased(key)
+	save.gamepad = gamepad
+	gamepad = false
+end
+
 function love.gamepadpressed(joystick, button)
+	current_joystick = joystick
+	current_vendor = joystick:getDeviceInfo()
+	local key = ''
+	if button == 'start' then
+		key = 'escape'
+	end
 	if vars.handler ~= "remap" then
-		current_joystick = joystick
-		local key
-		if button == 'start' then
-			key = 'escape'
-		elseif button == 'x' then
+		if button == 'x' then
 			key = save.tertiary
 		elseif button == 'y' then
 			key = save.quaternary
@@ -515,8 +537,114 @@ function love.gamepadpressed(joystick, button)
 		elseif button == 'b' then
 			key = save.secondary
 		end
+	end
+	if key ~= '' then
 		gamepad = true
 		love.keypressed(key)
+	end
+end
+
+function love.gamepadreleased(joystick, button)
+	current_joystick = joystick
+	current_vendor = joystick:getDeviceInfo()
+	local key = ''
+	if button == 'start' then
+		key = 'escape'
+	end
+	if vars.handler ~= 'remap' then
+		if button == 'back' then
+			key = 'r'
+		elseif button == 'dpup' then
+			key = save.up
+		elseif button == 'dpdown' then
+			key = save.down
+		elseif button == 'dpleft' then
+			key = save.left
+		elseif button == 'dpright' then
+			key = save.right
+		elseif button == 'a' then
+			key = save.primary
+		elseif button == 'b' then
+			key = save.secondary
+		end
+	end
+	if key ~= '' then
+		gamepad = true
+		love.keyreleased(key)
+	end
+end
+
+function love.gamepadaxis(joystick, axis, value)
+	if vars.handler ~= 'remap' and vars.handler ~= 'game' then
+		local pressedkey = ''
+		local releasedkey = ''
+		if axis == 'lefty' and not (lstick_left or lstick_right) then
+			if value > 0.5 then
+				if not lstick_down then
+					pressedkey = save.down
+				end
+				lstick_down = true
+			else
+				if lstick_down then
+					releasedkey = save.down
+				end
+				lstick_down = false
+			end
+			if value < -0.5 then
+				if not lstick_up then
+					pressedkey = save.up
+				end
+				lstick_up = true
+			else
+				if lstick_up then
+					releasedkey = save.up
+				end
+				lstick_up = false
+			end
+		elseif axis == 'leftx' and not (lstick_down or lstick_up) then
+			if value > 0.5 then
+				if not lstick_right then
+					pressedkey = save.right
+				end
+				lstick_right = true
+			else
+				if lstick_right then
+					releasedkey = save.right
+				end
+				lstick_right = false
+			end
+			if value < -0.5 then
+				if not lstick_left then
+					pressedkey = save.left
+				end
+				lstick_left = true
+			else
+				if lstick_left then
+					releasedkey = save.left
+				end
+				lstick_left = false
+			end
+		end
+		if pressedkey ~= '' then
+			gamepad = true
+			current_joystick = joystick
+			love.keypressed(pressedkey)
+		end
+		if releasedkey ~= '' then
+			gamepad = true
+			current_joystick = joystick
+			love.keyreleased(releasedkey)
+		end
+	end
+end
+
+function love.joystickremoved()
+	if vars ~= nil and (vars.can_do_stuff and not vars.paused) then
+		vars.paused = true
+		vars.handlers = 'pause'
+		vars.pause_selection = 1
+		playsound(assets.sfx_move)
+		if music ~= nil then volume = {(save.music / 5) * 0.3} end
 	end
 end
 
@@ -538,9 +666,7 @@ function love.update(dt)
 	 	save.lastdaily.sent = false
 	end
 
-	if vars ~= nil and not vars.paused then
-		timer.update(dt)
-	end
+	if vars ~= nil and not vars.paused then timer.update(dt) end
 
 	if music ~= nil then
 		music:setVolume(volume[1])
@@ -611,7 +737,11 @@ function draw_on_top()
 		gfx.setFont(half_circle)
 		if save.color == 1 then gfx.setColor(love.math.colorFromBytes(194, 195, 199, 255)) else gfx.setColor(1, 1, 1, 1) end
 		if save.gamepad then
-			gfx.printf(text('quit_start'), 0, 5, 400, 'center')
+			if current_vendor == 1356 then -- playstation controller (or otherwise sony)
+				gfx.printf(text('quit_options'), 0, 5, 400, 'center')
+			else
+				gfx.printf(text('quit_start'), 0, 5, 400, 'center')
+			end
 		else
 			gfx.printf(text('quit_esc'), 0, 5, 400, 'center')
 		end

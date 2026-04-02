@@ -7,4 +7,6 @@ function love.conf(t)
 	t.window.resizable = true
 	t.window.minwidth = 400
 	t.window.minheight = 240
+	t.modules.physics = false
+	t.window.fullscreentype = 'desktop'
 end

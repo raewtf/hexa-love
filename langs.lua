@@ -1,4 +1,3 @@
--- TODO: localize window labels
 langs = {
 	en = {
 		-- Straight transfer
@@ -53,8 +52,10 @@ langs = {
 		["options_music"] = "Music Volume: ",
 		["options_sfx"] = "SFX Volume: ",
 		["options_lang"] = "Language: ",
+		["system"] = "System", -- NOTE: ask
 		["en"] = "English",
 		["fr"] = "French",
+		["jp"] = "Japanese", -- NOTE: ask
 		["options_flip"] = "Flip Rotation: ",
 		["options_skipfanfare"] = "Skip Fanfare: ",
 		["options_hardmode"] = "Hard Mode: ",
@@ -168,7 +169,7 @@ langs = {
 		["shareit"] = "Share it! ",
 
 		-- Changed stuff
-		["credits1"] = "\n\n\n\nProgrammed by Rae\nGraphics stuff drawn by Rae\nFrench localization done by Voxy\n\nMusic from MusMus; SFX made with JSFXR\nFonts from Panic and Astigmatic\n\nHUMP lib from Matthias Richter",
+		["credits1"] = "\n\n\n\nProgrammed by Rae\nGraphics stuff drawn by Rae\nFrench localization done by Voxy\nJapanese localization done by Philemax\n\nMusic from MusMus; SFX made with JSFXR\nFonts from Panic and Astigmatic\nHUMP lib from Matthias Richter", -- NOTE: ask
 		["manual2"] = "\nThe main game board is called the HEXAPLEX.\nThis is where gameplay takes place.\n\nUse the Directional buttons to\nmove your cursor along the\nfive hexagons within the grid.\n\nUse the Action buttons to\nturn the hexagon clockwise\nor counter-clockwise.",
 		["imdone"] = "I'm Done!",
 		["endgame"] = "End Game",
@@ -181,12 +182,17 @@ langs = {
 		["quit"] = "Quit Game",
 		["quit_sure_1"] = "Are you sure you'd\nlike to quit?",
 		["quit_sure_2_start"] = "(You can also quit at any time\nby pressing Start twice quickly\noutside of the game.)",
+		["quit_sure_2_options"] = "(You can also quit at any time\nby pressing Options twice quickly\noutside of the game.)", -- NOTE: ask
 		["quit_sure_2_esc"] = "(You can also quit at any time\nby pressing ESC twice quickly\noutside of the game.)",
 		["dpad"] = "The D-pad",
 		["a"] = "A",
 		["b"] = "B",
 		["x"] = "X",
 		["y"] = "Y",
+		["cross"] = "✕", -- NOTE: ask
+		["circle"] = "º", -- NOTE: ask
+		["triangle"] = "△", -- NOTE: ask
+		["square"] = "◻", -- NOTE: ask
 		["up"] = "Up",
 		["slash"] = "/",
 		["move"] = " move. ",
@@ -203,11 +209,13 @@ langs = {
 		["open_command"] = " opens Mission Command. ",
 		["newgame"] = " starts a new game. ",
 		["quit_start"] = "Press Start again to quit. See ya later!",
+		["quit_options"] = "Press Options again to quit. See ya later!", -- NOTE: ask
 		["quit_esc"] = "Press ESC again to quit. See ya later!",
 		["scale"] = "Minimum Scale: ",
 		["clean_scaling"] = "Window Scaling: ",
 		["clean_scalingtrue"] = "Integer",
 		["clean_scalingfalse"] = "Wonky Pixels",
+		["fullscreen"] = "Fullscreen: ", -- NOTE: ask
 		["reduceflashing"] = "Reduce Flashing: ",
 		["color"] = "Game Style: ",
 		["color1"] = "Colorful",
@@ -264,6 +272,9 @@ langs = {
 		["tertiary_desc"] = "in place of the X button\non the gamepad.",
 		["quaternary_desc"] = "in place of the Y button\non the gamepad.",
 		["remap_desc"] = "This button is used\n",
+		["remap_quit_start"] = "Press Start to cancel and\nrestore previous mappings.", -- NOTE: ask
+		["remap_quit_start"] = "Press Options to cancel and\nrestore previous mappings.", -- NOTE: ask
+		["remap_quit_esc"] = "Press ESC to cancel and\nrestore previous mappings.", -- NOTE: ask
 		["continue"] = "Continue",
 		["keys_type"] = "The keys type. ",
 		["return_accept"] = " Return accepts.",
@@ -583,6 +594,10 @@ langs = {
 		["exports"] = " : exporter. ",
 		["directions_move"] = "Directions : déplacer. ",
 		["command_error"] = "Cette configuration ne peut être résolue !",
+	},
+
+	jp = {
+
 	}
 }
 

@@ -13,8 +13,8 @@ function statistics:enter(current, ...)
 		fg = gfx.newImage('images/' .. tostring(save.color) .. '/fg.png'),
 		bg = gfx.newImage('images/' .. tostring(save.color) .. '/bg.png'),
 		img25 = gfx.newImage('images/' .. tostring(save.color) .. '/25.png'),
-		full_circle_inverted = gfx.newImageFont('fonts/full-circle-inverted.png', '0123456789 !"#$%&\'()*+,-./:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\\]™_`abcdefghijklmnopqrstuvwxyz{|}~≠🎵ÀÇÉÈÊÎÔÛàçéèêîôû'),
-		half_circle_inverted = gfx.newImageFont('fonts/half-circle-inverted.png', '0123456789 !"#$%&\'()*+,-./:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\\]™_`abcdefghijklmnopqrstuvwxyz{|}~≠⏰🔒ÀÇÉÈÊÎÔÛàçéèêîôû'),
+		full_circle_inverted = gfx.newImageFont('fonts/full-circle-inverted.png', '0123456789 !"#$%&\'()*+,-./:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\\]™_`abcdefghijklmnopqrstuvwxyz{|}~≠🎵ÀÇÉÈÊÎÔÛàçéèêîôû△✕º◻'),
+		half_circle_inverted = gfx.newImageFont('fonts/half-circle-inverted.png', '0123456789 !"#$%&\'()*+,-./:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\\]™_`abcdefghijklmnopqrstuvwxyz{|}~≠⏰🔒ÀÇÉÈÊÎÔÛàçéèêîôû△✕º◻'),
 		sfx_back = love.audio.newSource('audio/sfx/back.mp3', 'static'),
 	}
 
@@ -94,7 +94,11 @@ function statistics:draw()
 	end
 
 	if save.gamepad then -- Gamepad
-		gfx.print(text('b') .. text('back'), 70, 220)
+		if current_vendor == 1356 then -- playstation controller (or otherwise sony)
+			gfx.print(text('circle') .. text('back'), 70, 220)
+		else
+			gfx.print(text('b') .. text('back'), 70, 220)
+		end
 	else
 		gfx.print(start(save.secondary) .. text('back'), 70, 220)
 	end

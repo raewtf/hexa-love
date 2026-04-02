@@ -14,10 +14,10 @@ function missions:enter(current, ...)
 		bg = gfx.newImage('images/' .. tostring(save.color) .. '/bg.png'),
 		stars_small = gfx.newImage('images/' .. tostring(save.color) .. '/stars_small.png'),
 		stars_large = gfx.newImage('images/' .. tostring(save.color) .. '/stars_large.png'),
-		full_circle = gfx.newImageFont('fonts/full-circle.png', '0123456789 !"#$%&\'()*+,-./:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\\]™_`abcdefghijklmnopqrstuvwxyz{|}~≠🎵ÀÇÉÈÊÎÔÛàçéèêîôû'),
-		half_circle = gfx.newImageFont('fonts/half-circle.png', '0123456789 !"#$%&\'()*+,-./:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\\]™_`abcdefghijklmnopqrstuvwxyz{|}~≠⏰🔒ÀÇÉÈÊÎÔÛàçéèêîôû'),
-		full_circle_inverted = gfx.newImageFont('fonts/full-circle-inverted.png', '0123456789 !"#$%&\'()*+,-./:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\\]™_`abcdefghijklmnopqrstuvwxyz{|}~≠🎵ÀÇÉÈÊÎÔÛàçéèêîôû'),
-		half_circle_inverted = gfx.newImageFont('fonts/half-circle-inverted.png', '0123456789 !"#$%&\'()*+,-./:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\\]™_`abcdefghijklmnopqrstuvwxyz{|}~≠⏰🔒ÀÇÉÈÊÎÔÛàçéèêîôû'),
+		full_circle = gfx.newImageFont('fonts/full-circle.png', '0123456789 !"#$%&\'()*+,-./:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\\]™_`abcdefghijklmnopqrstuvwxyz{|}~≠🎵ÀÇÉÈÊÎÔÛàçéèêîôû△✕º◻'),
+		half_circle = gfx.newImageFont('fonts/half-circle.png', '0123456789 !"#$%&\'()*+,-./:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\\]™_`abcdefghijklmnopqrstuvwxyz{|}~≠⏰🔒ÀÇÉÈÊÎÔÛàçéèêîôû△✕º◻'),
+		full_circle_inverted = gfx.newImageFont('fonts/full-circle-inverted.png', '0123456789 !"#$%&\'()*+,-./:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\\]™_`abcdefghijklmnopqrstuvwxyz{|}~≠🎵ÀÇÉÈÊÎÔÛàçéèêîôû△✕º◻'),
+		half_circle_inverted = gfx.newImageFont('fonts/half-circle-inverted.png', '0123456789 !"#$%&\'()*+,-./:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\\]™_`abcdefghijklmnopqrstuvwxyz{|}~≠⏰🔒ÀÇÉÈÊÎÔÛàçéèêîôû△✕º◻'),
 		sfx_move = love.audio.newSource('audio/sfx/swap.mp3', 'static'),
 		sfx_select = love.audio.newSource('audio/sfx/select.mp3', 'static'),
 		sfx_back = love.audio.newSource('audio/sfx/back.mp3', 'static'),
@@ -250,11 +250,19 @@ function missions:draw()
 	end
 
 	if save.gamepad then -- Gamepad
-		if vars.custom_missions_enabled then
-			gfx.print(text('y') .. text('toggles_missions') .. (vars.custom and text('up') .. text('open_directory') or ''), 10, 190)
-			gfx.print(text('x') .. text('open_command'), 10, 205)
+		if current_vendor == 1356 then -- playstation controller (or otherwise sony)
+			if vars.custom_missions_enabled then
+				gfx.print(text('triangle') .. text('toggles_missions') .. (vars.custom and text('up') .. text('open_directory') or ''), 10, 190)
+				gfx.print(text('square') .. text('open_command'), 10, 205)
+			end
+			gfx.print(text('dpad') .. text('moves') .. text('cross') .. text('select') .. text('circle') .. text('back'), 10, 220)
+		else
+			if vars.custom_missions_enabled then
+				gfx.print(text('y') .. text('toggles_missions') .. (vars.custom and text('up') .. text('open_directory') or ''), 10, 190)
+				gfx.print(text('x') .. text('open_command'), 10, 205)
+			end
+			gfx.print(text('dpad') .. text('moves') .. text('a') .. text('select') .. text('b') .. text('back'), 10, 220)
 		end
-		gfx.print(text('dpad') .. text('moves') .. text('a') .. text('select') .. text('b') .. text('back'), 10, 220)
 	else
 		if vars.custom_missions_enabled then
 			gfx.print(start(save.quaternary) .. text('toggles_missions') .. (vars.custom and start(save.up) .. text('open_directory') or ''), 10, 190)
