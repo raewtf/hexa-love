@@ -5,6 +5,7 @@ local credits = {}
 
 function credits:enter(current, ...)
 	love.window.setTitle(text('hexa') .. text('dash_long') .. text('credits'))
+	setrichpresence('steam_display', '#status_credits')
 	local args = {...} -- Arguments passed in through the scene management will arrive here
 
 	assets = {
@@ -13,45 +14,19 @@ function credits:enter(current, ...)
 		fg = gfx.newImage('images/' .. tostring(save.color) .. '/fg_credits.png'),
 		bg = gfx.newImage('images/' .. tostring(save.color) .. '/bg.png'),
 		img25 = gfx.newImage('images/' .. tostring(save.color) .. '/25.png'),
-		full_circle_inverted = gfx.newImageFont('fonts/full-circle-inverted.png', '0123456789 !"#$%&\'()*+,-./:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\\]™_`abcdefghijklmnopqrstuvwxyz{|}~≠🎵ÀÇÉÈÊÎÔÛàçéèêîôû△✕º◻'),
-		half_circle_inverted = gfx.newImageFont('fonts/half-circle-inverted.png', '0123456789 !"#$%&\'()*+,-./:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\\]™_`abcdefghijklmnopqrstuvwxyz{|}~≠⏰🔒ÀÇÉÈÊÎÔÛàçéèêîôû△✕º◻'),
+		full_circle_inverted = gfx.newImageFont('fonts/full-circle-inverted.png', '0123456789 !"#$%&\'()*+,-./:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\\]^_`abcdefghijklmnopqrstuvwxyz{|}~�àçéèêîôÀûÇÉÈÊÎÔÛ゠ーシドトジスズセゼソゾタダサザコゴンマツヅテデナニヌネッハノカガキギクオォエグケゲェホボポミペベヘフブプヒビピバパチヂイゥィウアァムリルレロョヨラユュモメヤャワヮヰヱヲヴヵヷヸヿヾヽ・ヺヶヹしじすずせぜそぞざさこごぐくぎきがかおぉえぇうぅいぃただちぢっつづてでへべぺとどふぶぷのり゛゜ゝゞむみねにげけわゎゟゖゕゔんはばぱまぽぼほひびぴるれろをゑゐぬよょならゆゅもあぁやゃめüúùøËÕÖÓÒØëáâãäåæïíìÏÍÌÜÚÙ×ÁÂÃÄÅÆÐÑÝÞñóòõö÷þýÿðß¿¡¨°®©¯±²³´µ¶·¸¹º»«¼½¾§¥¤£¢¦ª¬制回取数替日消作少選今使形得了倍方早明時終🎵色角択中二人開乗間六内動合宇。宙本目転一全向押灰分秒反戻自者語英決！完限表示獲設定音量言（）安黒２十字位誰読込書出切詳細高指前成編集的値名確認起点保存先共有達、統組五図？食来遊変更新登録失敗１５０最大削除当爆発支配土下座負任務四部報告船準備練習物挑戦息忘昨休水補給折紙見元気君長奇妙説『』呼同操繰返利通常盤体重他場残増延基疑問入聞無視△✕º◻⏰🔒', 0),
+		half_circle_inverted = gfx.newImageFont('fonts/half-circle-inverted.png', '0123456789 !"#$%&\'()*+,-./:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\\]^_`abcdefghijklmnopqrstuvwxyz{|}~�⏰🔒àçéèêîôûÀÇÉÈÊÎÔÛ゠ァアィイゥウェエォオカガキギクグケゲコゴサザシジスズセゼソゾタダチヂッツヅテデトドナニヌネノハバパヒビピフブプヘベペホボポマミムメモャヤュユョヨラリルレロヮワヰヱヲンヴヵヶヷヸヺヹ・ーヽヾヿぁあぃいぅうぇえぉおかがきぎくぐけげこごさざしじすずせぜそぞただちぢっつづてでとどなにぬねのはばぱひびぴふぶぷへべぺほぼぽまみむめもゃやゅゆょよらりるれろゎわゐゑをんゔゕゖ゛゜ゝゞゟ制回取数替日消作少選今使形得了倍方早明時終🎵色角択中二人開乗間六内動合宇。宙本目転一全向押灰分秒反戻自者語英決！完限表示獲設定音量言（）安黒２十字位誰読込書出切詳細高指前成編集的値名確認起点保存先共有達、統組五図？食来遊変更新登録失敗１５０最大削除当爆発支配土下座負任務四部報告船準備練習物挑戦息忘昨休水補給折紙見元気君長奇妙説『』呼同操繰返利通常盤体重他場残増延基疑問入聞無視△✕º◻', 0),
 		sfx_back = love.audio.newSource('audio/sfx/back.mp3', 'static'),
 		sfx_move = love.audio.newSource('audio/sfx/swap.mp3', 'static'),
 		sfx_bonk = love.audio.newSource('audio/sfx/bonk.mp3', 'static'),
 	}
 
 	vars = {
-		sx = 0,
-		sy = 0,
-		lx = 0,
-		ly = 0,
-		fg_hexa = 0,
 		page = 1,
 		waiting = true,
 	}
-	vars.input_wait = timer.after(transitiontime, function()
+	afterdelay('input_wait', transitiontime, function()
 		vars.waiting = false
-	end)
-
-	vars.anim_sx = timer.tween(4, vars, {sx = -399})
-	vars.anim_sy = timer.tween(2.75, vars, {sy = -239})
-	vars.anim_lx = timer.tween(2.5, vars, {lx = -399})
-	vars.anim_ly = timer.tween(1.25, vars, {ly = -239})
-	vars.anim_sx_loop = timer.every(4, function()
-		vars.sx = 0
-		vars.anim_sx = timer.tween(4, vars, {sx = -399})
-	end)
-	vars.anim_sy_loop = timer.every(2.75, function()
-		vars.sy = 0
-		vars.anim_sy = timer.tween(2.75, vars, {sy = -239})
-	end)
-	vars.anim_lx_loop = timer.every(2.5, function()
-		vars.lx = 0
-		vars.anim_lx = timer.tween(2.5, vars, {lx = -399})
-	end)
-	vars.anim_ly_loop = timer.every(1.25, function()
-		vars.ly = 0
-		vars.anim_ly = timer.tween(1.25, vars, {ly = -239})
 	end)
 end
 
@@ -66,7 +41,7 @@ function credits:keypressed(key)
 				shakies()
 			end
 		elseif key == save.right then
-			if vars.page < 2 then
+			if vars.page < 3 then
 				vars.page = vars.page + 1
 				playsound(assets.sfx_move)
 			else
@@ -82,19 +57,16 @@ end
 
 function credits:draw()
 	gfx.draw(assets.bg, 0, 0)
-	gfx.draw(assets.stars_small, floor(vars.sx), floor(vars.sy))
-	gfx.draw(assets.stars_large, floor(vars.lx), floor(vars.ly))
+	local counter = save.playtime
+	gfx.draw(assets.stars_small, floor(-(counter % 133) * 3), floor(-(counter % 97) * 2.45))
+	gfx.draw(assets.stars_large, floor(-(counter % 83) * 4.8), floor(-(counter % 42) * 5.7))
 	gfx.draw(assets.img25, 0, 0)
 
 
 	gfx.setFont(assets.full_circle_inverted)
 	if save.color == 1 then gfx.setColor(love.math.colorFromBytes(255, 241, 232, 255)) end
 
-	if vars.page == 1 then
-		gfx.printf(text('credits1'), 0, 5, 400, 'center')
-	elseif vars.page == 2 then
-		gfx.printf(text('credits2'), 0, 5, 400, 'center')
-	end
+	gfx.printf(text('credits' .. vars.page), 0, 5, 400, 'center')
 
 	if save.color == 1 then
 		gfx.setColor(love.math.colorFromBytes(255, 241, 232, 127))
@@ -114,7 +86,7 @@ function credits:draw()
 		gfx.print(start(save.secondary) .. text('back'), 70, 220)
 	end
 
-	gfx.printf(vars.page .. '/2', 0, 220, 330, 'right')
+	gfx.printf(vars.page .. '/3', 0, 220, 330, 'right')
 
 	gfx.setColor(1, 1, 1, 1)
 

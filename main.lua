@@ -1,3 +1,65 @@
+-- so the dang thingy can load right
+local windows = package.config:sub(1, 1) == '\\'
+package.cpath = string.format("%s;%s/?.%s", package.cpath, love.filesystem.getSourceBaseDirectory(), (windows and 'dll' or 'so'))
+
+local sysos = love.system.getOS()
+if sysos == 'Linux' then
+	package.cpath = love.filesystem.getSourceBaseDirectory() .. '/windows/?.dll;' .. package.cpath
+	local ok, mod = pcall(require, 'luasteam')
+	if not ok then mod = nil end
+	if mod then
+		steam = require('luasteam')
+		issteam = steam.init()
+	else
+		steam = nil
+		issteam = false
+	end
+elseif sysos == 'Windows' then
+	package.cpath = love.filesystem.getSourceBaseDirectory() .. '/linux/?.so;' .. package.cpath
+	local ok, mod = pcall(require, 'luasteam')
+	if not ok then mod = nil end
+	if mod then
+		steam = require('luasteam')
+		issteam = steam.init()
+	else
+		steam = nil
+		issteam = false
+	end
+elseif sysos == 'OS X' then
+	package.cpath = love.filesystem.getSourceBaseDirectory() .. '/macos/?.so;' .. package.cpath
+	local ok, mod = pcall(require, 'luasteam')
+	if not ok then mod = nil end
+	if mod then
+		steam = require('luasteam')
+		issteam = steam.init()
+	else
+		steam = nil
+		issteam = false
+	end
+else
+	steam = nil
+	issteam = false
+end
+
+if issteam then
+	lang = steam.apps.getCurrentGameLanguage()
+
+	function steam.friends.onGameOverlayActivated(a)
+		if a then
+			if vars ~= nil and (vars.handler == 'game' and not vars.paused) then
+				vars.pause_selections = {'continue'}
+				if vars.mode == 'arcade' and vars.can_do_stuff then table.insert(vars.pause_selections, 'restart') end
+				table.insert(vars.pause_selections, 'quit')
+				vars.paused = true
+				vars.handler = 'pause'
+				vars.pause_selection = 1
+				playsound(assets.sfx_move)
+				if music ~= nil then volume = {(save.music / 5) * 0.3} end
+			end
+		end
+	end
+end
+
 langs = require 'langs'
 function getLocalizedText(key)
 	local data
@@ -7,22 +69,38 @@ function getLocalizedText(key)
 		data = langs.fr
 	elseif save.lang == 'jp' then
 		data = langs.jp
+	elseif save.lang == 'system' and lang ~= nil then
+		if lang == 'english' then
+			data = langs.en
+		elseif lang == 'french' then
+			data = langs.fr
+		elseif lang == 'japanese' then
+			data = langs.jp
+		else
+			-- fall back to english
+			data = langs.en
+		end
+	else
+		-- fall back to english
+		data = langs.en
 	end
 	return data and data[key] or key
 end
 
-rng = love.math.newRandomGenerator()
 scenemanager = require('scenemanager')
 gamestate = require 'gamestate'
+
 timer = require 'timer'
+easings = require 'easing'
+
+require 'raetimers'
+require 'xor'
+
 json = require 'json'
 local offsetx, offsety = 0, 0
 
--- so the dang thingy can load right
-local windows = package.config:sub(1, 1) == '\\'
-package.cpath = string.format("%s;%s/?.%s", package.cpath, love.filesystem.getSourceBaseDirectory(), (windows and "dll" or "so"))
-
 title = require('title')
+langselect = require('langselect')
 
 local gfx = love.graphics
 local gamepad = false
@@ -161,7 +239,8 @@ hexaplex_whites = {
 	{love.math.colorFromBytes(255, 241, 232, 255)},
 }
 
-local half_circle = gfx.newImageFont('fonts/half-circle-inverted.png', '0123456789 !"#$%&\'()*+,-./:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\\]™_`abcdefghijklmnopqrstuvwxyz{|}~≠⏰🔒ÀÇÉÈÊÎÔÛàçéèêîôû')
+local full_circle = gfx.newImageFont('fonts/full-circle-inverted.png', '0123456789 !"#$%&\'()*+,-./:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\\]^_`abcdefghijklmnopqrstuvwxyz{|}~�àçéèêîôÀûÇÉÈÊÎÔÛ゠ーシドトジスズセゼソゾタダサザコゴンマツヅテデナニヌネッハノカガキギクオォエグケゲェホボポミペベヘフブプヒビピバパチヂイゥィウアァムリルレロョヨラユュモメヤャワヮヰヱヲヴヵヷヸヿヾヽ・ヺヶヹしじすずせぜそぞざさこごぐくぎきがかおぉえぇうぅいぃただちぢっつづてでへべぺとどふぶぷのり゛゜ゝゞむみねにげけわゎゟゖゕゔんはばぱまぽぼほひびぴるれろをゑゐぬよょならゆゅもあぁやゃめüúùøËÕÖÓÒØëáâãäåæïíìÏÍÌÜÚÙ×ÁÂÃÄÅÆÐÑÝÞñóòõö÷þýÿðß¿¡¨°®©¯±²³´µ¶·¸¹º»«¼½¾§¥¤£¢¦ª¬制回取数替日消作少選今使形得了倍方早明時終🎵色角択中二人開乗間六内動合宇。宙本目転一全向押灰分秒反戻自者語英決！完限表示獲設定音量言（）安黒２十字位誰読込書出切詳細高指前成編集的値名確認起点保存先共有達、統組五図？食来遊変更新登録失敗１５０最大削除当爆発支配土下座負任務四部報告船準備練習物挑戦息忘昨休水補給折紙見元気君長奇妙説『』呼同操繰返利通常盤体重他場残増延基疑問入聞無視△✕º◻', 0)
+local half_circle = gfx.newImageFont('fonts/half-circle-inverted.png', '0123456789 !"#$%&\'()*+,-./:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\\]^_`abcdefghijklmnopqrstuvwxyz{|}~�⏰🔒àçéèêîôûÀÇÉÈÊÎÔÛ゠ァアィイゥウェエォオカガキギクグケゲコゴサザシジスズセゼソゾタダチヂッツヅテデトドナニヌネノハバパヒビピフブプヘベペホボポマミムメモャヤュユョヨラリルレロヮワヰヱヲンヴヵヶヷヸヺヹ・ーヽヾヿぁあぃいぅうぇえぉおかがきぎくぐけげこごさざしじすずせぜそぞただちぢっつづてでとどなにぬねのはばぱひびぴふぶぷへべぺほぼぽまみむめもゃやゅゆょよらりるれろゎわゐゑをんゔゕゖ゛゜ゝゞゟ制回取数替日消作少選今使形得了倍方早明時終🎵色角択中二人開乗間六内動合宇。宙本目転一全向押灰分秒反戻自者語英決！完限表示獲設定音量言（）安黒２十字位誰読込書出切詳細高指前成編集的値名確認起点保存先共有達、統組五図？食来遊変更新登録失敗１５０最大削除当爆発支配土下座負任務四部報告船準備練習物挑戦息忘昨休水補給折紙見元気君長奇妙説『』呼同操繰返利通常盤体重他場残増延基疑問入聞無視△✕º◻', 0)
 local text
 icon_color = love.image.newImageData('images/2/icon.png')
 icon_peedee = love.image.newImageData('images/1/icon.png')
@@ -178,7 +257,7 @@ function savecheck()
 		save = json.decode(love.filesystem.read('data.json'))
 	end
 	if save == nil then save = {} end
-	save.scale = save.scale or 1
+	save.scale = save.scale or 2
 	if save.fullscreen == nil then save.fullscreen = true end
 	if save.gamepad == nil then save.gamepad = false end
 
@@ -245,7 +324,7 @@ function savecheck()
 		save.sfx = 3
 	end
 
-	if save.lang == nil then save.lang = 'en' end
+	if save.lang == nil then save.lang = 'system' end
 	if save.flip == nil then save.flip = false end
 	if save.skipfanfare == nil then save.skipfanfare = false end
 	if save.lastdaily == nil then save.lastdaily = {} end
@@ -283,13 +362,94 @@ function savecheck()
 	save.wild_match = save.wild_match or 0
 end
 
+function checklanguage()
+	if save.lang == 'en' then
+		return 'en'
+	elseif save.lang == 'fr' then
+		return 'fr'
+	elseif save.lang == 'jp' then
+		return 'jp'
+	elseif save.lang == 'system' and lang ~= nil then
+		if lang == 'english' then
+			return 'en'
+		elseif lang == 'french' then
+			return 'fr'
+		elseif lang == 'japanese' then
+			return 'jp'
+		else
+			return nil
+		end
+	else
+		return nil
+	end
+end
+
+function updatecheevos(mission50)
+	if issteam then
+		steam.userStats.requestCurrentStats()
+		local gotscore, score = steam.userStats.getStatInt('score')
+		if gotscore then
+			if score >= 1000 then steam.userStats.setAchievement('arcade1000') end
+			if score >= 5000 then steam.userStats.setAchievement('arcade5000') end
+			if score >= 10000 then steam.userStats.setAchievement('arcade10000') end
+			if score >= 25000 then steam.userStats.setAchievement('arcade25000') end
+		end
+		local gothighest_mission, highest_mission = steam.userStats.getStatInt('highest_mission')
+		if gothighest_mission then
+			if highest_mission >= 1 then steam.userStats.setAchievement('mission1') end
+		end
+		if mission50 then steam.userStats.setAchievement('mission50') end
+		local gotswaps, swaps = steam.userStats.getStatInt('swaps')
+		if gotswaps then
+			if swaps >= 1000 then steam.userStats.setAchievement('swaps1000') end
+			if swaps >= 2500 then steam.userStats.setAchievement('swaps2500') end
+			if swaps >= 5000 then steam.userStats.setAchievement('swaps5000') end
+			if swaps >= 10000 then steam.userStats.setAchievement('swaps10000') end
+		end
+		local gothexas, hexas = steam.userStats.getStatInt('hexas')
+		if gothexas then
+			if hexas >= 250 then steam.userStats.setAchievement('hexas250') end
+			if hexas >= 500 then steam.userStats.setAchievement('hexas500') end
+			if hexas >= 1000 then steam.userStats.setAchievement('hexas1000') end
+			if hexas >= 2500 then steam.userStats.setAchievement('hexas2500') end
+		end
+		if save.lastdaily ~= nil and (save.lastdaily.score ~= nil and save.lastdaily.score > 0) then steam.userStats.setAchievement('daily') end
+		if save.exported_mission then steam.userStats.setAchievement('missioncommand') end
+		steam.userStats.storeStats()
+	end
+end
+
+function updatestat(stat, value)
+	if issteam then
+		steam.userStats.requestCurrentStats()
+		if stat == 'highest_mission' then
+			steam.userStats.setStatInt(stat, value - 1)
+		else
+			steam.userStats.setStatInt(stat, value)
+		end
+		steam.userStats.storeStats()
+		save[stat] = value
+	end
+end
+
+function setrichpresence(key, value)
+	if issteam then
+		steam.friends.setRichPresence(key, value)
+	end
+end
+
 function love.quit() -- Save data on quit
+	if issteam then
+		steam.shutdown()
+	end
 	love.filesystem.write('data.json', json.encode(save))
 end
 
 function rescale(newscale) -- Global rescale
-	scale = newscale
-	love.window.setMode(400 * newscale, 240 * newscale, {resizable = true, minwidth = 400 * newscale, minheight = 240 * newscale})
+	if not save.fullscreen then
+		scale = newscale
+		love.window.updateMode(400 * newscale, 240 * newscale, {minwidth = 400 * newscale, minheight = 240 * newscale, fullscreen = false})
+	end
 end
 
 -- Setting up music
@@ -299,12 +459,13 @@ music = nil
 function fademusic(delay)
 	delay = delay or 300
 	if music ~= nil then
-		local anim_fade = timer.tween(delay/700, volume, {0}, 'linear', function()
-			if music ~= nil then
-				music:pause()
-				music = nil
-			end
-		end)
+		musicfade = timer.tween(delay / 700, {
+			[volume] = {[1] = 0}
+		})
+			:finish(function()
+				if music ~= nil then love.audio.stop(music) end
+			end)
+			:group(transition)
 	end
 end
 
@@ -322,7 +483,7 @@ function newmusic(file, loop, range)
 end
 
 function playsound(sound)
-	if save.sfx > 0 then
+	if save.sfx > 0 and sound ~= nil then
 		sound:stop()
 		sound:setVolume(save.sfx / 5)
 		sound:play()
@@ -423,8 +584,6 @@ function love.load()
 	love.window.setIcon((save.color == 2 and icon_color or icon_peedee))
 	text = getLocalizedText
 
-	-- CHEEVOS: run init function here
-
 	if love.filesystem.getInfo('missions') == nil then
 		love.filesystem.createDirectory('missions')
 	end
@@ -432,48 +591,34 @@ function love.load()
 	min_dt = 1/30
 	next_time = love.timer.getTime()
 
-	rescale(save.scale)
+	scale = save.scale
+
 	love.window.setFullscreen(save.fullscreen)
+	if not save.fullscreen then
+		love.window.setMode(400 * scale, 240 * scale, {resizable = true, minwidth = 400 * scale, minheight = 240 * scale})
+	end
+
 	gamestate.registerEvents()
-	scenemanager:switchscene(title, true)
+
+	if checklanguage() == nil then
+		scenemanager:switchscene(langselect)
+	else
+		scenemanager:switchscene(title, true, 'arcade')
+	end
 end
 
 function shakies(time, int)
 	if time == nil then time = 0.5 end
 	if int == nil then int = 20 end
 	if save.reduceflashing then return end
-	if vars.anim_shakies ~= nil then
-		timer.cancel(vars.anim_shakies)
-		timer.cancel(vars.anim_shakies_stop)
-	end
-	vars.shakies = -int
-	vars.anim_shakies = timer.tween(time, vars, {shakies = 0}, 'out-elastic')
-	vars.anim_shakies_stop = timer.after((time / 2), function()
-		timer.cancel(vars.anim_shakies)
-		vars.anim_shakies = nil
-		timer.cancel(vars.anim_shakies_stop)
-		vars.anim_shakies_stop = nil
-		vars.shakies = 0
-	end)
+	newtimer('shakies', time * 1000, -int, 0, 'outElastic')
 end
 
 function shakies_y(time, int)
 	if time == nil then time = 0.75 end
 	if int == nil then int = 20 end
 	if save.reduceflashing then return end
-	if vars.anim_shakies_y ~= nil then
-		timer.cancel(vars.anim_shakies_y)
-		timer.cancel(vars.anim_shakies_y_stop)
-	end
-	vars.shakies_y = -int
-	vars.anim_shakies_y = timer.tween(time, vars, {shakies_y = 0}, 'out-elastic')
-	vars.anim_shakies_y_stop = timer.after((time / 2), function()
-		timer.cancel(vars.anim_shakies_y)
-		vars.anim_shakies_y = nil
-		timer.cancel(vars.anim_shakies_y_stop)
-		vars.anim_shakies_y_stop = nil
-		vars.shakies_y = 0
-	end)
+	newtimer('shakies_y', time * 1000, -int, 0, 'outElastic')
 end
 
 function love.keypressed(key)
@@ -493,9 +638,11 @@ function love.keypressed(key)
 			vars.remap_step = 1
 			vars.handler = 'options'
 			love.filesystem.write('data.json', json.encode(save))
-		elseif not vars.can_do_stuff and vars.handler ~= 'quit' and vars.handler ~= 'keyboard' then
+		elseif vars.handler ~= 'game' and vars.handler ~= 'quit' then
 			quit = quit + 1
-			vars.quit_timer = timer.after(2, function() quit = 0 end)
+			afterdelay('quit_timer', 2000, function()
+				quit = 0
+			end)
 			if quit == 2 then
 				love.event.quit()
 			end
@@ -504,6 +651,7 @@ function love.keypressed(key)
 	if key == 'f11' then
 		save.fullscreen = not save.fullscreen
 		love.window.setFullscreen(save.fullscreen)
+		if not save.fullscreen and scale ~= save.scale then rescale(save.scale) end
 	end
 end
 
@@ -575,7 +723,7 @@ function love.gamepadreleased(joystick, button)
 end
 
 function love.gamepadaxis(joystick, axis, value)
-	if vars.handler ~= 'remap' and vars.handler ~= 'game' then
+	if vars.handler ~= 'remap' then
 		local pressedkey = ''
 		local releasedkey = ''
 		if axis == 'lefty' and not (lstick_left or lstick_right) then
@@ -639,9 +787,12 @@ function love.gamepadaxis(joystick, axis, value)
 end
 
 function love.joystickremoved()
-	if vars ~= nil and (vars.can_do_stuff and not vars.paused) then
+	if vars ~= nil and (vars.handler == 'game' and not vars.paused) then
+		vars.pause_selections = {'continue'}
+		if vars.mode == 'arcade' and vars.can_do_stuff then table.insert(vars.pause_selections, 'restart') end
+		table.insert(vars.pause_selections, 'quit')
 		vars.paused = true
-		vars.handlers = 'pause'
+		vars.handler = 'pause'
 		vars.pause_selection = 1
 		playsound(assets.sfx_move)
 		if music ~= nil then volume = {(save.music / 5) * 0.3} end
@@ -657,16 +808,23 @@ end
 function love.update(dt)
 	next_time = next_time + min_dt
 
+	if issteam then
+		steam.runCallbacks()
+	end
+
 	save.playtime = save.playtime + 1
 
 	local time = os.date('!*t')
+
+	if vars ~= nil and not vars.paused then
+		timer.update(dt, transition)
+		timer.update(dt)
+	end
 
 	if (save.lastdaily.score ~= 0) and not (save.lastdaily.year == time.year and save.lastdaily.month == time.month and save.lastdaily.day == time.day) then
 	  	save.lastdaily.score = 0
 	 	save.lastdaily.sent = false
 	end
-
-	if vars ~= nil and not vars.paused then timer.update(dt) end
 
 	if music ~= nil then
 		music:setVolume(volume[1])
@@ -692,11 +850,11 @@ function love.draw()
 	gfx.scale(scale)
 
 	if vars ~= nil then
-		if vars.anim_shakies ~= nil then
-			gfx.translate(floor(vars.shakies), 0)
+		if vars.shakies ~= nil then
+			gfx.translate(floor(value('shakies') / 2) * 2, 0)
 		end
-		if vars.anim_shakies_y ~= nil then
-			gfx.translate(0, floor(vars.shakies_y))
+		if vars.shakies_y ~= nil then
+			gfx.translate(0, floor(value('shakies_y') / 2) * 2)
 		end
 	end
 end
@@ -706,6 +864,16 @@ function love.focus(f)
 		love.mouse.setVisible(false)
 	else
 		love.mouse.setVisible(true)
+		if vars ~= nil and (vars.handler == 'game' and not vars.paused) then
+			vars.pause_selections = {'continue'}
+			if vars.mode == 'arcade' and vars.can_do_stuff then table.insert(vars.pause_selections, 'restart') end
+			table.insert(vars.pause_selections, 'quit')
+			vars.paused = true
+			vars.handler = 'pause'
+			vars.pause_selection = 1
+			playsound(assets.sfx_move)
+			if music ~= nil then volume = {(save.music / 5) * 0.3} end
+		end
 	end
 end
 
@@ -731,11 +899,16 @@ end
 function draw_on_top()
 	gfx.setColor(1, 1, 1, 1)
 
-	if quit > 0 then
+	if quit > 0 and save.lang ~= nil then
 		gfx.setColor(0, 0, 0, 1)
 		gfx.rectangle('fill', 0, 0, 400, 25)
-		gfx.setFont(half_circle)
-		if save.color == 1 then gfx.setColor(love.math.colorFromBytes(194, 195, 199, 255)) else gfx.setColor(1, 1, 1, 1) end
+		if save.color == 1 then
+			gfx.setFont(full_circle)
+			gfx.setColor(love.math.colorFromBytes(255, 241, 232, 255))
+		else
+			gfx.setFont(half_circle)
+			gfx.setColor(1, 1, 1, 1)
+		end
 		if save.gamepad then
 			if current_vendor == 1356 then -- playstation controller (or otherwise sony)
 				gfx.printf(text('quit_options'), 0, 5, 400, 'center')
@@ -748,9 +921,9 @@ function draw_on_top()
 		gfx.setColor(1, 1, 1, 1)
 	end
 
-	if transitioning then
-		gfx.draw(podbaydoor, math.floor(podbaydoorstatus.pos1 / 2) * 2, 0)
-		gfx.draw(podbaydoor, (math.floor(podbaydoorstatus.pos2 / 2) * 2) + 220, 0, 0, -1, 1)
+	if transitioning and vars.transition ~= nil then
+		gfx.draw(podbaydoor, math.floor(((value('transition') * 200) - 219) / 2) * 2, 0)
+		gfx.draw(podbaydoor, (math.floor((-(value('transition') * 200) + 398) / 2) * 2) + 220, 0, 0, -1, 1)
 	end
 
 	gfx.setScissor()

@@ -12,23 +12,24 @@ local tris_flip = {true, false, true, false, true, true, false, true, false, tru
 
 function mission_command:enter(current, ...)
 	love.window.setTitle(text('hexa') .. text('dash_long') .. text('mission_command'))
+	setrichpresence('steam_display', '#status_missioncommand')
 	local args = {...} -- Arguments passed in through the scene management will arrive here
 
 	assets = {
+		full_circle = gfx.newImageFont('fonts/full-circle.png', '0123456789 !"#$%&\'()*+,-./:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\\]^_`abcdefghijklmnopqrstuvwxyz{|}~�àçéèêîôÀûÇÉÈÊÎÔÛ゠ーシドトジスズセゼソゾタダサザコゴンマツヅテデナニヌネッハノカガキギクオォエグケゲェホボポミペベヘフブプヒビピバパチヂイゥィウアァムリルレロョヨラユュモメヤャワヮヰヱヲヴヵヷヸヿヾヽ・ヺヶヹしじすずせぜそぞざさこごぐくぎきがかおぉえぇうぅいぃただちぢっつづてでへべぺとどふぶぷのり゛゜ゝゞむみねにげけわゎゟゖゕゔんはばぱまぽぼほひびぴるれろをゑゐぬよょならゆゅもあぁやゃめüúùøËÕÖÓÒØëáâãäåæïíìÏÍÌÜÚÙ×ÁÂÃÄÅÆÐÑÝÞñóòõö÷þýÿðß¿¡¨°®©¯±²³´µ¶·¸¹º»«¼½¾§¥¤£¢¦ª¬制回取数替日消作少選今使形得了倍方早明時終🎵色角択中二人開乗間六内動合宇。宙本目転一全向押灰分秒反戻自者語英決！完限表示獲設定音量言（）安黒２十字位誰読込書出切詳細高指前成編集的値名確認起点保存先共有達、統組五図？食来遊変更新登録失敗１５０最大削除当爆発支配土下座負任務四部報告船準備練習物挑戦息忘昨休水補給折紙見元気君長奇妙説『』呼同操繰返利通常盤体重他場残増延基疑問入聞無視△✕º◻', 0),
+		full_circle_inverted = gfx.newImageFont('fonts/full-circle-inverted.png', '0123456789 !"#$%&\'()*+,-./:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\\]^_`abcdefghijklmnopqrstuvwxyz{|}~�àçéèêîôÀûÇÉÈÊÎÔÛ゠ーシドトジスズセゼソゾタダサザコゴンマツヅテデナニヌネッハノカガキギクオォエグケゲェホボポミペベヘフブプヒビピバパチヂイゥィウアァムリルレロョヨラユュモメヤャワヮヰヱヲヴヵヷヸヿヾヽ・ヺヶヹしじすずせぜそぞざさこごぐくぎきがかおぉえぇうぅいぃただちぢっつづてでへべぺとどふぶぷのり゛゜ゝゞむみねにげけわゎゟゖゕゔんはばぱまぽぼほひびぴるれろをゑゐぬよょならゆゅもあぁやゃめüúùøËÕÖÓÒØëáâãäåæïíìÏÍÌÜÚÙ×ÁÂÃÄÅÆÐÑÝÞñóòõö÷þýÿðß¿¡¨°®©¯±²³´µ¶·¸¹º»«¼½¾§¥¤£¢¦ª¬制回取数替日消作少選今使形得了倍方早明時終🎵色角択中二人開乗間六内動合宇。宙本目転一全向押灰分秒反戻自者語英決！完限表示獲設定音量言（）安黒２十字位誰読込書出切詳細高指前成編集的値名確認起点保存先共有達、統組五図？食来遊変更新登録失敗１５０最大削除当爆発支配土下座負任務四部報告船準備練習物挑戦息忘昨休水補給折紙見元気君長奇妙説『』呼同操繰返利通常盤体重他場残増延基疑問入聞無視△✕º◻⏰🔒', 0),
+		full_circle_outline = gfx.newImageFont('fonts/full-circle.png', '0123456789 !"#$%&\'()*+,-./:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\\]^_`abcdefghijklmnopqrstuvwxyz{|}~�àçéèêîôÀûÇÉÈÊÎÔÛ゠ーシドトジスズセゼソゾタダサザコゴンマツヅテデナニヌネッハノカガキギクオォエグケゲェホボポミペベヘフブプヒビピバパチヂイゥィウアァムリルレロョヨラユュモメヤャワヮヰヱヲヴヵヷヸヿヾヽ・ヺヶヹしじすずせぜそぞざさこごぐくぎきがかおぉえぇうぅいぃただちぢっつづてでへべぺとどふぶぷのり゛゜ゝゞむみねにげけわゎゟゖゕゔんはばぱまぽぼほひびぴるれろをゑゐぬよょならゆゅもあぁやゃめüúùøËÕÖÓÒØëáâãäåæïíìÏÍÌÜÚÙ×ÁÂÃÄÅÆÐÑÝÞñóòõö÷þýÿðß¿¡¨°®©¯±²³´µ¶·¸¹º»«¼½¾§¥¤£¢¦ª¬制回取数替日消作少選今使形得了倍方早明時終🎵色角択中二人開乗間六内動合宇。宙本目転一全向押灰分秒反戻自者語英決！完限表示獲設定音量言（）安黒２十字位誰読込書出切詳細高指前成編集的値名確認起点保存先共有達、統組五図？食来遊変更新登録失敗１５０最大削除当爆発支配土下座負任務四部報告船準備練習物挑戦息忘昨休水補給折紙見元気君長奇妙説『』呼同操繰返利通常盤体重他場残増延基疑問入聞無視△✕º◻', 1),
+		full_circle_inverted_outline = gfx.newImageFont('fonts/full-circle-inverted.png', '0123456789 !"#$%&\'()*+,-./:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\\]^_`abcdefghijklmnopqrstuvwxyz{|}~�àçéèêîôÀûÇÉÈÊÎÔÛ゠ーシドトジスズセゼソゾタダサザコゴンマツヅテデナニヌネッハノカガキギクオォエグケゲェホボポミペベヘフブプヒビピバパチヂイゥィウアァムリルレロョヨラユュモメヤャワヮヰヱヲヴヵヷヸヿヾヽ・ヺヶヹしじすずせぜそぞざさこごぐくぎきがかおぉえぇうぅいぃただちぢっつづてでへべぺとどふぶぷのり゛゜ゝゞむみねにげけわゎゟゖゕゔんはばぱまぽぼほひびぴるれろをゑゐぬよょならゆゅもあぁやゃめüúùøËÕÖÓÒØëáâãäåæïíìÏÍÌÜÚÙ×ÁÂÃÄÅÆÐÑÝÞñóòõö÷þýÿðß¿¡¨°®©¯±²³´µ¶·¸¹º»«¼½¾§¥¤£¢¦ª¬制回取数替日消作少選今使形得了倍方早明時終🎵色角択中二人開乗間六内動合宇。宙本目転一全向押灰分秒反戻自者語英決！完限表示獲設定音量言（）安黒２十字位誰読込書出切詳細高指前成編集的値名確認起点保存先共有達、統組五図？食来遊変更新登録失敗１５０最大削除当爆発支配土下座負任務四部報告船準備練習物挑戦息忘昨休水補給折紙見元気君長奇妙説『』呼同操繰返利通常盤体重他場残増延基疑問入聞無視△✕º◻', 1),
+		half_circle = gfx.newImageFont('fonts/half-circle.png', '0123456789 !"#$%&\'()*+,-./:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\\]^_`abcdefghijklmnopqrstuvwxyz{|}~�⏰🔒àçéèêîôûÀÇÉÈÊÎÔÛ゠ァアィイゥウェエォオカガキギクグケゲコゴサザシジスズセゼソゾタダチヂッツヅテデトドナニヌネノハバパヒビピフブプヘベペホボポマミムメモャヤュユョヨラリルレロヮワヰヱヲンヴヵヶヷヸヺヹ・ーヽヾヿぁあぃいぅうぇえぉおかがきぎくぐけげこごさざしじすずせぜそぞただちぢっつづてでとどなにぬねのはばぱひびぴふぶぷへべぺほぼぽまみむめもゃやゅゆょよらりるれろゎわゐゑをんゔゕゖ゛゜ゝゞゟ制回取数替日消作少選今使形得了倍方早明時終🎵色角択中二人開乗間六内動合宇。宙本目転一全向押灰分秒反戻自者語英決！完限表示獲設定音量言（）安黒２十字位誰読込書出切詳細高指前成編集的値名確認起点保存先共有達、統組五図？食来遊変更新登録失敗１５０最大削除当爆発支配土下座負任務四部報告船準備練習物挑戦息忘昨休水補給折紙見元気君長奇妙説『』呼同操繰返利通常盤体重他場残増延基疑問入聞無視△✕º◻', 0),
+		half_circle_inverted = gfx.newImageFont('fonts/half-circle-inverted.png', '0123456789 !"#$%&\'()*+,-./:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\\]^_`abcdefghijklmnopqrstuvwxyz{|}~�⏰🔒àçéèêîôûÀÇÉÈÊÎÔÛ゠ァアィイゥウェエォオカガキギクグケゲコゴサザシジスズセゼソゾタダチヂッツヅテデトドナニヌネノハバパヒビピフブプヘベペホボポマミムメモャヤュユョヨラリルレロヮワヰヱヲンヴヵヶヷヸヺヹ・ーヽヾヿぁあぃいぅうぇえぉおかがきぎくぐけげこごさざしじすずせぜそぞただちぢっつづてでとどなにぬねのはばぱひびぴふぶぷへべぺほぼぽまみむめもゃやゅゆょよらりるれろゎわゐゑをんゔゕゖ゛゜ゝゞゟ制回取数替日消作少選今使形得了倍方早明時終🎵色角択中二人開乗間六内動合宇。宙本目転一全向押灰分秒反戻自者語英決！完限表示獲設定音量言（）安黒２十字位誰読込書出切詳細高指前成編集的値名確認起点保存先共有達、統組五図？食来遊変更新登録失敗１５０最大削除当爆発支配土下座負任務四部報告船準備練習物挑戦息忘昨休水補給折紙見元気君長奇妙説『』呼同操繰返利通常盤体重他場残増延基疑問入聞無視△✕º◻', 0),
 
-		full_circle = gfx.newImageFont('fonts/full-circle.png', '0123456789 !"#$%&\'()*+,-./:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\\]™_`abcdefghijklmnopqrstuvwxyz{|}~≠🎵ÀÇÉÈÊÎÔÛàçéèêîôû△✕º◻'),
-		half_circle = gfx.newImageFont('fonts/half-circle.png', '0123456789 !"#$%&\'()*+,-./:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\\]™_`abcdefghijklmnopqrstuvwxyz{|}~≠⏰🔒ÀÇÉÈÊÎÔÛàçéèêîôû△✕º◻'),
-		full_circle_inverted = gfx.newImageFont('fonts/full-circle-inverted.png', '0123456789 !"#$%&\'()*+,-./:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\\]™_`abcdefghijklmnopqrstuvwxyz{|}~≠🎵ÀÇÉÈÊÎÔÛàçéèêîôû△✕º◻'),
-		half_circle_inverted = gfx.newImageFont('fonts/half-circle-inverted.png', '0123456789 !"#$%&\'()*+,-./:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\\]™_`abcdefghijklmnopqrstuvwxyz{|}~≠⏰🔒ÀÇÉÈÊÎÔÛàçéèêîôû△✕º◻'),
-		full_circle_outline = gfx.newImageFont('fonts/full-circle-outline.png', '0123456789 !"#$%&\'()*+,-./:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\\]™_`abcdefghijklmnopqrstuvwxyz{|}~≠🎵ÀÇÉÈÊÎÔÛàçéèêîôû', -2),
-		full_circle_outline_color = gfx.newImageFont('fonts/full-circle-outline-color.png', '0123456789 !"#$%&\'()*+,-./:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\\]™_`abcdefghijklmnopqrstuvwxyz{|}~≠🎵ÀÇÉÈÊÎÔÛàçéèêîôû', -2),
 		mcsel = gfx.newImage('images/mcsel.png'),
 		ui = gfx.newImage('images/' .. tostring(save.color) .. '/ui_create.png'),
 		modal = gfx.newImage('images/' .. tostring(save.color) .. '/modal_small.png'),
 		x = gfx.newImage('images/' .. tostring(save.color) .. '/x.png'),
 		command_banner = gfx.newImage('images/' .. tostring(save.color) .. '/command_banner.png'),
 		command_hide = gfx.newImage('images/' .. tostring(save.color) .. '/command_hide.png'),
-		export_complete = gfx.newImage('images/' .. tostring(save.color) .. '/export_complete_' .. tostring(save.lang) .. '.png'),
+		export_complete = gfx.newImage('images/' .. tostring(save.color) .. '/export_complete_' .. checklanguage() .. '.png'),
 		cursor_white = gfx.newImage('images/' .. tostring(save.color) .. '/cursor_white.png'),
 		cursor_black = gfx.newImage('images/' .. tostring(save.color) .. '/cursor_black.png'),
 		powerup_bomb_up = gfx.newImage('images/' .. tostring(save.color) .. '/powerup_bomb_up.png'),
@@ -72,20 +73,14 @@ function mission_command:enter(current, ...)
 		time_limits = {'5', '10', '15', '20', '25', '30', '35', '40', '45', '50', '55', '60'},
 		clear_goal = 1,
 		clear_goals = {'black', 'gray', 'white', 'wild', '2x', 'bomb', 'board'},
-		seed_string = '0',
+		seed_string = '0000000000',
 		seed = 0,
 		keyboard = 'seed',
-		seed_old = '0',
-		picture_old = 'Object',
-		author_old = save.author_name ~= '' and save.author_name or 'HEXA MASTR',
 		tri = 1,
 		scroll_x_target = 400,
 		scroll_x = 400,
 		error_x_target = -400,
 		error_x = -355,
-		modal = 400,
-		powerup = 1,
-		flash = 1,
 		save_selection = 1,
 		save_selections = {'picture_name', 'author_name', 'save'},
 		picture_name = 'Object',
@@ -100,8 +95,12 @@ function mission_command:enter(current, ...)
 		selector_rack1selection = 1,
 		selector_rack2selection = 1,
 		can_type = true,
+		keyboard_symbols = {' ', 'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z', 'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z', '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '!', '?', '.', ','},
+		seed_symbols = {'0', '1', '2', '3', '4', '5', '6', '7', '8', '9'},
+		keyboard_slot = 1,
+		keyboard_slots = {1, 1, 1, 1, 1, 1, 1, 1, 1, 1},
 	}
-	vars.input_wait = timer.after(transitiontime, function()
+	afterdelay('input_wait', transitiontime, function()
 		vars.waiting = false
 	end)
 
@@ -114,22 +113,11 @@ function mission_command:enter(current, ...)
 		vars['mesh' .. i]:setTexture(assets.gray)
 	end
 
-	vars.anim_powerup = timer.tween(0.7, vars, {powerup = 4.99})
-	vars.anim_powerup_loop = timer.every(0.7, function()
-		vars.powerup = 1
-		vars.anim_powerup = timer.tween(0.7, vars, {powerup = 4.99})
-	end)
+	loopingtimer('powerup', 700, 1, 4.99)
 
-	vars.anim_flash = timer.tween(0.5, vars, {flash = 3.99}, 'linear')
-	vars.anim_flash_loop = timer.every(0.5, function()
-		if vars.flash < 2 then
-			vars.anim_flash = timer.tween(0.5, vars, {flash = 3.99}, 'linear')
-		elseif vars.flash > 2 then
-			vars.anim_flash = timer.tween(0.5, vars, {flash = 1}, 'linear')
-		end
-	end)
+	loopingreversingtimer('flash', 500, 1, 3.99)
 
-	newmusic('audio/music/zen' .. rng:random(1, 2) .. '.mp3', true)
+	newmusic('audio/music/zen' .. randInt(1, 2) .. '.mp3', true)
 end
 
 function mission_command:keypressed(key)
@@ -215,19 +203,17 @@ function mission_command:keypressed(key)
 						playsound(assets.sfx_bonk)
 					end
 				elseif vars.start_selections[vars.start_selection] == 'seed' then
-					vars.handler = 'keyboard'
-					vars.keyboard = 'seed'
-					vars.seed_string = '0'
-					love.keyboard.setKeyRepeat(true)
-					playsound(assets.sfx_select)
-					vars.can_type = false
-					vars.can_type_timer = timer.after(0.1, function()
-						vars.can_type = true
-					end)
+					if vars.mission_types[vars.mission_type] == 'time' then
+						vars.keyboard = 'seed'
+						self:get_slots_from_keyboard()
+						vars.keyboard_slot = 1
+						vars.handler = 'keyboard'
+						playsound(assets.sfx_select)
+					end
 				elseif vars.start_selections[vars.start_selection] == 'start' then
 					vars.tris = {}
 					if vars.mission_types[vars.mission_type] == 'time' then
-						rng:setSeed(vars.seed)
+						setRandomSeed(vars.seed)
 						local newcolor
 						local newpowerup
 						for i = 1, 19 do
@@ -257,28 +243,54 @@ function mission_command:keypressed(key)
 				scenemanager:transitionscene(missions, vars.custom)
 			end
 		elseif vars.handler == 'keyboard' then
-			if key == 'return' then
-				mission_command:hide_keyboard()
-			elseif key == 'backspace' then
+			if key == save.up then
+				vars.keyboard_slots[vars.keyboard_slot] = vars.keyboard_slots[vars.keyboard_slot] - 1
 				if vars.keyboard == 'seed' then
-					local byteoffset = utf8.offset(vars.seed_string, -1)
-					if byteoffset then
-						vars.seed_string = string.sub(vars.seed_string, 1, byteoffset - 1)
+					if vars.keyboard_slots[vars.keyboard_slot] < 1 then
+						vars.keyboard_slots[vars.keyboard_slot] = #vars.seed_symbols
 					end
-					if vars.seed_string == '' then
-						vars.seed_string = '0'
-					end
-				elseif vars.keyboard == 'picture' then
-					local byteoffset = utf8.offset(vars.picture_name, -1)
-					if byteoffset then
-						vars.picture_name = string.sub(vars.picture_name, 1, byteoffset - 1)
-					end
-				elseif vars.keyboard == 'author' then
-					local byteoffset = utf8.offset(vars.author_name, -1)
-					if byteoffset then
-						vars.author_name = string.sub(vars.author_name, 1, byteoffset - 1)
+				else
+					if vars.keyboard_slots[vars.keyboard_slot] < 1 then
+						vars.keyboard_slots[vars.keyboard_slot] = #vars.keyboard_symbols
 					end
 				end
+				playsound(assets.sfx_move)
+			elseif key == save.down then
+				vars.keyboard_slots[vars.keyboard_slot] = vars.keyboard_slots[vars.keyboard_slot] + 1
+				if vars.keyboard == 'seed' then
+					if vars.keyboard_slots[vars.keyboard_slot] > #vars.seed_symbols then
+						vars.keyboard_slots[vars.keyboard_slot] = 1
+					end
+				else
+					if vars.keyboard_slots[vars.keyboard_slot] > #vars.keyboard_symbols then
+						vars.keyboard_slots[vars.keyboard_slot] = 1
+					end
+				end
+				playsound(assets.sfx_move)
+			elseif key == save.left then
+				vars.keyboard_slot = vars.keyboard_slot - 1
+				if vars.keyboard_slot < 1 then
+					vars.keyboard_slot = 1
+					shakies()
+					playsound(assets.sfx_bonk)
+				else
+					playsound(assets.sfx_move)
+				end
+			elseif key == save.right then
+				vars.keyboard_slot = vars.keyboard_slot + 1
+				if vars.keyboard_slot > 10 then
+					vars.keyboard_slot = 10
+					shakies()
+					playsound(assets.sfx_bonk)
+				else
+					playsound(assets.sfx_move)
+				end
+			elseif key == save.primary then
+				self:hide_keyboard(true)
+				playsound(assets.sfx_select)
+			elseif key == save.secondary then
+				self:hide_keyboard(false)
+				playsound(assets.sfx_back)
 			end
 		elseif vars.handler == 'edit' then
 			if key == save.up then
@@ -536,29 +548,21 @@ function mission_command:keypressed(key)
 			elseif key == save.primary then
 				if vars.save_selections[vars.save_selection] == 'picture_name' then
 					if vars.mission_types[vars.mission_type] == 'picture' then
-						vars.handler = 'keyboard'
 						vars.keyboard = 'picture'
-						vars.picture_name = 'Object'
-						love.keyboard.setKeyRepeat(true)
+						self:get_slots_from_keyboard()
+						vars.keyboard_slot = 1
+						vars.handler = 'keyboard'
 						playsound(assets.sfx_select)
-						vars.can_type = false
-						vars.can_type_timer = timer.after(0.1, function()
-							vars.can_type = true
-						end)
 					else
 						shakies()
 						playsound(assets.sfx_bonk)
 					end
 				elseif vars.save_selections[vars.save_selection] == 'author_name' then
-					vars.handler = 'keyboard'
 					vars.keyboard = 'author'
-					vars.author_name = save.author_name ~= '' and save.author_name or 'HEXA MASTR'
-					love.keyboard.setKeyRepeat(true)
+					self:get_slots_from_keyboard()
+					vars.keyboard_slot = 1
+					vars.handler = 'keyboard'
 					playsound(assets.sfx_select)
-					vars.can_type = false
-					vars.can_type_timer = timer.after(0.1, function()
-						vars.can_type = true
-					end)
 				elseif vars.save_selections[vars.save_selection] == 'save' then
 					mission_command:save()
 					playsound(assets.sfx_select)
@@ -707,15 +711,11 @@ function mission_command:draw()
 
 	-- Start
 
+	self:print_with_outline(text('mission_command'), 10 + x, 8)
 	if save.color == 1 then
-		gfx.setFont(assets.full_circle_inverted)
-		gfx.setColor(love.math.colorFromBytes(255, 241, 232, 255))
-	end
-	gfx.print(text('mission_command'), 10 + x, 10)
-	if save.color == 1 then
-		gfx.setFont(assets.full_circle)
 		gfx.setColor(1, 1, 1, 1)
 	end
+	gfx.setFont(assets.full_circle)
 
 	gfx.print(text('mission_type'), 50 + x, 50)
 
@@ -729,23 +729,46 @@ function mission_command:draw()
 	gfx.printf(text('command_' .. vars.clear_goals[vars.clear_goal]), x, 130, 546, 'center')
 
 	gfx.print(text('number_seed'), 50 + x, 153)
-	gfx.printf(tonumber(vars.seed_string), x, 160, 546, 'center')
+	if vars.handler == 'keyboard' and vars.keyboard == 'seed' then
+		for i = 1, 10 do
+			if i == vars.keyboard_slot then
+				gfx.setColor(0, 0, 0, 1)
+				gfx.rectangle('line', 272 + x + ((i - 6) * 13), 158, 13, 18)
+				if save.color == 1 then
+					gfx.setColor(love.math.colorFromBytes(95, 87, 79, 255))
+					gfx.setFont(assets.full_circle_inverted)
+				else
+					gfx.setFont(assets.half_circle)
+				end
+			else
+				if save.color == 1 then
+					gfx.setColor(0, 0, 0, 1)
+				else
+					gfx.setFont(assets.full_circle)
+				end
+			end
+			gfx.printf(self:get_keyboard_from_slots():sub(i, i), x + ((i - 5.5) * 13), 160, 546, 'center')
+		end
+		if save.color == 1 then
+			gfx.setColor(0, 0, 0, 1)
+		else
+			gfx.setFont(assets.full_circle)
+		end
+	else
+		gfx.printf(vars.seed_string, x, 160, 546, 'center')
+	end
 
 	gfx.printf(text('start_editing'), x, 195, 400, 'center')
 
 	-- Edit
 
-	if save.color == 1 then
-		gfx.setFont(assets.full_circle_inverted)
-		gfx.setColor(love.math.colorFromBytes(255, 241, 232, 255))
-	end
 	if vars.error_x < -200 then
 		if vars.mission_types[vars.mission_type] == 'picture' then
-			gfx.print(text('create_picture'), 410 + x, 10)
+			self:print_with_outline(text('create_picture'), 410 + x, 8)
 		elseif vars.mission_types[vars.mission_type] == 'time' then
-			gfx.print(text('review_seed'), 410 + x, 10)
+			self:print_with_outline(text('review_seed'), 410 + x, 8)
 		else
-			gfx.print(text('create_start'), 410 + x, 10)
+			self:print_with_outline(text('create_start'), 410 + x, 8)
 		end
 	end
 	if save.color == 1 then
@@ -755,11 +778,7 @@ function mission_command:draw()
 
 	-- Save
 
-	if save.color == 1 then
-		gfx.setFont(assets.full_circle_inverted)
-		gfx.setColor(love.math.colorFromBytes(255, 241, 232, 255))
-	end
-	gfx.print(text('export_puzzle'), 810 + x, 10)
+	self:print_with_outline(text('export_puzzle'), 810 + x, 8)
 	if save.color == 1 then
 		gfx.setFont(assets.full_circle)
 		gfx.setColor(1, 1, 1, 1)
@@ -770,10 +789,64 @@ function mission_command:draw()
 	gfx.printf(text('command_' .. vars.mission_types[vars.mission_type]), x, 50, 1150, 'right')
 
 	gfx.print(text('picture_name'), 850 + x, 93)
-	gfx.printf(vars.picture_name, x, 100, 2146, 'center')
+	if vars.handler == 'keyboard' and vars.keyboard == 'picture' then
+		for i = 1, 10 do
+			if i == vars.keyboard_slot then
+				gfx.setColor(0, 0, 0, 1)
+				gfx.rectangle('line', 1072 + x + ((i - 6) * 13), 98, 13, 18)
+				if save.color == 1 then
+					gfx.setColor(love.math.colorFromBytes(95, 87, 79, 255))
+					gfx.setFont(assets.full_circle_inverted)
+				else
+					gfx.setFont(assets.half_circle)
+				end
+			else
+				if save.color == 1 then
+					gfx.setColor(0, 0, 0, 1)
+				else
+					gfx.setFont(assets.full_circle)
+				end
+			end
+			gfx.printf(self:get_keyboard_from_slots():sub(i, i), x + ((i - 5.5) * 13), 100, 2146, 'center')
+		end
+		if save.color == 1 then
+			gfx.setColor(0, 0, 0, 1)
+		else
+			gfx.setFont(assets.full_circle)
+		end
+	else
+		gfx.printf(vars.picture_name, x, 100, 2146, 'center')
+	end
 
 	gfx.print(text('author_name'), 850 + x, 130)
-	gfx.printf(vars.author_name, x, 130, 2146, 'center')
+	if vars.handler == 'keyboard' and vars.keyboard == 'author' then
+		for i = 1, 10 do
+			if i == vars.keyboard_slot then
+				gfx.setColor(0, 0, 0, 1)
+				gfx.rectangle('line', 1072 + x + ((i - 6) * 13), 128, 13, 18)
+				if save.color == 1 then
+					gfx.setColor(love.math.colorFromBytes(95, 87, 79, 255))
+					gfx.setFont(assets.full_circle_inverted)
+				else
+					gfx.setFont(assets.half_circle)
+				end
+			else
+				if save.color == 1 then
+					gfx.setColor(0, 0, 0, 1)
+				else
+					gfx.setFont(assets.full_circle)
+				end
+			end
+			gfx.printf(self:get_keyboard_from_slots():sub(i, i), x + ((i - 5.5) * 13), 130, 2146, 'center')
+		end
+		if save.color == 1 then
+			gfx.setColor(0, 0, 0, 1)
+		else
+			gfx.setFont(assets.full_circle)
+		end
+	else
+		gfx.printf(vars.author_name, x, 130, 2146, 'center')
+	end
 
 	gfx.printf(text('export_puzzle'), x, 180, 2000, 'center')
 
@@ -829,16 +902,24 @@ function mission_command:draw()
 	gfx.printf(text('command_' .. vars.mission_types[vars.mission_type] .. '_d'), 0 + x, 70, 400, 'center')
 
 	if vars.handler == 'keyboard' then
-		gfx.print(text('keys_type') .. text('return_accept'), 10 + x, 220)
+		if save.gamepad then
+			if current_vendor == 1356 then -- playstation controller (or otherwise sony)
+				gfx.print(text('dpad') .. text('moves') .. text('cross') .. text('select') .. text('circle') .. text('back'), 10 + x, 220)
+			else
+				gfx.print(text('dpad') .. text('moves') .. text('a') .. text('select') .. text('b') .. text('back'), 10 + x, 220)
+			end
+		else
+			gfx.print(text('directions_move') .. start(save.primary) .. text('select') .. start(save.secondary) .. text('back'), 10 + x, 220)
+		end
 	else
 		if save.gamepad then
 			if current_vendor == 1356 then -- playstation controller (or otherwise sony)
-				gfx.print(text('dpad') .. text('moves') .. text('cross') .. text('scrolls') .. text('circle') .. text('back'), 10 + x, 220)
+				gfx.print(text('dpad') .. text('moves') .. text('cross') .. text('select') .. text('circle') .. text('back'), 10 + x, 220)
 			else
-				gfx.print(text('dpad') .. text('moves') .. text('a') .. text('scrolls') .. text('b') .. text('back'), 10 + x, 220)
+				gfx.print(text('dpad') .. text('moves') .. text('a') .. text('select') .. text('b') .. text('back'), 10 + x, 220)
 			end
 		else
-			gfx.print(start(save.up) .. text('slash') .. start(save.down) .. text('move') .. start(save.primary) .. text('scrolls') .. start(save.secondary) .. text('back'), 10 + x, 220)
+			gfx.print(start(save.up) .. text('slash') .. start(save.down) .. text('move') .. start(save.primary) .. text('select') .. start(save.secondary) .. text('back'), 10 + x, 220)
 		end
 	end
 
@@ -876,16 +957,24 @@ function mission_command:draw()
 	gfx.print('(' .. text('command_picture') .. ')', 850 + x, 107)
 
 	if vars.handler == 'keyboard' then
-		gfx.print(text('keys_type') .. text('return_accept'), 810 + x, 220)
+		if save.gamepad then
+			if current_vendor == 1356 then -- playstation controller (or otherwise sony)
+				gfx.print(text('dpad') .. text('moves') .. text('cross') .. text('select') .. text('circle') .. text('back'), 810 + x, 220)
+			else
+				gfx.print(text('dpad') .. text('moves') .. text('a') .. text('select') .. text('b') .. text('back'), 810 + x, 220)
+			end
+		else
+			gfx.print(text('directions_move') .. start(save.primary) .. text('select') .. start(save.secondary) .. text('back'), 810 + x, 220)
+		end
 	else
 		if save.gamepad then
 			if current_vendor == 1356 then -- playstation controller (or otherwise sony)
-				gfx.print(text('dpad') .. text('moves') .. text('cross') .. text('scrolls') .. text('circle') .. text('back'), 810 + x, 220)
+				gfx.print(text('dpad') .. text('moves') .. text('cross') .. text('select') .. text('circle') .. text('back'), 810 + x, 220)
 			else
-				gfx.print(text('dpad') .. text('moves') .. text('a') .. text('scrolls') .. text('b') .. text('back'), 810 + x, 220)
+				gfx.print(text('dpad') .. text('moves') .. text('a') .. text('select') .. text('b') .. text('back'), 810 + x, 220)
 			end
 		else
-			gfx.print(start(save.up) .. text('slash') .. start(save.down) .. text('move') .. start(save.primary) .. text('scrolls') .. start(save.secondary) .. text('back'), 10 + x, 220)
+			gfx.print(start(save.up) .. text('slash') .. start(save.down) .. text('move') .. start(save.primary) .. text('select') .. start(save.secondary) .. text('back'), 810 + x, 220)
 		end
 	end
 
@@ -961,7 +1050,7 @@ function mission_command:draw()
 		end
 	end
 
-	local modal = floor(vars.modal) + 35
+	local modal = floor(value('modal') or 400) + 35
 	gfx.draw(assets.modal, 46, modal)
 	if vars.selector_show_powerup then
 		if save.color == 1 then
@@ -997,14 +1086,14 @@ function mission_command:draw()
 	gfx.setColor(1, 1, 1, 1)
 	if vars.selector_show_powerup then
 		gfx.draw(assets.x, 96, 116 + modal)
-		if save.reduceflashing or assets['powerup' .. floor(vars.powerup)] == nil then
+		if save.reduceflashing or assets['powerup' .. floor(value('powerup'))] == nil then
 			if assets['powerup_double_up'] ~= nil then gfx.draw(assets['powerup_double_up'], assets['powerup1'], 91 + 46, 104 + modal) end
 			if assets['powerup_bomb_up'] ~= nil then gfx.draw(assets['powerup_bomb_up'], assets['powerup1'], 148 + 46, 104 + modal) end
 			if assets['powerup_wild_box'] ~= nil then gfx.draw(assets['powerup_wild_box'], assets['powerup1'], 203 + 46, 104 + modal) end
 		else
-			if assets['powerup_double_up'] ~= nil then gfx.draw(assets['powerup_double_up'], assets['powerup' .. floor(vars.powerup)], 91 + 46, 104 + modal) end
-			if assets['powerup_bomb_up'] ~= nil then gfx.draw(assets['powerup_bomb_up'], assets['powerup' .. floor(vars.powerup)], 148 + 46, 104 + modal) end
-			if assets['powerup_wild_box'] ~= nil then gfx.draw(assets['powerup_wild_box'], assets['powerup' .. floor(vars.powerup)], 203 + 46, 104 + modal) end
+			if assets['powerup_double_up'] ~= nil then gfx.draw(assets['powerup_double_up'], assets['powerup' .. floor(value('powerup'))], 91 + 46, 104 + modal) end
+			if assets['powerup_bomb_up'] ~= nil then gfx.draw(assets['powerup_bomb_up'], assets['powerup' .. floor(value('powerup'))], 148 + 46, 104 + modal) end
+			if assets['powerup_wild_box'] ~= nil then gfx.draw(assets['powerup_wild_box'], assets['powerup' .. floor(value('powerup'))], 203 + 46, 104 + modal) end
 		end
 		if vars.selector_show_no_color then
 			gfx.draw(assets.x, 96, 38 + modal)
@@ -1067,7 +1156,7 @@ function mission_command:draw()
 			end
 		end
 
-		local flash = floor(vars.flash)
+		local flash = floor(value('flash'))
 		if flash < 1 then flash = 1 end
 		if flash > 3 then flash = 3 end
 		if vars.selector_rack2selection ~= 4 then
@@ -1134,7 +1223,7 @@ function mission_command:draw()
 			gfx.draw(assets.box_none, 156 + 33 + 46, 75 + modal)
 		end
 
-		local flash = floor(vars.flash)
+		local flash = floor(value('flash'))
 		if flash < 1 then flash = 1 end
 		if flash > 3 then flash = 3 end
 		if vars.selector_show_no_color then
@@ -1144,13 +1233,8 @@ function mission_command:draw()
 		end
 	end
 
-	if save.color == 1 then
-		gfx.setFont(assets.full_circle_outline_color)
-	else
-		gfx.setFont(assets.full_circle_outline)
-	end
 	gfx.draw(assets.error, 5 + floor(vars.error_x), 3)
-	gfx.print(text('command_error'), 36 + floor(vars.error_x), 8)
+	self:print_with_outline(text('command_error'), 36 + floor(vars.error_x), 8)
 
 	if vars.puzzle_exported then
 		gfx.draw(assets.export_complete, 800 + x, 0)
@@ -1178,57 +1262,112 @@ function mission_command:draw()
 
 		if save.gamepad then
 			if current_vendor == 1356 then -- playstation controller (or otherwise sony)
-				gfx.print(text('cross') .. text('open_directory') .. text('circle') .. text('back'), 810 + x, 220)
+				gfx.print(text('circle') .. text('back'), 810 + x, 220)
 			else
-				gfx.print(text('a') .. text('open_directory') .. text('b') .. text('back'), 810 + x, 220)
+				gfx.print(text('b') .. text('back'), 810 + x, 220)
 			end
 		else
-			gfx.print(start(save.primary) .. text('open_directory') .. start(save.secondary) .. text('back'), 810 + x, 220)
+			gfx.print(start(save.secondary) .. text('back'), 810 + x, 220)
 		end
 	end
 
 	draw_on_top()
 end
 
-function mission_command:textinput(text)
-	if vars.handler == 'keyboard' and vars.can_type then
+function mission_command:get_keyboard_from_slots()
+	local string = ''
+	for i = 1, #vars.keyboard_slots do
 		if vars.keyboard == 'seed' then
-			if vars.seed_string == '' then
-				vars.seed_string = '0'
+			string = string .. vars.seed_symbols[vars.keyboard_slots[i]]
+		else
+			string = string .. vars.keyboard_symbols[vars.keyboard_slots[i]]
+		end
+	end
+	return string
+end
+
+function mission_command:get_slots_from_keyboard()
+	if vars.keyboard == 'seed' then
+		for i = 1, #vars.keyboard_slots do
+			vars.keyboard_slots[i] = tonumber(vars.seed_string:sub(i, i)) + 1
+		end
+	else
+		for i = 1, 10 do
+			local string
+			if vars.keyboard == 'picture' then
+				string = vars.picture_name
+			elseif vars.keyboard == 'author' then
+				string = vars.author_name
 			end
-			vars.seed_string = vars.seed_string .. text
-			if vars.seed_string ~= tonumber(vars.seed_string) then
-				vars.seed_string = vars.seed_string:gsub("%D+", ""):sub(1, 10)
-			else
-				vars.seed_string = vars.seed_string:sub(1, 10)
+			local set = false
+			for n = 1, #vars.keyboard_symbols do
+				if string:sub(i, i) == vars.keyboard_symbols[n] then
+					vars.keyboard_slots[i] = n
+					set = true
+				end
 			end
-		elseif vars.keyboard == 'picture' then
-			if vars.picture_name == 'Object' then vars.picture_name = '' end
-			vars.picture_name = string.sub(vars.picture_name .. text, 1, 10)
-		elseif vars.keyboard == 'author' then
-			if vars.author_name == 'HEXA MASTR' then vars.author_name = '' end
-			vars.author_name = string.sub(vars.author_name .. text, 1, 10)
+			if not set then vars.keyboard_slots[i] = 1 end
 		end
 	end
 end
 
-function mission_command:hide_keyboard()
-	love.keyboard.setKeyRepeat(false)
-	playsound(assets.sfx_select)
+function mission_command:hide_keyboard(save)
 	if vars.keyboard == 'seed' then
-		vars.seed = tonumber(vars.seed_string)
+		if save then
+			vars.seed_string = self:get_keyboard_from_slots():gsub('^%s*(.-)%s*$', '%1')
+			vars.seed = tonumber(vars.seed_string)
+		end
 		vars.handler = 'start'
 	elseif vars.keyboard == 'picture' then
-		vars.handler = 'save'
-		if vars.picture_name == '' then
-			vars.picture_name = 'Object'
+		if save then
+			vars.picture_name = self:get_keyboard_from_slots():gsub('^%s*(.-)%s*$', '%1')
+			if vars.picture_name == '' then
+				vars.picture_name = 'Object'
+			end
 		end
+		vars.handler = 'save'
 	elseif vars.keyboard == 'author' then
-		vars.handler = 'save'
-		if vars.author_name == '' then
-			vars.author_name = save.author_name ~= '' and save.author_name or 'HEXA MASTR'
+		if save then
+			vars.author_name = self:get_keyboard_from_slots():gsub('^%s*(.-)%s*$', '%1')
+			if vars.author_name == '' then
+				vars.author_name = save.author_name ~= '' and save.author_name or 'HEXA MASTR'
+			end
 		end
+		vars.handler = 'save'
 	end
+end
+
+function mission_command:print_with_outline(newtext, x, y)
+	gfx.setFont(assets.full_circle_outline)
+	-- 1px outline square
+	gfx.print(newtext, x + 1, y + 1)
+	gfx.print(newtext, x + 2, y + 1)
+	gfx.print(newtext, x + 3, y + 1)
+	gfx.print(newtext, x + 3, y + 2)
+	gfx.print(newtext, x + 3, y + 3)
+	gfx.print(newtext, x + 2, y + 3)
+	gfx.print(newtext, x + 1, y + 3)
+	gfx.print(newtext, x + 1, y + 2)
+
+	-- 2px outline round
+	gfx.print(newtext, x + 0, y + 1)
+	gfx.print(newtext, x + 0, y + 2)
+	gfx.print(newtext, x + 0, y + 3)
+
+	gfx.print(newtext, x + 1, y + 4)
+	gfx.print(newtext, x + 2, y + 4)
+	gfx.print(newtext, x + 3, y + 4)
+
+	gfx.print(newtext, x + 4, y + 3)
+	gfx.print(newtext, x + 4, y + 2)
+	gfx.print(newtext, x + 4, y + 1)
+
+	gfx.print(newtext, x + 1, y + 0)
+	gfx.print(newtext, x + 2, y + 0)
+	gfx.print(newtext, x + 3, y + 0)
+	gfx.setFont(assets.full_circle_inverted_outline)
+	if save.color == 1 then gfx.setColor(love.math.colorFromBytes(255, 241, 232, 255)) end
+	gfx.print(newtext, x + 2, y + 2)
 end
 
 function mission_command:tri(i, x, y, up, color, powerup)
@@ -1267,7 +1406,7 @@ function mission_command:tri(i, x, y, up, color, powerup)
 		end
 	end
 	if powerup ~= '' then
-		if save.reduceflashing or assets['powerup' .. floor(vars.powerup)] == nil then
+		if save.reduceflashing or assets['powerup' .. floor(value('powerup'))] == nil then
 			if up then
 				if assets['powerup_' .. powerup .. '_up'] ~= nil then gfx.draw(assets['powerup_' ..powerup .. '_up'], assets['powerup1'], x - 28, y - 23) end
 			else
@@ -1275,9 +1414,9 @@ function mission_command:tri(i, x, y, up, color, powerup)
 			end
 		else
 			if up then
-				if assets['powerup_' .. powerup .. '_up'] ~= nil then gfx.draw(assets['powerup_' ..powerup .. '_up'], assets['powerup' .. floor(vars.powerup)], x - 28, y - 23) end
+				if assets['powerup_' .. powerup .. '_up'] ~= nil then gfx.draw(assets['powerup_' ..powerup .. '_up'], assets['powerup' .. floor(value('powerup'))], x - 28, y - 23) end
 			else
-				if assets['powerup_' .. powerup .. '_down'] ~= nil then gfx.draw(assets['powerup_' ..powerup .. '_down'], assets['powerup' .. floor(vars.powerup)], x - 28, y - 23) end
+				if assets['powerup_' .. powerup .. '_down'] ~= nil then gfx.draw(assets['powerup_' ..powerup .. '_down'], assets['powerup' .. floor(value('powerup'))], x - 28, y - 23) end
 			end
 		end
 	end
@@ -1324,7 +1463,7 @@ function mission_command:open_selector(tri, show_powerup, show_no_color)
 	end
 	vars.selector_rack = 1
 	vars.handler = ''
-	vars.anim_modal = timer.tween(0.3, vars, {modal = 0}, 'out-back', function()
+	newtimer('modal', 300, value('modal') or 400, 0, 'outBack', function()
 		vars.selector_opened = true
 		vars.handler = 'selector'
 	end)
@@ -1368,15 +1507,15 @@ function mission_command:close_selector(save)
 		end
 	end
 	vars.handler = ''
-	vars.anim_modal = timer.tween(0.3, vars, {modal = 400}, 'in-back', function()
+	newtimer('modal', 300, value('modal') or 0, 400, 'inBack', function()
 		vars.selector_opened = false
 		vars.handler = vars.mode
 	end)
 end
 
 function mission_command:randomizetri()
-	local randomcolor = rng:random(1, 3)
-	local randompowerup = rng:random(1, 50)
+	local randomcolor = randInt(1, 3)
+	local randompowerup = randInt(1, 50)
 	local color
 	local powerup
 	if randomcolor == 1 then
@@ -1435,13 +1574,13 @@ function mission_command:save()
 	vars.puzzle_exported = true
 	vars.handler = 'done'
 	save.author_name = vars.author_name
-	-- CHEEVOS: update
+	updatecheevos()
 end
 
 -- Shuffly code from https://gist.github.com/Uradamus/10323382
 function shuffle(tbl)
   for i = #tbl, 2, -1 do
-	local j = rng:random(i)
+	local j = randInt(1, i)
 	tbl[i], tbl[j] = tbl[j], tbl[i]
   end
   return tbl

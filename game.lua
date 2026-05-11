@@ -16,8 +16,8 @@ function game:enter(current, ...)
 	assets = {
 		cursor = gfx.newImage('images/' ..tostring(save.color) .. '/cursor.png'),
 		cursor_pick = gfx.newImage('images/' ..tostring(save.color) .. '/cursor_pick.png'),
-		full_circle_inverted = gfx.newImageFont('fonts/full-circle-inverted.png', '0123456789 !"#$%&\'()*+,-./:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\\]™_`abcdefghijklmnopqrstuvwxyz{|}~≠🎵ÀÇÉÈÊÎÔÛàçéèêîôû△✕º◻'),
-		half_circle_inverted = gfx.newImageFont('fonts/half-circle-inverted.png', '0123456789 !"#$%&\'()*+,-./:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\\]™_`abcdefghijklmnopqrstuvwxyz{|}~≠⏰🔒ÀÇÉÈÊÎÔÛàçéèêîôû△✕º◻'),
+		full_circle_inverted = gfx.newImageFont('fonts/full-circle-inverted.png', '0123456789 !"#$%&\'()*+,-./:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\\]^_`abcdefghijklmnopqrstuvwxyz{|}~�àçéèêîôÀûÇÉÈÊÎÔÛ゠ーシドトジスズセゼソゾタダサザコゴンマツヅテデナニヌネッハノカガキギクオォエグケゲェホボポミペベヘフブプヒビピバパチヂイゥィウアァムリルレロョヨラユュモメヤャワヮヰヱヲヴヵヷヸヿヾヽ・ヺヶヹしじすずせぜそぞざさこごぐくぎきがかおぉえぇうぅいぃただちぢっつづてでへべぺとどふぶぷのり゛゜ゝゞむみねにげけわゎゟゖゕゔんはばぱまぽぼほひびぴるれろをゑゐぬよょならゆゅもあぁやゃめüúùøËÕÖÓÒØëáâãäåæïíìÏÍÌÜÚÙ×ÁÂÃÄÅÆÐÑÝÞñóòõö÷þýÿðß¿¡¨°®©¯±²³´µ¶·¸¹º»«¼½¾§¥¤£¢¦ª¬制回取数替日消作少選今使形得了倍方早明時終🎵色角択中二人開乗間六内動合宇。宙本目転一全向押灰分秒反戻自者語英決！完限表示獲設定音量言（）安黒２十字位誰読込書出切詳細高指前成編集的値名確認起点保存先共有達、統組五図？食来遊変更新登録失敗１５０最大削除当爆発支配土下座負任務四部報告船準備練習物挑戦息忘昨休水補給折紙見元気君長奇妙説『』呼同操繰返利通常盤体重他場残増延基疑問入聞無視△✕º◻⏰🔒', 0),
+		half_circle_inverted = gfx.newImageFont('fonts/half-circle-inverted.png', '0123456789 !"#$%&\'()*+,-./:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\\]^_`abcdefghijklmnopqrstuvwxyz{|}~�⏰🔒àçéèêîôûÀÇÉÈÊÎÔÛ゠ァアィイゥウェエォオカガキギクグケゲコゴサザシジスズセゼソゾタダチヂッツヅテデトドナニヌネノハバパヒビピフブプヘベペホボポマミムメモャヤュユョヨラリルレロヮワヰヱヲンヴヵヶヷヸヺヹ・ーヽヾヿぁあぃいぅうぇえぉおかがきぎくぐけげこごさざしじすずせぜそぞただちぢっつづてでとどなにぬねのはばぱひびぴふぶぷへべぺほぼぽまみむめもゃやゅゆょよらりるれろゎわゐゑをんゔゕゖ゛゜ゝゞゟ制回取数替日消作少選今使形得了倍方早明時終🎵色角択中二人開乗間六内動合宇。宙本目転一全向押灰分秒反戻自者語英決！完限表示獲設定音量言（）安黒２十字位誰読込書出切詳細高指前成編集的値名確認起点保存先共有達、統組五図？食来遊変更新登録失敗１５０最大削除当爆発支配土下座負任務四部報告船準備練習物挑戦息忘昨休水補給折紙見元気君長奇妙説『』呼同操繰返利通常盤体重他場残増延基疑問入聞無視△✕º◻', 0),
 		clock = gfx.newImageFont('fonts/clock.png', '0123456789:'),
 		hexa = gfx.newImage('images/' .. tostring(save.color) .. '/hexa_' .. tostring(save.reduceflashing) .. '.png'),
 		sfx_move = love.audio.newSource('audio/sfx/move.mp3', 'static'),
@@ -42,15 +42,15 @@ function game:enter(current, ...)
 		label_3 = gfx.newImage('images/' .. tostring(save.color) .. '/label_3.png'),
 		label_2 = gfx.newImage('images/' .. tostring(save.color) .. '/label_2.png'),
 		label_1 = gfx.newImage('images/' .. tostring(save.color) .. '/label_1.png'),
-		label_go = gfx.newImage('images/' .. tostring(save.color) .. '/label_go_' .. tostring(save.lang) .. '.png'),
-		label_bomb = gfx.newImage('images/' .. tostring(save.color) .. '/label_bomb_' .. tostring(save.lang) .. '.png'),
-		label_double = gfx.newImage('images/' .. tostring(save.color) .. '/label_double_' .. tostring(save.lang) .. '.png'),
+		label_go = gfx.newImage('images/' .. tostring(save.color) .. '/label_go_' .. checklanguage() .. '.png'),
+		label_bomb = gfx.newImage('images/' .. tostring(save.color) .. '/label_bomb_' .. checklanguage() .. '.png'),
+		label_double = gfx.newImage('images/' .. tostring(save.color) .. '/label_double_' .. checklanguage() .. '.png'),
 		modal = gfx.newImage('images/' .. tostring(save.color) .. '/modal.png'),
 		modal_canvas = gfx.newCanvas(400, 240),
 		bg_tile = gfx.newImage('images/' .. tostring(save.color) ..'/bg_tile.png'),
 		stars = gfx.newImage('images/' .. tostring(save.color) .. '/stars_large.png'),
 		half = gfx.newImage('images/half.png'),
-		mission_complete = gfx.newImage('images/' .. tostring(save.color) .. '/mission_complete_' .. tostring(save.lang) .. '.png'),
+		mission_complete = gfx.newImage('images/' .. tostring(save.color) .. '/mission_complete_' .. checklanguage() .. '.png'),
 		gray = gfx.newImage('images/' .. tostring(save.color) .. tostring(save.color == 1 and '/tris/' .. save.hexaplex_color or '') .. '/gray.png'),
 		grid_up = gfx.newImage('images/grid_up.png'),
 		grid_down = gfx.newImage('images/grid_down.png'),
@@ -77,17 +77,12 @@ function game:enter(current, ...)
 		score = 0,
 		combo = 0,
 		-- animation data
-		hexa = 11,
-		cursor_x = 106,
-		cursor_y = 42,
-		cursor = 1,
-		label = 400,
-		modal = 240,
-		sx = 0,
-		sy = 0,
-		powerup = 1,
-		timer = 45000,
+		hexavalue = 11,
+		cursor_xvalue = 106,
+		cursor_yvalue = 42,
+		cursorvalue = 1,
 		old_timer = 45000,
+		anim_timervalue = 45000,
 		-- OK!
 		can_do_stuff = false,
 		ended = false,
@@ -101,15 +96,15 @@ function game:enter(current, ...)
 		missioncomplete = false,
 		time = 0,
 		pause_selection = 1,
-		pause_selections = {'continue'},
+		pause_selections = {'continue', 'quit'},
 		pos1 = 0,
 		pos2 = 0,
 		pos3 = 0,
 		length1 = 0,
 		length2 = 0,
 		length3 = 0,
-		handlers = 'game', -- can be game, losing, or lose, or pause. or nothing
-		messagerand = rng:random(1, 10),
+		handler = 'game', -- can be game, losing, or lose, or pause. or nothing
+		messagerand = randInt(1, 10),
 		white_is_white = false,
 		sequence = {save.right, save.up, save.secondary, save.down, save.up, save.secondary, save.down, save.up, save.secondary},
 		sequenceindex = 1,
@@ -124,38 +119,26 @@ function game:enter(current, ...)
 		vars['mesh' .. i]:setTexture(assets.gray)
 	end
 
-	vars.anim_sx = timer.tween(10, vars, {sx = -399})
-	vars.anim_sy = timer.tween(15, vars, {sy = -239})
-	vars.anim_sx_loop = timer.every(10, function()
-		vars.sx = 0
-		vars.anim_sx = timer.tween(10, vars, {sx = -399})
-	end)
-	vars.anim_sy_loop = timer.every(15, function()
-		vars.sy = 0
-		vars.anim_sy = timer.tween(15, vars, {sy = -239})
-	end)
-
-	vars.anim_powerup = timer.tween(0.7, vars, {powerup = 4.99})
-	vars.anim_powerup_loop = timer.every(0.7, function()
-		vars.powerup = 1
-		vars.anim_powerup = timer.tween(0.7, vars, {powerup = 4.99})
-	end)
+	loopingtimer('sx', 10000, 0, -399)
+	loopingtimer('sy', 15000, 0, -239)
+	loopingtimer('powerup', 700, 1, 4.99)
 
 	if vars.mode == 'arcade' then
 		love.window.setTitle(text('hexa') .. text('dash_long') .. text('arcade'))
+		setrichpresence('score', commalize(vars.score))
+		setrichpresence('steam_display', '#status_arcade')
 	elseif vars.mode == 'zen' then
 		love.window.setTitle(text('hexa') .. text('dash_long') .. text('zen'))
+		setrichpresence('hexas', commalize(vars.hexas))
+		setrichpresence('steam_display', '#status_chillmode')
 	elseif vars.mode == 'dailyrun' then
 		love.window.setTitle(text('hexa') .. text('dash_long') .. text('dailyrun'))
+		setrichpresence('score', commalize(vars.score))
+		setrichpresence('steam_display', '#status_dailyrun')
 	elseif vars.mode == 'picture' or vars.mode == 'time' or vars.mode == 'logic' or vars.mode == 'speedrun' then
 		love.window.setTitle(text('hexa') .. text('dash_long') .. text('missions'))
+		setrichpresence('steam_display', '#status_mission')
 	end
-
-	if vars.mode == 'arcade' then
-		table.insert(vars.pause_selections, 'restart')
-	end
-
-	table.insert(vars.pause_selections, 'quit')
 
 	if vars.mode == 'dailyrun' or vars.mode == 'arcade' or vars.mode == 'zen' then
 		assets.bg = gfx.newImage('images/' .. tostring(save.color) .. '/bg_' .. vars.mode .. '.png')
@@ -165,38 +148,23 @@ function game:enter(current, ...)
 
 	if vars.mode == 'dailyrun' then
 		local time = os.date('!*t')
-		rng:setSeed(time.year .. time.month .. time.day)
+		setRandomSeed(time.year .. time.month .. time.day)
 	elseif vars.mode == 'time' then
 		if vars.seed ~= nil and vars.seed ~= 0 then
-			rng:setSeed(vars.seed)
+			setRandomSeed(vars.seed)
 		else
-			rng:setSeed(123459 * vars.mission)
+			setRandomSeed(123459 * vars.mission)
 		end
 	else
-		rng:setSeed(os.time())
+		setRandomSeed(os.time())
 	end
 
 	if vars.mode ~= 'dailyrun' then
-		if save.reduceflashing then
-			vars.bgx = 0
-			vars.bgy = 0
-		else
-			vars.bgx = 0
-			vars.bgy = 0
-			vars.anim_bgx = timer.tween(30, vars, {bgx = -399})
-			vars.anim_bgy = timer.tween(28, vars, {bgy = -239})
-			vars.anim_bgx_loop = timer.every(30, function()
-				vars.bgx = 0
-				vars.anim_bgx = timer.tween(30, vars, {bgx = -399})
-			end)
-			vars.anim_bgy_loop = timer.every(28, function()
-				vars.bgy = 0
-				vars.anim_bgy = timer.tween(28, vars, {bgy = -239})
-			end)
+		if not save.reduceflashing then
+			loopingtimer('bgx', 30000, 0, -399)
+			loopingtimer('bgy', 28000, 0, -239)
 		end
 	end
-
-	-- CHEEVOS: grant 'chill' if vars.mode == 'zen'
 
 	if vars.mode == 'picture' then
 		vars.tris = deepcopy(vars.goal)
@@ -214,173 +182,174 @@ function game:enter(current, ...)
 	if vars.mode == 'arcade' or vars.mode == 'dailyrun' then
 		save.lbs_lastmode = vars.mode
 		assets.ui = gfx.newImage('images/' .. tostring(save.color) .. '/ui_arcade.png')
-		vars.countdown3 = timer.after(1, function()
-			playsound(assets.sfx_count)
-			assets.draw_label = assets.label_3
-			vars.label = 350
-			vars.anim_label = timer.tween(1, vars, {label = -200})
+		afterdelay('countdown3', 1000, function()
+			if vars.handler == 'game' then
+				playsound(assets.sfx_count)
+				assets.draw_label = assets.label_3
+				newtimer('label', 1000, 350, -200)
+			end
 		end)
-		vars.countdown2 = timer.after(2, function()
-			playsound(assets.sfx_count)
-			assets.draw_label = assets.label_2
-			vars.label = 350
-			timer.cancel(vars.anim_label)
-			vars.anim_label = timer.tween(1, vars, {label = -200})
+		afterdelay('countdown2', 2000, function()
+			if vars.handler == 'game' then
+				playsound(assets.sfx_count)
+				assets.draw_label = assets.label_2
+				resettimer('label', 1000, 350, -200)
+			end
 		end)
-		vars.countdown1 = timer.after(3, function()
-			playsound(assets.sfx_count)
-			assets.draw_label = assets.label_1
-			vars.label = 350
-			timer.cancel(vars.anim_label)
-			vars.anim_label = timer.tween(1, vars, {label = -200})
+		afterdelay('countdown1', 3000, function()
+			if vars.handler == 'game' then
+				playsound(assets.sfx_count)
+				assets.draw_label = assets.label_1
+				resettimer('label', 1000, 350, -200)
+			end
 		end)
-		vars.countdowngo = timer.after(4, function()
-			playsound(assets.sfx_start)
-			assets.draw_label = assets.label_go
-			vars.label = 400
-			timer.cancel(vars.anim_label)
-			vars.anim_label = timer.tween(1, vars, {label = -200}, 'linear', function()
-				assets.draw_label = nil
-			end)
-			newmusic('audio/music/arcade' .. rng:random(1, 3) .. '.mp3', true)
-			vars.can_do_stuff = true
-			self:check()
-			vars.anim_timer = timer.tween(vars.timer / 1000, vars, {timer = 0}, 'linear', function()
-				self:endround()
-			end)
+		afterdelay('countdowngo', 4000, function()
+			if vars.handler == 'game' then
+				playsound(assets.sfx_start)
+				assets.draw_label = assets.label_go
+				resettimer('label', 1000, 400, -200, 'linear', function()
+					assets.draw_label = nil
+				end)
+				newmusic('audio/music/arcade' .. randInt(1, 3) .. '.mp3', true)
+				vars.can_do_stuff = true
+				self:check()
+				newtimer('anim_timer', 45000, 45000, 0, 'linear', function()
+					self:endround()
+				end)
+			end
 		end)
 	elseif vars.mode == 'zen' then
 		assets.ui = gfx.newImage('images/' .. tostring(save.color) .. '/ui_zen.png')
-		vars.countdowngo = timer.after(1, function()
-			newmusic('audio/music/zen' .. rng:random(1, 2) .. '.mp3', true)
+		afterdelay('countdowngo', 1000, function()
+			newmusic('audio/music/zen' .. randInt(1, 2) .. '.mp3', true)
 			vars.can_do_stuff = true
 			self:check()
 		end)
 	elseif vars.mode == 'picture' then
-		vars.cursor_y = 420
+		vars.cursor_yvalue = 420
 		assets.ui = gfx.newImage('images/' .. tostring(save.color) .. '/ui_zen.png')
-		vars.countdown3 = timer.after(1, function()
-			playsound(assets.sfx_count)
-			assets.draw_label = assets.label_3
-			vars.label = 350
-			timer.cancel(vars.anim_label)
-			vars.anim_label = timer.tween(1, vars, {label = -200})
+		afterdelay('countdown3', 1000, function()
+			if vars.handler == 'game' then
+				playsound(assets.sfx_count)
+				assets.draw_label = assets.label_3
+				newtimer('label', 1000, 350, -200)
+			end
 		end)
-		vars.countdown2 = timer.after(2, function()
-			playsound(assets.sfx_count)
-			assets.draw_label = assets.label_2
-			vars.label = 350
-			timer.cancel(vars.anim_label)
-			vars.anim_label = timer.tween(1, vars, {label = -200})
+		afterdelay('countdown2', 2000, function()
+			if vars.handler == 'game' then
+				playsound(assets.sfx_count)
+				assets.draw_label = assets.label_2
+				resettimer('label', 1000, 350, -200)
+			end
 		end)
-		vars.countdown1 = timer.after(3, function()
-			playsound(assets.sfx_count)
-			assets.draw_label = assets.label_1
-			vars.label = 350
-			timer.cancel(vars.anim_label)
-			vars.anim_label = timer.tween(1, vars, {label = -200})
+		afterdelay('countdown1', 3000, function()
+			if vars.handler == 'game' then
+				playsound(assets.sfx_count)
+				assets.draw_label = assets.label_1
+				resettimer('label', 1000, 350, -200)
+			end
 		end)
-		vars.countdowngo = timer.after(4, function()
-			vars.cursor_y = 42
-			vars.tris = deepcopy(vars.start)
-			playsound(assets.sfx_start)
-			assets.draw_label = assets.label_go
-			vars.label = 400
-			timer.cancel(vars.anim_label)
-			vars.anim_label = timer.tween(1, vars, {label = -200}, 'linear', function()
-				assets.draw_label = nil
-			end)
-			newmusic('audio/music/zen' .. rng:random(1, 2) .. '.mp3', true)
-			vars.can_do_stuff = true
+		afterdelay('countdowngo', 4000, function()
+			if vars.handler == 'game' then
+				vars.cursor_yvalue = 42
+				vars.tris = deepcopy(vars.start)
+				playsound(assets.sfx_start)
+				assets.draw_label = assets.label_go
+				resettimer('label', 1000, 400, -200, 'linear', function()
+					assets.draw_label = nil
+				end)
+				newmusic('audio/music/zen' .. randInt(1, 2) .. '.mp3', true)
+				vars.can_do_stuff = true
+			end
 		end)
 	elseif vars.mode == 'logic' then
 		assets.ui = gfx.newImage('images/' .. tostring(save.color) .. '/ui_zen.png')
-		vars.countdowngo = timer.after(1, function()
-			newmusic('audio/music/zen' .. rng:random(1, 2) .. '.mp3', true)
+		afterdelay('countdowngo', 1000, function()
+			newmusic('audio/music/zen' .. randInt(1, 2) .. '.mp3', true)
 			vars.can_do_stuff = true
 			self:check()
 		end)
 	elseif vars.mode == 'speedrun' then
 		assets.ui = gfx.newImage('images/' .. tostring(save.color) .. '/ui_zen.png')
-		vars.countdown3 = timer.after(1, function()
-			playsound(assets.sfx_count)
-			assets.draw_label = assets.label_3
-			vars.label = 350
-			timer.cancel(vars.anim_label)
-			vars.anim_label = timer.tween(1, vars, {label = -200})
+		afterdelay('countdown3', 1000, function()
+			if vars.handler == 'game' then
+				playsound(assets.sfx_count)
+				assets.draw_label = assets.label_3
+				newtimer('label', 1000, 350, -200)
+			end
 		end)
-		vars.countdown2 = timer.after(2, function()
-			playsound(assets.sfx_count)
-			assets.draw_label = assets.label_2
-			vars.label = 350
-			timer.cancel(vars.anim_label)
-			vars.anim_label = timer.tween(1, vars, {label = -200})
+		afterdelay('countdown2', 2000, function()
+			if vars.handler == 'game' then
+				playsound(assets.sfx_count)
+				assets.draw_label = assets.label_2
+				resettimer('label', 1000, 350, -200)
+			end
 		end)
-		vars.countdown1 = timer.after(3, function()
-			playsound(assets.sfx_count)
-			assets.draw_label = assets.label_1
-			vars.label = 350
-			timer.cancel(vars.anim_label)
-			vars.anim_label = timer.tween(1, vars, {label = -200})
+		afterdelay('countdown1', 3000, function()
+			if vars.handler == 'game' then
+				playsound(assets.sfx_count)
+				assets.draw_label = assets.label_1
+				resettimer('label', 1000, 350, -200)
+			end
 		end)
-		vars.countdowngo = timer.after(4, function()
-			playsound(assets.sfx_start)
-			assets.draw_label = assets.label_go
-			vars.label = 400
-			timer.cancel(vars.anim_label)
-			vars.anim_label = timer.tween(1, vars, {label = -200}, 'linear', function()
-				assets.draw_label = nil
-			end)
-			newmusic('audio/music/arcade' .. rng:random(1, 3) .. '.mp3', true)
-			vars.can_do_stuff = true
-			self:check()
-			vars.anim_timer = timer.tween(vars.timer / 1000, vars, {timer = 0}, 'linear', function()
-				self:endround()
-			end)
+		afterdelay('countdowngo', 4000, function()
+			if vars.handler == 'game' then
+				playsound(assets.sfx_start)
+				assets.draw_label = assets.label_go
+				resettimer('label', 1000, 400, -200, 'linear', function()
+					assets.draw_label = nil
+				end)
+				newmusic('audio/music/arcade' .. randInt(1, 3) .. '.mp3', true)
+				vars.can_do_stuff = true
+				self:check()
+				newtimer('anim_timer', 45000, 45000, 0, 'linear', function()
+					self:endround()
+				end)
+			end
 		end)
 	elseif vars.mode == 'time' then
 		assets.ui = gfx.newImage('images/' .. tostring(save.color) .. '/ui_arcade.png')
-		vars.timer = vars.modifier * 1000
 		vars.old_timer = vars.modifier * 1000
-		vars.countdown3 = timer.after(1, function()
-			playsound(assets.sfx_count)
-			assets.draw_label = assets.label_3
-			vars.label = 350
-			timer.cancel(vars.anim_label)
-			vars.anim_label = timer.tween(1, vars, {label = -200})
+		vars.anim_timervalue = vars.modifier * 1000
+		afterdelay('countdown3', 1000, function()
+			if vars.handler == 'game' then
+				playsound(assets.sfx_count)
+				assets.draw_label = assets.label_3
+				newtimer('label', 1000, 350, -200)
+			end
 		end)
-		vars.countdown2 = timer.after(2, function()
-			playsound(assets.sfx_count)
-			assets.draw_label = assets.label_2
-			vars.label = 350
-			timer.cancel(vars.anim_label)
-			vars.anim_label = timer.tween(1, vars, {label = -200})
+		afterdelay('countdown2', 2000, function()
+			if vars.handler == 'game' then
+				playsound(assets.sfx_count)
+				assets.draw_label = assets.label_2
+				resettimer('label', 1000, 350, -200)
+			end
 		end)
-		vars.countdown1 = timer.after(3, function()
-			playsound(assets.sfx_count)
-			assets.draw_label = assets.label_1
-			vars.label = 350
-			timer.cancel(vars.anim_label)
-			vars.anim_label = timer.tween(1, vars, {label = -200})
+		afterdelay('countdown1', 3000, function()
+			if vars.handler == 'game' then
+				playsound(assets.sfx_count)
+				assets.draw_label = assets.label_1
+				resettimer('label', 1000, 350, -200)
+			end
 		end)
-		vars.countdowngo = timer.after(4, function()
-			playsound(assets.sfx_start)
-			assets.draw_label = assets.label_go
-			vars.label = 400
-			timer.cancel(vars.anim_label)
-			vars.anim_label = timer.tween(1, vars, {label = -200}, 'linear', function()
-				assets.draw_label = nil
-			end)
-			newmusic('audio/music/arcade' .. rng:random(1, 3) .. '.mp3', true)
-			vars.can_do_stuff = true
-			self:check()
-			vars.anim_timer = timer.tween(vars.timer / 1000, vars, {timer = 0}, 'linear', function()
-				self:endround()
-			end)
+		afterdelay('countdowngo', 4000, function()
+			if vars.handler == 'game' then
+				playsound(assets.sfx_start)
+				assets.draw_label = assets.label_go
+				resettimer('label', 1000, 400, -200, 'linear', function()
+					assets.draw_label = nil
+				end)
+				newmusic('audio/music/arcade' .. randInt(1, 3) .. '.mp3', true)
+				vars.can_do_stuff = true
+				self:check()
+				newtimer('anim_timer', vars.modifier * 1000, vars.modifier * 1000, 0, 'linear', function()
+					self:endround()
+				end)
+			end
 		end)
 	else
 		assets.ui = gfx.image.new('images/' .. tostring(save.color) .. '/ui_zen.png')
-		vars.countdowngo = timer.after(1, function()
+		afterdelay('countdowngo', 1000, function()
 			vars.can_do_stuff = true
 			self:check()
 		end)
@@ -388,30 +357,24 @@ function game:enter(current, ...)
 end
 
 function game:keypressed(key)
-	if vars.handlers == 'game' then
+	if vars.handler == 'game' then
 		if key == save.left then
 			if vars.can_do_stuff then
 				vars.lastdir = false
 				if vars.slot == 2 then
 					vars.slot = 1
-					timer.cancel(vars.anim_cursor_x)
-					timer.cancel(vars.anim_cursor_y)
-					vars.anim_cursor_x = timer.tween(0.08, vars, {cursor_x = 106}, 'out-back')
-					vars.anim_cursor_y = timer.tween(0.08, vars, {cursor_y = 42}, 'out-back')
+					newtimer('cursor_x', 80, value('cursor_x'), 106, 'outBack')
+					newtimer('cursor_y', 80, value('cursor_y'), 42, 'outBack')
 					playsound(assets.sfx_move)
 				elseif vars.slot == 5 then
 					vars.slot = 4
-					timer.cancel(vars.anim_cursor_x)
-					timer.cancel(vars.anim_cursor_y)
-					vars.anim_cursor_x = timer.tween(0.08, vars, {cursor_x = 137}, 'out-back')
-					vars.anim_cursor_y = timer.tween(0.08, vars, {cursor_y = 92}, 'out-back')
+					newtimer('cursor_x', 80, value('cursor_x'), 137, 'outBack')
+					newtimer('cursor_y', 80, value('cursor_y'), 92, 'outBack')
 					playsound(assets.sfx_move)
 				elseif vars.slot == 4 then
 					vars.slot = 3
-					timer.cancel(vars.anim_cursor_x)
-					timer.cancel(vars.anim_cursor_y)
-					vars.anim_cursor_x = timer.tween(0.08, vars, {cursor_x = 78}, 'out-back')
-					vars.anim_cursor_y = timer.tween(0.08, vars, {cursor_y = 92}, 'out-back')
+					newtimer('cursor_x', 80, value('cursor_x'), 78, 'outBack')
+					newtimer('cursor_y', 80, value('cursor_y'), 92, 'outBack')
 					playsound(assets.sfx_move)
 				else
 					playsound(assets.sfx_bonk)
@@ -422,24 +385,18 @@ function game:keypressed(key)
 				vars.lastdir = true
 				if vars.slot == 1 then
 					vars.slot = 2
-					timer.cancel(vars.anim_cursor_x)
-					timer.cancel(vars.anim_cursor_y)
-					vars.anim_cursor_x = timer.tween(0.08, vars, {cursor_x = 166}, 'out-back')
-					vars.anim_cursor_y = timer.tween(0.08, vars, {cursor_y = 42}, 'out-back')
+					newtimer('cursor_x', 80, value('cursor_x'), 166, 'outBack')
+					newtimer('cursor_y', 80, value('cursor_y'), 42, 'outBack')
 					playsound(assets.sfx_move)
 				elseif vars.slot == 3 then
 					vars.slot = 4
-					timer.cancel(vars.anim_cursor_x)
-					timer.cancel(vars.anim_cursor_y)
-					vars.anim_cursor_x = timer.tween(0.08, vars, {cursor_x = 137}, 'out-back')
-					vars.anim_cursor_y = timer.tween(0.08, vars, {cursor_y = 92}, 'out-back')
+					newtimer('cursor_x', 80, value('cursor_x'), 137, 'outBack')
+					newtimer('cursor_y', 80, value('cursor_y'), 92, 'outBack')
 					playsound(assets.sfx_move)
 				elseif vars.slot == 4 then
 					vars.slot = 5
-					timer.cancel(vars.anim_cursor_x)
-					timer.cancel(vars.anim_cursor_y)
-					vars.anim_cursor_x = timer.tween(0.08, vars, {cursor_x = 197}, 'out-back')
-					vars.anim_cursor_y = timer.tween(0.08, vars, {cursor_y = 92}, 'out-back')
+					newtimer('cursor_x', 80, value('cursor_x'), 197, 'outBack')
+					newtimer('cursor_y', 80, value('cursor_y'), 92, 'outBack')
 					playsound(assets.sfx_move)
 				else
 					playsound(assets.sfx_bonk)
@@ -450,17 +407,13 @@ function game:keypressed(key)
 				if vars.slot == 3 or vars.slot == 4 or vars.slot == 5 then
 					if vars.lastdir then
 						vars.slot = 2
-						timer.cancel(vars.anim_cursor_x)
-						timer.cancel(vars.anim_cursor_y)
-						vars.anim_cursor_x = timer.tween(0.08, vars, {cursor_x = 166}, 'out-back')
-						vars.anim_cursor_y = timer.tween(0.08, vars, {cursor_y = 42}, 'out-back')
+						newtimer('cursor_x', 80, value('cursor_x'), 166, 'outBack')
+						newtimer('cursor_y', 80, value('cursor_y'), 42, 'outBack')
 						playsound(assets.sfx_move)
 					else
 						vars.slot = 1
-						timer.cancel(vars.anim_cursor_x)
-						timer.cancel(vars.anim_cursor_y)
-						vars.anim_cursor_x = timer.tween(0.08, vars, {cursor_x = 106}, 'out-back')
-						vars.anim_cursor_y = timer.tween(0.08, vars, {cursor_y = 42}, 'out-back')
+						newtimer('cursor_x', 80, value('cursor_x'), 106, 'outBack')
+						newtimer('cursor_y', 80, value('cursor_y'), 42, 'outBack')
 						playsound(assets.sfx_move)
 					end
 				else
@@ -471,17 +424,13 @@ function game:keypressed(key)
 			if vars.can_do_stuff then
 				if vars.slot == 1 then
 					vars.slot = 3
-					timer.cancel(vars.anim_cursor_x)
-					timer.cancel(vars.anim_cursor_y)
-					vars.anim_cursor_x = timer.tween(0.08, vars, {cursor_x = 78}, 'out-back')
-					vars.anim_cursor_y = timer.tween(0.08, vars, {cursor_y = 92}, 'out-back')
+					newtimer('cursor_x', 80, value('cursor_x'), 78, 'outBack')
+					newtimer('cursor_y', 80, value('cursor_y'), 92, 'outBack')
 					playsound(assets.sfx_move)
 				elseif vars.slot == 2 then
 					vars.slot = 5
-					timer.cancel(vars.anim_cursor_x)
-					timer.cancel(vars.anim_cursor_y)
-					vars.anim_cursor_x = timer.tween(0.08, vars, {cursor_x = 197}, 'out-back')
-					vars.anim_cursor_y = timer.tween(0.08, vars, {cursor_y = 92}, 'out-back')
+					newtimer('cursor_x', 80, value('cursor_x'), 197, 'outBack')
+					newtimer('cursor_y', 80, value('cursor_y'), 92, 'outBack')
 					playsound(assets.sfx_move)
 				else
 					playsound(assets.sfx_bonk)
@@ -504,24 +453,30 @@ function game:keypressed(key)
 				end
 			end
 		elseif key == 'escape' then
-			if (vars.can_do_stuff and not vars.paused) then
+			if (vars.handler == 'game' and not vars.paused) then
+				vars.pause_selections = {'continue'}
+				if vars.mode == 'arcade' and vars.can_do_stuff then table.insert(vars.pause_selections, 'restart') end
+				table.insert(vars.pause_selections, 'quit')
 				vars.paused = true
-				vars.handlers = 'pause'
+				vars.handler = 'pause'
 				vars.pause_selection = 1
 				playsound(assets.sfx_move)
 				if music ~= nil then volume = {(save.music / 5) * 0.3} end
 			end
 		end
-	elseif vars.handlers == 'losing' then
+	elseif vars.handler == 'losing' then
 		if key == save.primary or key == save.secondary then
 			if vars.ended and not vars.skippedfanfare then
 				self:ersi()
 			end
 		end
-	elseif vars.handlers == 'lose' then
+	elseif vars.handler == 'lose' then
 		if key == save.primary then
 			if vars.mode == 'dailyrun' then
-				-- LEADERBOARDS: transition to highscores, vars.mode if true
+				if issteam then
+					fademusic()
+					scenemanager:transitionscene(highscores, vars.mode)
+				end
 			else
 				fademusic()
 				scenemanager:transitionscene(game, vars.mode)
@@ -530,7 +485,7 @@ function game:keypressed(key)
 			fademusic(100)
 			scenemanager:transitionscene(title, false, vars.mode)
 		end
-	elseif vars.handlers == 'pause' then
+	elseif vars.handler == 'pause' then
 		if key == save.left then
 			if vars.pause_selection == 1 then
 				playsound(assets.sfx_bonk)
@@ -547,7 +502,9 @@ function game:keypressed(key)
 			end
 		elseif key == save.primary then
 			vars.paused = false
-			vars.handlers = 'game'
+			if not vars.active_hexa then
+				vars.handler = 'game'
+			end
 			if music ~= nil then volume = {save.music / 5} end
 			if vars.pause_selections[vars.pause_selection] == 'continue' then
 				playsound(assets.sfx_select)
@@ -558,8 +515,9 @@ function game:keypressed(key)
 			elseif vars.pause_selections[vars.pause_selection] == 'quit' then
 				if vars.mode == 'logic' or vars.mode == 'time' or vars.mode == 'picture' or vars.mode == 'speedrun' then
 					if vars.anim_timer ~= nil then
-						timer.cancel(vars.anim_timer)
+						vars.anim_timer:remove()
 					end
+
 					vars.can_do_stuff = false
 					if vars.mission ~= nil and vars.mission > 50 then
 						scenemanager:transitionscene(missions, true)
@@ -568,93 +526,92 @@ function game:keypressed(key)
 					end
 					fademusic(200)
 				elseif vars.mode == 'arcade' or vars.mode == 'dailyrun' or vars.mode == 'zen' then
-					self:endround()
+					if vars.handler == 'game' and not vars.can_do_stuff then
+						if vars.anim_timer ~= nil then
+							vars.anim_timer:remove()
+						end
+						scenemanager:transitionscene(title, false, vars.mode)
+						vars.can_do_stuff = false
+						vars.handler = ''
+					else
+						self:endround()
+					end
 				end
 			end
 		elseif key == save.secondary or key == 'escape' then
 			vars.paused = false
 			if not vars.active_hexa then
-				vars.handlers = 'game'
+				vars.handler = 'game'
 			end
 			if music ~= nil then volume = {save.music / 5} end
 			playsound(assets.sfx_back)
-		end
-	elseif vars.handlers == '' then
-		if key == 'escape' then
-			if (vars.can_do_stuff and not vars.paused) then
-				vars.paused = true
-				vars.handlers = 'pause'
-				vars.pause_selection = 1
-				playsound(assets.sfx_move)
-				if music ~= nil then volume = {(save.music / 5) * 0.3} end
-			end
 		end
 	end
 end
 
 function game:update(dt)
-	if vars.mode == 'arcade' or vars.mode == 'dailyrun' or vars.mode == 'time' then
-		if vars.old_timer > 10000 and vars.timer <= 10000 then
+	if (vars.mode == 'arcade' or vars.mode == 'dailyrun' or vars.mode == 'time') and value('anim_timer') ~= nil then
+		if vars.old_timer > 10000 and value('anim_timer') <= 10000 then
 			shakies(.5, 1)
 			shakies_y(.75, 1)
 			playsound(assets.sfx_count)
 			rumble(0.1, 0.1, 0.15)
 		end
-		if vars.old_timer > 9000 and vars.timer <= 9000 then
+		if vars.old_timer > 9000 and value('anim_timer') <= 9000 then
 			shakies(.5, 2)
 			shakies_y(.75, 2)
 			playsound(assets.sfx_count)
 			rumble(0.2, 0.2, 0.15)
 		end
-		if vars.old_timer > 8000 and vars.timer <= 8000 then
+		if vars.old_timer > 8000 and value('anim_timer') <= 8000 then
 			shakies(.5, 3)
 			shakies_y(.75, 3)
 			playsound(assets.sfx_count)
 			rumble(0.3, 0.3, 0.15)
 		end
-		if vars.old_timer > 7000 and vars.timer <= 7000 then
+		if vars.old_timer > 7000 and value('anim_timer') <= 7000 then
 			shakies(.5, 4)
 			shakies_y(.75, 4)
 			playsound(assets.sfx_count)
 			rumble(0.4, 0.4, 0.15)
 		end
-		if vars.old_timer > 6000 and vars.timer <= 6000 then
+		if vars.old_timer > 6000 and value('anim_timer') <= 6000 then
 			shakies(.5, 5)
 			shakies_y(.75, 5)
 			playsound(assets.sfx_count)
 			rumble(0.5, 0.5, 0.15)
 		end
-		if vars.old_timer > 5000 and vars.timer <= 5000 then
+		if vars.old_timer > 5000 and value('anim_timer') <= 5000 then
 			shakies(.5, 6)
 			shakies_y(.75, 6)
 			playsound(assets.sfx_count)
 			rumble(0.6, 0.6, 0.15)
 		end
-		if vars.old_timer > 4000 and vars.timer <= 4000 then
+		if vars.old_timer > 4000 and value('anim_timer') <= 4000 then
 			shakies(.5, 7)
 			shakies_y(.75, 7)
 			playsound(assets.sfx_count)
 			rumble(0.7, 0.7, 0.15)
 		end
-		if vars.old_timer > 3000 and vars.timer <= 3000 then
+		if vars.old_timer > 3000 and value('anim_timer') <= 3000 then
 			shakies(.5, 8)
 			shakies_y(.75, 8)
 			playsound(assets.sfx_count)
 			rumble(0.8, 0.8, 0.15)
 		end
-		if vars.old_timer > 2000 and vars.timer <= 2000 then
+		if vars.old_timer > 2000 and value('anim_timer') <= 2000 then
 			shakies(.5, 9)
 			shakies_y(.75, 9)
 			playsound(assets.sfx_count)
 			rumble(0.9, 0.9, 0.15)
 		end
-		if vars.old_timer > 1000 and vars.timer <= 1000 then
+		if vars.old_timer > 1000 and value('anim_timer') <= 1000 then
 			shakies(.5, 10)
 			shakies_y(.75, 10)
 			playsound(assets.sfx_count)
 			rumble(1, 1, 0.15)
 		end
-		vars.old_timer = vars.timer
+		vars.old_timer = value('anim_timer')
 	end
 	if vars.mode == 'speedrun' and vars.can_do_stuff then
 		vars.time = vars.time + 1
@@ -674,20 +631,20 @@ end
 function game:draw()
 	gfx.draw(assets.bg, 0, 0)
 	if vars.mode ~= 'dailyrun' then
-		gfx.draw(assets.bg_tile, (floor(vars.bgx / 2) * 2) - 1, (floor(vars.bgy / 2) * 2) - 1)
+		gfx.draw(assets.bg_tile, (floor(value('bgx') / 2) * 2) - 1, (floor(value('bgy') / 2) * 2) - 1)
 	end
-	gfx.draw(assets.stars, floor(vars.sx), floor(vars.sy))
-	if assets.draw_label ~= nil then gfx.draw(assets.draw_label, floor(vars.label), -13) end
+	gfx.draw(assets.stars, floor(value('sx')), floor(value('sy')))
+	if assets.draw_label ~= nil then gfx.draw(assets.draw_label, floor(value('label')), -13) end
 	gfx.draw(assets.ui, 0, 0)
 	for i = 1, 19 do
 		self:tri(i, tris_x[i], tris_y[i], tris_flip[i], vars.tris[i].color, vars.tris[i].powerup)
 	end
 
-	local cursor = floor(vars.cursor)
+	local cursor = floor(value('cursor'))
 	if cursor >= 2 then
-		gfx.draw(assets.cursor_pick, floor(vars.cursor_x) - 3, floor(vars.cursor_y) - 2)
+		gfx.draw(assets.cursor_pick, floor(value('cursor_x')) - 3, floor(value('cursor_y')) - 2)
 	else
-		gfx.draw(assets.cursor, floor(vars.cursor_x), floor(vars.cursor_y))
+		gfx.draw(assets.cursor, floor(value('cursor_x')), floor(value('cursor_y')))
 	end
 
 	gfx.setFont(assets.full_circle_inverted)
@@ -754,14 +711,14 @@ function game:draw()
 	gfx.setFont(assets.clock)
 	if save.color == 1 then gfx.setColor(love.math.colorFromBytes(255, 241, 232, 255)) end
 
-	if vars.mode == 'arcade' or vars.mode == 'dailyrun' or vars.mode == 'time' then
-		gfx.print(ceil(vars.timer / 1000), 305, 55)
+	if (vars.mode == 'arcade' or vars.mode == 'dailyrun' or vars.mode == 'time') and value('anim_timer') ~= nil then
+		gfx.print(ceil(value('anim_timer') / 1000), 305, 55)
 	end
 
 	gfx.setColor(1, 1, 1, 1)
 
-	if vars.hexa <= 11 then
-		gfx.draw(assets.hexa, assets['hexa' .. floor(vars.hexa)], 0, 0)
+	if value('hexa') ~= nil and value('hexa') <= 11 then
+		gfx.draw(assets.hexa, assets['hexa' .. floor(value('hexa') or 11)], 0, 0)
 	end
 
 	if not vars.can_do_stuff then
@@ -770,7 +727,7 @@ function game:draw()
 	if vars.missioncomplete then
 		gfx.draw(assets.mission_complete, 0, 0)
 	end
-	gfx.draw(assets.modal_canvas, 0, floor(vars.modal))
+	gfx.draw(assets.modal_canvas, 0, floor(value('modal') or 240))
 
 	if vars.paused then
 		gfx.draw(assets.half, 0, 0)
@@ -889,7 +846,7 @@ function game:tri(i, x, y, up, color, powerup)
 		end
 	end
 	if powerup ~= '' then
-		if save.reduceflashing or assets['powerup' .. floor(vars.powerup)] == nil then
+		if save.reduceflashing or assets['powerup' .. floor(value('powerup'))] == nil then
 			if up then
 				if assets['powerup_' .. powerup .. '_up'] ~= nil then gfx.draw(assets['powerup_' ..powerup .. '_up'], assets['powerup1'], x - 28, y - 23) end
 			else
@@ -897,9 +854,9 @@ function game:tri(i, x, y, up, color, powerup)
 			end
 		else
 			if up then
-				if assets['powerup_' .. powerup .. '_up'] ~= nil then gfx.draw(assets['powerup_' ..powerup .. '_up'], assets['powerup' .. floor(vars.powerup)], x - 28, y - 23) end
+				if assets['powerup_' .. powerup .. '_up'] ~= nil then gfx.draw(assets['powerup_' ..powerup .. '_up'], assets['powerup' .. floor(value('powerup'))], x - 28, y - 23) end
 			else
-				if assets['powerup_' .. powerup .. '_down'] ~= nil then gfx.draw(assets['powerup_' ..powerup .. '_down'], assets['powerup' .. floor(vars.powerup)], x - 28, y - 23) end
+				if assets['powerup_' .. powerup .. '_down'] ~= nil then gfx.draw(assets['powerup_' ..powerup .. '_down'], assets['powerup' .. floor(value('powerup'))], x - 28, y - 23) end
 			end
 		end
 	end
@@ -909,10 +866,10 @@ function game:swap(slot, dir)
 	if not vars.active_hexa then
 		vars.movesbonus = vars.movesbonus - 1
 		if vars.movesbonus < 0 then vars.movesbonus = 0 end
-		vars.cursor = 2.99
-		vars.anim_cursor = timer.tween(0.075, vars, {cursor = 1})
+		resettimer('cursor', 75, 2.99, 1)
 		vars.moves = vars.moves + 1
-		save.swaps = save.swaps + 1
+		updatestat('swaps', save.swaps + 1)
+		updatecheevos()
 		playsound(assets.sfx_swap)
 		local tochange
 		temp1, temp2, temp3, temp4, temp5, temp6 = self:findslot(slot)
@@ -1059,7 +1016,7 @@ function game:colorflip(temp1, temp2, temp3, temp4, temp5, temp6, yes)
 end
 
 function game:hexa(temp1, temp2, temp3, temp4, temp5, temp6)
-	vars.handlers = ''
+	vars.handler = ''
 	vars.active_hexa = true
 	vars.tempcolor1 = temp1.color
 	vars.tempcolor2 = temp2.color
@@ -1071,12 +1028,12 @@ function game:hexa(temp1, temp2, temp3, temp4, temp5, temp6)
 	playsound(assets.sfx_hexaprep)
 	rumble(0.1 + (0.1 * vars.combo), 0.1 + (0.1 * vars.combo), 0.15)
 	self:colorflip(temp1, temp2, temp3, temp4, temp5, temp6, true)
-	vars.hexacountdown1 = timer.after(0.1, function()
+	afterdelay('hexacountdown1', 100, function()
 		if not save.reduceflashing then
 			self:colorflip(temp1, temp2, temp3, temp4, temp5, temp6, false)
 		end
 	end)
-	vars.hexacountdown2 = timer.after(0.2, function()
+	afterdelay('hexacountdown2', 200, function()
 		playsound(assets.sfx_hexaprep)
 		rumble(0.1 + (0.1 * vars.combo), 0.1 + (0.1 * vars.combo), 0.15)
 		if save.reduceflashing then
@@ -1085,53 +1042,48 @@ function game:hexa(temp1, temp2, temp3, temp4, temp5, temp6)
 			self:colorflip(temp1, temp2, temp3, temp4, temp5, temp6, true)
 		end
 	end)
-	vars.hexacountdown3 = timer.after(0.3, function()
+	afterdelay('hexacountdown2', 300, function()
 		if not save.reduceflashing then
 			self:colorflip(temp1, temp2, temp3, temp4, temp5, temp6, false)
 		end
 	end)
-	vars.hexacountdown4 = timer.after(0.4, function()
+	afterdelay('hexacountdown2', 400, function()
 		if vars.can_do_stuff or (not vars.can_do_stuff and vars.ended) then
 			vars.hexas = vars.hexas + 1
-			save.hexas = save.hexas + 1
+			updatestat('hexas', save.hexas + 1)
 			vars.combo = vars.combo + 1
 			shakies()
 			shakies_y()
 			if temp1.powerup == 'wild' or temp2.powerup == 'wild' or temp3.powerup == 'wild' or temp4.powerup == 'wild' or temp5.powerup == 'wild' or temp6.powerup == 'wild' then
-				save.wild_match = save.wild_match + 1
+				updatestat('wild_match', save.wild_match + 1)
 			end
 			if temp1.powerup == "double" or temp2.powerup == "double" or temp3.powerup == "double" or temp4.powerup == "double" or temp5.powerup == "double" or temp6.powerup == "double" then
-				save.double_match = save.double_match + 1
+				updatestat('double_match', save.double_match + 1)
 				if (temp1.color == "white" and temp1.powerup ~= "wild") or (temp2.color == "white" and temp2.powerup ~= "wild") or (temp3.color == "white" and temp3.powerup ~= "wild") or (temp4.color == "white" and temp4.powerup ~= "wild") or (temp5.color == "white" and temp5.powerup ~= "wild") or (temp6.color == "white" and temp6.powerup ~= "wild") then
 					vars.score = vars.score + (200 * vars.combo)
-					save.total_score = save.total_score + (200 * vars.combo)
-					save.white_match = save.white_match + 1
+					updatestat('total_score', save.total_score + (200 * vars.combo))
+					updatestat('white_match', save.white_match + 1)
 				elseif (temp1.color == "gray" and temp1.powerup ~= "wild") or (temp2.color == "gray" and temp2.powerup ~= "wild") or (temp3.color == "gray" and temp3.powerup ~= "wild") or (temp4.color == "gray" and temp4.powerup ~= "wild") or (temp5.color == "gray" and temp5.powerup ~= "wild") or (temp6.color == "gray" and temp6.powerup ~= "wild") then
 					vars.score = vars.score + (300 * vars.combo)
-					save.total_score = save.total_score + (300 * vars.combo)
-					save.gray_match = save.gray_match + 1
+					updatestat('total_score', save.total_score + (300 * vars.combo))
+					updatestat('gray_match', save.gray_match + 1)
 				elseif (temp1.color == "black" and temp1.powerup ~= "wild") or (temp2.color == "black" and temp2.powerup ~= "wild") or (temp3.color == "black" and temp3.powerup ~= "wild") or (temp4.color == "black" and temp4.powerup ~= "wild") or (temp5.color == "black" and temp5.powerup ~= "wild") or (temp6.color == "black" and temp6.powerup ~= "wild") then
 					vars.score = vars.score + (400 * vars.combo)
-					save.total_score = save.total_score + (400 * vars.combo)
-					save.black_match = save.black_match + 1
+					updatestat('total_score', save.total_score + (400 * vars.combo))
+					updatestat('black_match', save.black_match + 1)
 				end
 				playsound(assets.sfx_select)
 				assets.draw_label = assets.label_double
-				vars.label = 400
-				timer.cancel(vars.anim_label)
-				vars.anim_label = timer.tween(1.2, vars, {label = -200}, 'linear', function()
+				resettimer('label', 1200, 400, -200, 'linear', function()
 					assets.draw_label = nil
 				end)
 				if (vars.mode == "arcade" or vars.mode == "dailyrun") and vars.can_do_stuff then
-					timer.cancel(vars.anim_timer)
 					if save.hardmode then
-						vars.timer = min(vars.timer + (11000 * exp(-0.105 * vars.hexas)) + 1375, 60000)
-						vars.anim_timer = timer.tween(vars.timer / 1000, vars, {timer = 0}, 'linear', function()
+						resettimer('anim_timer', min(value('anim_timer') + (11000 * exp(-0.105 * vars.hexas)) + 1375, 60000), min(value('anim_timer') + (11000 * exp(-0.105 * vars.hexas)) + 1375, 60000), 0, 'linear', function()
 							self:endround()
 						end)
 					else
-						vars.timer = min(vars.timer + (11000 * exp(-0.105 * vars.hexas)) + 2750, 60000)
-						vars.anim_timer = timer.tween(vars.timer / 1000, vars, {timer = 0}, 'linear', function()
+						resettimer('anim_timer', min(value('anim_timer') + (11000 * exp(-0.105 * vars.hexas)) + 2750, 60000), min(value('anim_timer') + (11000 * exp(-0.105 * vars.hexas)) + 2750, 60000), 0, 'linear', function()
 							self:endround()
 						end)
 					end
@@ -1139,37 +1091,34 @@ function game:hexa(temp1, temp2, temp3, temp4, temp5, temp6)
 			else
 				if (temp1.color == "white" and temp1.powerup ~= "wild") or (temp2.color == "white" and temp2.powerup ~= "wild") or (temp3.color == "white" and temp3.powerup ~= "wild") or (temp4.color == "white" and temp4.powerup ~= "wild") or (temp5.color == "white" and temp5.powerup ~= "wild") or (temp6.color == "white" and temp6.powerup ~= "wild") then
 					vars.score = vars.score + (100 * vars.combo)
-					save.total_score = save.total_score + (100 * vars.combo)
-					save.white_match = save.white_match + 1
+					updatestat('total_score', save.total_score + (100 * vars.combo))
+					updatestat('white_match', save.white_match + 1)
 				elseif (temp1.color == "gray" and temp1.powerup ~= "wild") or (temp2.color == "gray" and temp2.powerup ~= "wild") or (temp3.color == "gray" and temp3.powerup ~= "wild") or (temp4.color == "gray" and temp4.powerup ~= "wild") or (temp5.color == "gray" and temp5.powerup ~= "wild") or (temp6.color == "gray" and temp6.powerup ~= "wild") then
 					vars.score = vars.score + (150 * vars.combo)
-					save.total_score = save.total_score + (150 * vars.combo)
-					save.gray_match = save.gray_match + 1
+					updatestat('total_score', save.total_score + (150 * vars.combo))
+					updatestat('gray_match', save.gray_match + 1)
 				elseif (temp1.color == "black" and temp1.powerup ~= "wild") or (temp2.color == "black" and temp2.powerup ~= "wild") or (temp3.color == "black" and temp3.powerup ~= "wild") or (temp4.color == "black" and temp4.powerup ~= "wild") or (temp5.color == "black" and temp5.powerup ~= "wild") or (temp6.color == "black" and temp6.powerup ~= "wild") then
 					vars.score = vars.score + (200 * vars.combo)
-					save.total_score = save.total_score + (200 * vars.combo)
-					save.black_match = save.black_match + 1
+					updatestat('total_score', save.total_score + (200 * vars.combo))
+					updatestat('black_match', save.black_match + 1)
 				end
 				if (vars.mode == "arcade" or vars.mode == "dailyrun") and vars.can_do_stuff then
-					timer.cancel(vars.anim_timer)
 					if save.hardmode then
-						vars.timer = min(vars.timer + (7000 * exp(-0.105 * vars.hexas)) + 875, 60000)
-						vars.anim_timer = timer.tween(vars.timer / 1000, vars, {timer = 0}, 'linear', function()
+						resettimer('anim_timer', min(value('anim_timer') + (7000 * exp(-0.105 * vars.hexas)) + 875, 60000), min(value('anim_timer') + (7000 * exp(-0.105 * vars.hexas)) + 875, 60000), 0, 'linear', function()
 							self:endround()
 						end)
 					else
-						vars.timer = min(vars.timer + (7000 * exp(-0.105 * vars.hexas)) + 1750, 60000)
-						vars.anim_timer = timer.tween(vars.timer / 1000, vars, {timer = 0}, 'linear', function()
+						resettimer('anim_timer', min(value('anim_timer') + (7000 * exp(-0.105 * vars.hexas)) + 1750, 60000), min(value('anim_timer') + (7000 * exp(-0.105 * vars.hexas)) + 1750, 60000), 0, 'linear', function()
 							self:endround()
 						end)
 					end
 				end
 			end
 			vars.score = vars.score + (10 * vars.movesbonus)
-			save.total_score = save.total_score + (10 * vars.movesbonus)
+			updatestat('total_score', save.total_score + (10 * vars.movesbonus))
 			vars.movesbonus = 5
 			if temp1.powerup == "bomb" or temp2.powerup == "bomb" or temp3.powerup == "bomb" or temp4.powerup == "bomb" or temp5.powerup == "bomb" or temp6.powerup == "bomb" then
-				save.bomb_match = save.bomb_match + 1
+				updatestat('bomb_match', save.bomb_match + 1)
 				for i = 1, 19 do
 					newcolor, newpowerup = self:randomizetri()
 					vars.tris[i] = {index = i, color = newcolor, powerup = newpowerup}
@@ -1177,9 +1126,7 @@ function game:hexa(temp1, temp2, temp3, temp4, temp5, temp6)
 				playsound(assets.sfx_boom)
 				rumble(1, 1, 0.8)
 				assets.draw_label = assets.label_bomb
-				vars.label = 400
-				timer.cancel(vars.anim_label)
-				vars.anim_label = timer.tween(1.2, vars, {label = -200}, 'linear', function()
+				resettimer('label', 1200, 400, -200, 'linear', function()
 					assets.draw_label = nil
 				end)
 			else
@@ -1189,7 +1136,7 @@ function game:hexa(temp1, temp2, temp3, temp4, temp5, temp6)
 				temp4.color, temp4.powerup = self:randomizetri()
 				temp5.color, temp5.powerup = self:randomizetri()
 				temp6.color, temp6.powerup = self:randomizetri()
-				local rand = rng:random(1, 10000)
+				local rand = randInt(1, 10000)
 				if rand == 1 then
 					playsound(assets.sfx_vine)
 				else
@@ -1197,8 +1144,7 @@ function game:hexa(temp1, temp2, temp3, temp4, temp5, temp6)
 				end
 				rumble(0.5 + (0.1 * vars.combo), 0.5 + (0.1 * vars.combo), 0.5)
 			end
-			vars.hexa = 1
-			vars.anim_hexa = timer.tween(0.6, vars, {hexa = 13})
+			newtimer('hexa', 600, 1, 13)
 			if vars.mode == "logic" or vars.mode == "speedrun" then
 				local logictest = true
 				if vars.modifier == "board" then
@@ -1248,9 +1194,15 @@ function game:hexa(temp1, temp2, temp3, temp4, temp5, temp6)
 					self:endround()
 				end
 			end
-			timer.after(0.2, function()
-				vars.handlers = 'game'
+			afterdelay('hexacheck', 200, function()
+				if vars.mode == 'arcade' or vars.mode == 'dailyrun' then
+					setrichpresence('score', commalize(vars.score))
+				elseif vars.mode == 'zen' then
+					setrichpresence('hexas', commalize(vars.hexas))
+				end
+				vars.handler = 'game'
 				vars.active_hexa = false
+				updatecheevos()
 				self:check()
 			end)
 		end
@@ -1268,11 +1220,9 @@ function game:boom(boomed)
 				vars.tris[i] = {index = i, color = newcolor, powerup = newpowerup}
 			end
 			playsound(assets.sfx_boom)
-			if vars.timer ~= 45000 then
+			if value('anim_timer') ~= 45000 then
 				assets.draw_label = assets.label_bomb
-				vars.label = 400
-				timer.cancel(vars.anim_label)
-				vars.anim_label = timer.tween(1.2, vars, {label = -200}, 'linear', function()
+				resettimer('label', 1200, 400, -200, 'linear', function()
 					assets.draw_label = nil
 				end)
 			end
@@ -1341,8 +1291,8 @@ function game:randomizetri()
 		powerup = ''
 		return color, powerup
 	else
-		local randomcolor = rng:random(1, 3)
-		local randompowerup = rng:random(1, 50)
+		local randomcolor = randInt(1, 3)
+		local randompowerup = randInt(1, 50)
 		local color
 		local powerup
 		if randomcolor == 1 then
@@ -1375,61 +1325,62 @@ function game:restart()
 	vars.boomed = false
 	vars.moves = 0
 	vars.hexas = 0
-	timer.cancel(vars.anim_hexa)
-	vars.hexa = 11
+	if vars.hexa ~= nil then vars.hexa:remove() end
+	vars.hexavalue = 11
 	vars.active_hexa = false
 	vars.slot = 1
-	timer.cancel(vars.anim_cursor_x)
-	timer.cancel(vars.anim_cursor_y)
-	vars.cursor_x = 106
-	vars.cursor_y = 42
-	timer.cancel(vars.anim_label)
-	vars.label = 400
-	timer.cancel(vars.anim_timer)
-	vars.timer = 45000
+	if vars.cursor_x ~= nil then vars.cursor_x:remove() end
+	if vars.cursor_y ~= nil then vars.cursor_y:remove() end
+	vars.cursor_xvalue = 106
+	vars.cursor_yvalue = 42
+	if vars.label ~= nil then vars.label:remove() end
+	vars.labelvalue = 400
+	if vars.anim_timer ~= nil then vars.anim_timer:remove() end
+	vars.anim_timervalue = 45000
 	vars.old_timer = 45000
 	self:boom(false)
 	vars.can_do_stuff = false
-	vars.countdown3 = timer.after(1, function()
-		playsound(assets.sfx_count)
-		assets.draw_label = assets.label_3
-		vars.label = 350
-		vars.anim_label = timer.tween(1, vars, {label = -200})
+	afterdelay('countdown3', 1000, function()
+		if vars.handler == 'game' then
+			playsound(assets.sfx_count)
+			assets.draw_label = assets.label_3
+			resettimer('label', 1000, 350, -200)
+		end
 	end)
-	vars.countdown2 = timer.after(2, function()
-		playsound(assets.sfx_count)
-		assets.draw_label = assets.label_2
-		vars.label = 350
-		timer.cancel(vars.anim_label)
-		vars.anim_label = timer.tween(1, vars, {label = -200})
+	afterdelay('countdown2', 2000, function()
+		if vars.handler == 'game' then
+			playsound(assets.sfx_count)
+			assets.draw_label = assets.label_2
+			resettimer('label', 1000, 350, -200)
+		end
 	end)
-	vars.countdown1 = timer.after(3, function()
-		playsound(assets.sfx_count)
-		assets.draw_label = assets.label_1
-		vars.label = 350
-		timer.cancel(vars.anim_label)
-		vars.anim_label = timer.tween(1, vars, {label = -200})
+	afterdelay('countdown1', 3000, function()
+		if vars.handler == 'game' then
+			playsound(assets.sfx_count)
+			assets.draw_label = assets.label_1
+			resettimer('label', 1000, 350, -200)
+		end
 	end)
-	vars.countdowngo = timer.after(4, function()
-		playsound(assets.sfx_start)
-		assets.draw_label = assets.label_go
-		vars.label = 400
-		timer.cancel(vars.anim_label)
-		vars.anim_label = timer.tween(1, vars, {label = -200}, 'linear', function()
-			assets.draw_label = nil
-		end)
-		newmusic('audio/music/arcade' .. rng:random(1, 3) .. '.mp3', true)
-		vars.can_do_stuff = true
-		self:check()
-		vars.anim_timer = timer.tween(vars.timer / 1000, vars, {timer = 0}, 'linear', function()
-			self:endround()
-		end)
+	afterdelay('countdowngo', 4000, function()
+		if vars.handler == 'game' then
+			playsound(assets.sfx_start)
+			assets.draw_label = assets.label_go
+			resettimer('label', 1000, 400, -200, 'linear', function()
+				assets.draw_label = nil
+			end)
+			newmusic('audio/music/arcade' .. randInt(1, 3) .. '.mp3', true)
+			vars.can_do_stuff = true
+			self:check()
+			newtimer('anim_timer', 45000, 45000, 0, 'linear', function()
+				self:endround()
+			end)
+		end
 	end)
 end
 
 function game:ersi()
 	vars.skippedfanfare = true
-	vars.handlers = 'lose'
+	vars.handler = 'lose'
 	if vars.mode == 'zen' then
 		gfx.setCanvas(assets.modal_canvas)
 			gfx.push()
@@ -1503,16 +1454,27 @@ function game:ersi()
 			end
 
 			if vars.mode == 'dailyrun' then
-				if save.gamepad then -- Gamepad
-					if current_vendor == 1356 then -- playstation controller (or otherwise sony)
-						gfx.print(text('circle') .. text('back'), 40, 205)
+				if issteam then
+					if save.gamepad then -- Gamepad
+						if current_vendor == 1356 then -- playstation controller (or otherwise sony)
+							gfx.print(text('cross') .. text('showsdailyscores') .. text('circle') .. text('back'), 40, 205)
+						else
+							gfx.print(text('a') .. text('showsdailyscores') .. text('b') .. text('back'), 40, 205)
+						end
 					else
-						gfx.print(text('b') .. text('back'), 40, 205)
+						gfx.print(start(save.primary) .. text('showsdailyscores') .. start(save.secondary) .. text('back'), 40, 205)
 					end
 				else
-					gfx.print(start(save.secondary) .. text('back'), 40, 205)
+					if save.gamepad then -- Gamepad
+						if current_vendor == 1356 then -- playstation controller (or otherwise sony)
+							gfx.print(text('circle') .. text('back'), 40, 205)
+						else
+							gfx.print(text('b') .. text('back'), 40, 205)
+						end
+					else
+						gfx.print(start(save.secondary) .. text('back'), 40, 205)
+					end
 				end
-				-- LEADERBOARDS: "Z shows scores for today. X goes back." if true
 			else
 				if save.gamepad then -- Gamepad
 					if current_vendor == 1356 then -- playstation controller (or otherwise sony)
@@ -1532,8 +1494,9 @@ end
 
 function game:endround()
 	fademusic(1)
-	if vars.timer <= 0.1 then
-		vars.timer = 0
+	vars.handler = ''
+	if value('anim_timer') <= 0.1 then
+		vars.anim_timervalue = 0
 	end
 	gfx.setCanvas(assets.modal_canvas)
 		gfx.push()
@@ -1547,41 +1510,67 @@ function game:endround()
 	gfx.setCanvas()
 	if vars.mode == 'arcade' or vars.mode == 'dailyrun' then
 		if not vars.ended then
-			timer.cancel(vars.anim_timer)
+			vars.anim_timer:remove()
 			playsound(assets.sfx_end)
 		end
-		vars.lose = timer.after(2, function()
+		afterdelay('lose', 2000, function()
 			if vars.active_hexa then
 				self:endround()
 				return
 			end
 			if not save.skipfanfare then
-				vars.handlers = 'losing'
+				vars.handler = 'losing'
 			end
 			if vars.mode == 'dailyrun' then
+				setrichpresence('steam_display', '#status_dailyfinal')
 				local time = os.date('!*t')
 				if save.lastdaily.year == time.year and save.lastdaily.month == time.month and save.lastdaily.day == time.day then
 					save.lastdaily.score = vars.score
-					-- LEADERBOARDS: push highscore, depending on hardmode
-					-- if successful, set save.lastdaily.sent = true
-					-- else, set as false
+					if issteam then
+						steam.userStats.findOrCreateLeaderboard(((save.hardmode and 'hard' .. vars.mode) or (vars.mode)) .. time.year .. time.month .. time.day, 'Descending', 'Numeric', function(data, err)
+							if err then
+								save.daily.sent = false
+							else
+								steam.userStats.uploadLeaderboardScore(data.steamLeaderboard, 'KeepBest', vars.score, nil, function(data, err)
+									if err then
+										save.lastdaily.sent = false
+									else
+										save.lastdaily.sent = true
+									end
+								end)
+							end
+						end)
+					end
 				end
 			else
-				-- LEADERBOARDS: push highscore, depending on hardmode
+				setrichpresence('steam_display', '#status_arcadefinal')
+				if issteam then
+					steam.userStats.findLeaderboard(save.hardmode and 'hardarcade' or 'arcade', function(data, err)
+						if not err and data.leaderboardFound then
+							steam.userStats.uploadLeaderboardScore(data.steamLeaderboard, 'KeepBest', vars.score, nil, function(data, err)
+								-- !?!?!?
+							end)
+						end
+					end)
+				end
 			end
 			if save.hardmode then
-				if vars.score > save.hard_score and vars.mode == 'arcade' then save.hard_score = vars.score end
+				if vars.score > save.hard_score and vars.mode == 'arcade' then
+					updatestat('hard_score', vars.score)
+				end
 			else
-				if vars.score > save.score and vars.mode == 'arcade' then save.score = vars.score end
+				if vars.score > save.score and vars.mode == 'arcade' then
+					updatestat('score', vars.score)
+				end
 			end
-			-- CHEEVOS: update
+			updatecheevos()
 			love.filesystem.write('data.json', json.encode(save))
 			if not transitioning then newmusic('audio/music/lose.mp3') end
-			vars.anim_modal = timer.tween(0.5, vars, {modal = 0}, 'out-back')
+			newtimer('modal', 500, 240, 0, 'outBack')
 			if save.skipfanfare then
 				self:ersi()
 			else
-				vars.lose1 = timer.after(0.548, function()
+				afterdelay('lose1', 548, function()
 					if not vars.skippedfanfare then
 						gfx.setCanvas(assets.modal_canvas)
 							gfx.push()
@@ -1599,7 +1588,7 @@ function game:endround()
 						gfx.setCanvas()
 					end
 				end)
-				vars.lose2 = timer.after(2.146, function()
+				afterdelay('lose2', 2146, function()
 					if not vars.skippedfanfare then
 						gfx.setCanvas(assets.modal_canvas)
 							gfx.push()
@@ -1621,7 +1610,7 @@ function game:endround()
 						gfx.setCanvas()
 					end
 				end)
-				vars.lose3 = timer.after(3.957, function()
+				afterdelay('lose3', 3957, function()
 					if not vars.skippedfanfare then
 						gfx.setCanvas(assets.modal_canvas)
 							gfx.push()
@@ -1643,7 +1632,7 @@ function game:endround()
 						gfx.setCanvas()
 					end
 				end)
-				vars.lose4 = timer.after(6.138, function()
+				afterdelay('lose4', 6138, function()
 					if not vars.skippedfanfare then
 						gfx.setCanvas(assets.modal_canvas)
 							gfx.push()
@@ -1661,9 +1650,9 @@ function game:endround()
 						gfx.setCanvas()
 					end
 				end)
-				vars.lose5 = timer.after(8.976, function()
+				afterdelay('lose5', 8976, function()
 					if not vars.skippedfanfare then
-						vars.handlers = 'lose'
+						vars.handler = 'lose'
 						gfx.setCanvas(assets.modal_canvas)
 							gfx.push()
 							gfx.origin()
@@ -1679,16 +1668,27 @@ function game:endround()
 							end
 
 							if vars.mode == 'dailyrun' then
-								if save.gamepad then -- Gamepad
-									if current_vendor == 1356 then -- playstation controller (or otherwise sony)
-										gfx.print(text('circle') .. text('back'), 40, 205)
+								if issteam then
+									if save.gamepad then -- Gamepad
+										if current_vendor == 1356 then -- playstation controller (or otherwise sony)
+											gfx.print(text('cross') .. text('showsdailyscores') .. text('circle') .. text('back'), 40, 205)
+										else
+											gfx.print(text('a') .. text('showsdailyscores') .. text('b') .. text('back'), 40, 205)
+										end
 									else
-										gfx.print(text('b') .. text('back'), 40, 205)
+										gfx.print(start(save.primary) .. text('showsdailyscores') .. start(save.secondary) .. text('back'), 40, 205)
 									end
 								else
-									gfx.print(start(save.secondary) .. text('back'), 40, 205)
+									if save.gamepad then -- Gamepad
+										if current_vendor == 1356 then -- playstation controller (or otherwise sony)
+											gfx.print(text('circle') .. text('back'), 40, 205)
+										else
+											gfx.print(text('b') .. text('back'), 40, 205)
+										end
+									else
+										gfx.print(start(save.secondary) .. text('back'), 40, 205)
+									end
 								end
-								-- LEADERBOARDS: "Z shows scores for today. X goes back.", if true
 							else
 								if save.gamepad then -- Gamepad
 									if current_vendor == 1356 then -- playstation controller (or otherwise sony)
@@ -1708,24 +1708,29 @@ function game:endround()
 			end
 		end)
 	elseif vars.mode == 'zen' then
+		if issteam then
+			steam.userStats.requestCurrentStats()
+			steam.userStats.setAchievement('chill')
+			steam.userStats.storeStats()
+		end
 		if not vars.ended then
 			playsound(assets.sfx_start)
 		end
-		vars.lose = timer.after(1, function()
+		afterdelay('lose', 1000, function()
 			if vars.active_hexa then
 				self:endround()
 				return
 			end
 			if not save.skipfanfare then
-				vars.handlers = 'losing'
+				vars.handler = 'losing'
 			end
 			love.filesystem.write('data.json', json.encode(save))
 			if not transitioning then newmusic('audio/music/zen_end.mp3') end
-			vars.anim_modal = timer.tween(0.5, vars, {modal = 0}, 'out-back')
+			newtimer('modal', 500, 240, 0, 'outBack')
 			if save.skipfanfare then
 				self:ersi()
 			else
-				vars.lose1 = timer.after(2.140, function()
+				afterdelay('lose1', 2140, function()
 					if not vars.skippedfanfare then
 						gfx.setCanvas(assets.modal_canvas)
 							gfx.push()
@@ -1743,7 +1748,7 @@ function game:endround()
 						gfx.setCanvas()
 					end
 				end)
-				vars.lose2 = timer.after(3.296, function()
+				afterdelay('lose2', 3296, function()
 					if not vars.skippedfanfare then
 						gfx.setCanvas(assets.modal_canvas)
 							gfx.push()
@@ -1765,7 +1770,7 @@ function game:endround()
 						gfx.setCanvas()
 					end
 				end)
-				vars.lose3 = timer.after(4.152, function()
+				afterdelay('lose3', 4152, function()
 					if not vars.skippedfanfare then
 						gfx.setCanvas(assets.modal_canvas)
 							gfx.push()
@@ -1787,7 +1792,7 @@ function game:endround()
 						gfx.setCanvas()
 					end
 				end)
-				vars.lose4 = timer.after(5.297, function()
+				afterdelay('lose4', 5297, function()
 					if not vars.skippedfanfare then
 						gfx.setCanvas(assets.modal_canvas)
 							gfx.push()
@@ -1805,9 +1810,9 @@ function game:endround()
 						gfx.setCanvas()
 					end
 				end)
-				vars.lose5 = timer.after(8.000, function()
+				afterdelay('lose5', 8000, function()
 					if not vars.skippedfanfare then
-						vars.handlers = 'lose'
+						vars.handler = 'lose'
 						gfx.setCanvas(assets.modal_canvas)
 							gfx.push()
 							gfx.origin()
@@ -1842,19 +1847,19 @@ function game:endround()
 		if not vars.ended then
 			playsound(assets.sfx_start)
 			if vars.mission == save.highest_mission then
-				save.highest_mission = save.highest_mission + 1
+				updatestat('highest_mission', save.highest_mission + 1)
 			end
 			if save.mission_bests['mission' .. vars.mission] == 0 or save.mission_bests['mission' .. vars.mission] > vars.moves then
 				save.mission_bests['mission' .. vars.mission] = vars.moves
 			end
 		end
-		vars.lose1 = timer.after(1.5, function()
+		afterdelay('lose1', 1500, function()
 			playsound(assets.sfx_mission)
 			vars.missioncomplete = true
-			-- CHEEVOS: update
+			updatecheevos(vars.mission == 50 and true or false)
 			love.filesystem.write('data.json', json.encode(save))
 		end)
-		vars.lose2 = timer.after(3, function()
+		afterdelay('lose2', 3000, function()
 			if vars.mission ~= nil and vars.mission > 50 then
 				scenemanager:transitionscene(missions, true)
 			else
@@ -1865,23 +1870,23 @@ function game:endround()
 		if not vars.ended then
 			playsound(assets.sfx_end)
 			if vars.mission == save.highest_mission then
-				save.highest_mission = save.highest_mission + 1
+				updatestat('highest_mission', save.highest_mission + 1)
 			end
 			if save.mission_bests['mission' .. vars.mission] < vars.score then
 				save.mission_bests['mission' .. vars.mission] = vars.score
 			end
 		end
-		vars.lose1 = timer.after(1.5, function()
+		afterdelay('lose1', 1500, function()
 			if vars.active_hexa then
 				self:endround()
 				return
 			end
 			playsound(assets.sfx_mission)
 			vars.missioncomplete = true
-			-- CHEEVOS: update
+			updatecheevos(vars.mission == 50 and true or false)
 			love.filesystem.write('data.json', json.encode(save))
 		end)
-		vars.lose2 = timer.after(3, function()
+		afterdelay('lose2', 3000, function()
 			if vars.mission ~= nil and vars.mission > 50 then
 				scenemanager:transitionscene(missions, true)
 			else
@@ -1892,23 +1897,23 @@ function game:endround()
 		if not vars.ended then
 			playsound(assets.sfx_end)
 			if vars.mission == save.highest_mission then
-				save.highest_mission = save.highest_mission + 1
+				updatestat('highest_mission', save.highest_mission + 1)
 			end
 			if save.mission_bests['mission' .. vars.mission] == 0 or save.mission_bests['mission' .. vars.mission] > vars.moves then
 				save.mission_bests['mission' .. vars.mission] = vars.moves
 			end
 		end
-		vars.lose1 = timer.after(1.5, function()
+		afterdelay('lose1', 1500, function()
 			if vars.active_hexa then
 				self:endround()
 				return
 			end
 			playsound(assets.sfx_mission)
 			vars.missioncomplete = true
-			-- CHEEVOS: update
+			updatecheevos(vars.mission == 50 and true or false)
 			love.filesystem.write('data.json', json.encode(save))
 		end)
-		vars.lose2 = timer.after(3, function()
+		afterdelay('lose2', 3000, function()
 			if vars.mission ~= nil and vars.mission > 50 then
 				scenemanager:transitionscene(missions, true)
 			else
@@ -1919,23 +1924,23 @@ function game:endround()
 		if not vars.ended then
 			playsound(assets.sfx_end)
 			if vars.mission == save.highest_mission then
-				save.highest_mission = save.highest_mission + 1
+				updatestat('highest_mission', save.highest_mission + 1)
 			end
 			if save.mission_bests['mission' .. vars.mission] == 0 or save.mission_bests['mission' .. vars.mission] > vars.time then
 				save.mission_bests['mission' .. vars.mission] = vars.time
 			end
 		end
-		vars.lose1 = timer.after(1.5, function()
+		afterdelay('lose1', 1500, function()
 			if vars.active_hexa then
 				self:endround()
 				return
 			end
 			playsound(assets.sfx_mission)
 			vars.missioncomplete = true
-			-- CHEEVOS: update
+			updatecheevos(vars.mission == 50 and true or false)
 			love.filesystem.write('data.json', json.encode(save))
 		end)
-		vars.lose2 = timer.after(3, function()
+		afterdelay('lose2', 3000, function()
 			if vars.mission ~= nil and vars.mission > 50 then
 				scenemanager:transitionscene(missions, true)
 			else

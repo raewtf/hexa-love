@@ -7,18 +7,23 @@ if not table.unpack then
 end
 
 sfx_transition = love.audio.newSource('audio/sfx/transition.mp3', 'static')
-podbaydoorstatus = {pos1 = -230, pos2 = 410}
-transitiontime = 0.7
+transitiontime = 700
 transitioning = false
+transition = {}
 
 scenemanager = class{
-	init = function(self, transitiontime, transitioning)
+	init = function(self)
 	end
 }
 
 function scenemanager:switchscene(scene, ...)
+	if transitioning then return end
 	self.newscene = scene
 	self.sceneargs = {...}
+	if vars ~= nil then
+		vars.handler = ''
+		vars.waiting = true
+	end
 	self:loadnewscene()
 	transitioning = false
 end
@@ -29,13 +34,17 @@ function scenemanager:transitionscene(scene, ...)
 	transitioning = true
 	self.newscene = scene
 	self.sceneargs = {...}
+	if vars ~= nil then
+		vars.handler = ''
+		vars.waiting = true
+	end
 	playsound(sfx_transition)
-	self.timer = timer.tween(transitiontime, podbaydoorstatus, {pos1 = -10, pos2 = 202}, 'in-out-cubic', function()
+	newtimer('transition', transitiontime, -0.1, 1, 'inOutCubic', function()
 		self:loadnewscene()
-		self.timer = timer.tween(transitiontime, podbaydoorstatus, {pos1 = -230, pos2 = 410}, 'in-out-cubic', function()
+		newtimer('transition', transitiontime, 1, -0.1, 'inOutCubic', function()
 			transitioning = false
-		end)
-	end)
+		end, transition)
+	end, transition)
 end
 
 function scenemanager:loadnewscene()
@@ -46,19 +55,7 @@ end
 
 function scenemanager:cleanupscene()
 	quit = 0
-	if classes ~= nil then
-		for i = #classes, 1, -1 do
-			classes[i] = nil
-		end
-		classes = nil
-	end
-	classes = {}
-	if sprites ~= nil then
-		for i = 1, #sprites do
-			sprites[i] = nil
-		end
-	end
-	sprites = {}
+	timer.clear()
 	if assets ~= nil then
 		for i = 1, #assets do
 			assets[i] = nil
@@ -71,7 +68,6 @@ function scenemanager:cleanupscene()
 		end
 	end
 	vars = nil -- and nil all the variables.
-	timer.clear()
 	collectgarbage('collect') -- and collect the garbage.
 end
 

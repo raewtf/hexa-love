@@ -2,3 +2,12 @@
 .git
 HEXA.love
 versions
+libsteam_api.dylib
+steam_appid.txt
+richpresence.json
+linux/luasteam.so
+linux/libsteam_api.so
+macos/libsteam_api.dylib
+macos/luasteam.so
+windows/luasteam.dll
+windows/steam_api64.dll

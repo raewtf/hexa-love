@@ -15,16 +15,17 @@ end
 
 function visuals:enter(current, ...)
 	love.window.setTitle(text('hexa') .. text('dash_long') .. text('options_visuals'))
+	setrichpresence('steam_display', '#status_options')
 	local args = {...} -- Arguments passed in through the scene management will arrive here
 
 	assets = {
-		full_circle_inverted = gfx.newImageFont('fonts/full-circle-inverted.png', '0123456789 !"#$%&\'()*+,-./:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\\]™_`abcdefghijklmnopqrstuvwxyz{|}~≠🎵ÀÇÉÈÊÎÔÛàçéèêîôû△✕º◻'),
-		half_circle_inverted = gfx.newImageFont('fonts/half-circle-inverted.png', '0123456789 !"#$%&\'()*+,-./:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\\]™_`abcdefghijklmnopqrstuvwxyz{|}~≠⏰🔒ÀÇÉÈÊÎÔÛàçéèêîôû△✕º◻'),
+		full_circle_inverted = gfx.newImageFont('fonts/full-circle-inverted.png', '0123456789 !"#$%&\'()*+,-./:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\\]^_`abcdefghijklmnopqrstuvwxyz{|}~�àçéèêîôÀûÇÉÈÊÎÔÛ゠ーシドトジスズセゼソゾタダサザコゴンマツヅテデナニヌネッハノカガキギクオォエグケゲェホボポミペベヘフブプヒビピバパチヂイゥィウアァムリルレロョヨラユュモメヤャワヮヰヱヲヴヵヷヸヿヾヽ・ヺヶヹしじすずせぜそぞざさこごぐくぎきがかおぉえぇうぅいぃただちぢっつづてでへべぺとどふぶぷのり゛゜ゝゞむみねにげけわゎゟゖゕゔんはばぱまぽぼほひびぴるれろをゑゐぬよょならゆゅもあぁやゃめüúùøËÕÖÓÒØëáâãäåæïíìÏÍÌÜÚÙ×ÁÂÃÄÅÆÐÑÝÞñóòõö÷þýÿðß¿¡¨°®©¯±²³´µ¶·¸¹º»«¼½¾§¥¤£¢¦ª¬制回取数替日消作少選今使形得了倍方早明時終🎵色角択中二人開乗間六内動合宇。宙本目転一全向押灰分秒反戻自者語英決！完限表示獲設定音量言（）安黒２十字位誰読込書出切詳細高指前成編集的値名確認起点保存先共有達、統組五図？食来遊変更新登録失敗１５０最大削除当爆発支配土下座負任務四部報告船準備練習物挑戦息忘昨休水補給折紙見元気君長奇妙説『』呼同操繰返利通常盤体重他場残増延基疑問入聞無視△✕º◻⏰🔒', 0),
+		half_circle_inverted = gfx.newImageFont('fonts/half-circle-inverted.png', '0123456789 !"#$%&\'()*+,-./:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\\]^_`abcdefghijklmnopqrstuvwxyz{|}~�⏰🔒àçéèêîôûÀÇÉÈÊÎÔÛ゠ァアィイゥウェエォオカガキギクグケゲコゴサザシジスズセゼソゾタダチヂッツヅテデトドナニヌネノハバパヒビピフブプヘベペホボポマミムメモャヤュユョヨラリルレロヮワヰヱヲンヴヵヶヷヸヺヹ・ーヽヾヿぁあぃいぅうぇえぉおかがきぎくぐけげこごさざしじすずせぜそぞただちぢっつづてでとどなにぬねのはばぱひびぴふぶぷへべぺほぼぽまみむめもゃやゅゆょよらりるれろゎわゐゑをんゔゕゖ゛゜ゝゞゟ制回取数替日消作少選今使形得了倍方早明時終🎵色角択中二人開乗間六内動合宇。宙本目転一全向押灰分秒反戻自者語英決！完限表示獲設定音量言（）安黒２十字位誰読込書出切詳細高指前成編集的値名確認起点保存先共有達、統組五図？食来遊変更新登録失敗１５０最大削除当爆発支配土下座負任務四部報告船準備練習物挑戦息忘昨休水補給折紙見元気君長奇妙説『』呼同操繰返利通常盤体重他場残増延基疑問入聞無視△✕º◻', 0),
 		sfx_move = love.audio.newSource('audio/sfx/swap.mp3', 'static'),
 		sfx_select = love.audio.newSource('audio/sfx/select.mp3', 'static'),
 		sfx_back = love.audio.newSource('audio/sfx/back.mp3', 'static'),
 		sfx_bonk = love.audio.newSource('audio/sfx/bonk.mp3', 'static'),
-		quad = gfx.newQuad(0, 0, 400, 140, 400, 240),
+		quad = gfx.newQuad(0, 0, 400, 125, 400, 240),
 		hexaplex = gfx.newImage('images/2/manual-table-2.png'),
 		hexaplex1 = gfx.newImage('images/1/manual-table-2_1.png'),
 		hexaplex2 = gfx.newImage('images/1/manual-table-2_2.png'),
@@ -36,38 +37,13 @@ function visuals:enter(current, ...)
 	self:reload_images()
 
 	vars = {
-		sx = 0,
-		sy = 0,
-		lx = 0,
-		ly = 0,
 		waiting = true,
 		selection = 0,
 		selections = {'scale', 'clean_scaling', 'fullscreen', 'reduceflashing', 'color', 'hexaplex_color'},
 	}
-	vars.input_wait = timer.after(transitiontime, function()
+	afterdelay('input_wait', transitiontime, function()
 		vars.waiting = false
 		vars.selection = 1
-	end)
-
-	vars.anim_sx = timer.tween(4, vars, {sx = -399})
-	vars.anim_sy = timer.tween(2.75, vars, {sy = -239})
-	vars.anim_lx = timer.tween(2.5, vars, {lx = -399})
-	vars.anim_ly = timer.tween(1.25, vars, {ly = -239})
-	vars.anim_sx_loop = timer.every(4, function()
-		vars.sx = 0
-		vars.anim_sx = timer.tween(4, vars, {sx = -399})
-	end)
-	vars.anim_sy_loop = timer.every(2.75, function()
-		vars.sy = 0
-		vars.anim_sy = timer.tween(2.75, vars, {sy = -239})
-	end)
-	vars.anim_lx_loop = timer.every(2.5, function()
-		vars.lx = 0
-		vars.anim_lx = timer.tween(2.5, vars, {lx = -399})
-	end)
-	vars.anim_ly_loop = timer.every(1.25, function()
-		vars.ly = 0
-		vars.anim_ly = timer.tween(1.25, vars, {ly = -239})
 	end)
 end
 
@@ -78,13 +54,13 @@ function visuals:keypressed(key)
 				if vars.selection > 1 then
 					vars.selection = vars.selection - 1
 				else
-					vars.selection = #vars.selections
+					vars.selection = (#vars.selections - (save.color == 1 and 0 or 1))
 				end
 				playsound(assets.sfx_move)
 			end
 		elseif key == save.down then
 			if vars.selection ~= 0 then
-				if vars.selection < #vars.selections then
+				if vars.selection < (#vars.selections - (save.color == 1 and 0 or 1)) then
 					vars.selection = vars.selection + 1
 				else
 					vars.selection = 1
@@ -112,6 +88,7 @@ function visuals:keypressed(key)
 				save.fullscreen = not save.fullscreen
 				playsound(assets.sfx_select)
 				love.window.setFullscreen(save.fullscreen)
+				if not save.fullscreen and scale ~= save.scale then rescale(save.scale) end
 			elseif vars.selections[vars.selection] == 'reduceflashing' then
 				save.reduceflashing = not save.reduceflashing
 				playsound(assets.sfx_select)
@@ -153,6 +130,7 @@ function visuals:keypressed(key)
 				save.fullscreen = not save.fullscreen
 				playsound(assets.sfx_select)
 				love.window.setFullscreen(save.fullscreen)
+				if not save.fullscreen and scale ~= save.scale then rescale(save.scale) end
 			elseif vars.selections[vars.selection] == 'reduceflashing' then
 				save.reduceflashing = not save.reduceflashing
 				playsound(assets.sfx_select)
@@ -194,6 +172,7 @@ function visuals:keypressed(key)
 				save.fullscreen = not save.fullscreen
 				playsound(assets.sfx_select)
 				love.window.setFullscreen(save.fullscreen)
+				if not save.fullscreen and scale ~= save.scale then rescale(save.scale) end
 			elseif vars.selections[vars.selection] == 'reduceflashing' then
 				save.reduceflashing = not save.reduceflashing
 				playsound(assets.sfx_select)
@@ -228,8 +207,9 @@ end
 
 function visuals:draw()
 	gfx.draw(assets.bg, 0, 0)
-	gfx.draw(assets.stars_small, floor(vars.sx), floor(vars.sy))
-	gfx.draw(assets.stars_large, floor(vars.lx), floor(vars.ly))
+	local counter = save.playtime
+	gfx.draw(assets.stars_small, floor(-(counter % 133) * 3), floor(-(counter % 97) * 2.45))
+	gfx.draw(assets.stars_large, floor(-(counter % 83) * 4.8), floor(-(counter % 42) * 5.7))
 	gfx.draw(assets.img25, 0, 0)
 
 	gfx.setFont(assets.full_circle_inverted)
@@ -253,6 +233,16 @@ function visuals:draw()
 		gfx.setColor(love.math.colorFromBytes(255, 241, 232, 127))
 	else
 		gfx.setFont(assets.half_circle_inverted)
+	end
+
+	if save.gamepad then -- Gamepad
+		if current_vendor == 1356 then -- playstation controller (or otherwise sony)
+			gfx.print(text('dpad') .. text('moves') .. text('cross') .. text('toggle'), 70, 220)
+		else
+			gfx.print(text('dpad') .. text('moves') .. text('a') .. text('toggle'), 70, 220)
+		end
+	else
+		gfx.print(start(save.up) .. text('slash') .. start(save.down) .. text('move') .. start(save.primary) .. text('toggle'), 70, 220)
 	end
 
 	for i = 1, #vars.selections do
@@ -299,16 +289,6 @@ function visuals:draw()
 	end
 	gfx.setColor(1, 1, 1, 1)
 	gfx.draw(assets.fg, 0, 0)
-
-	if save.gamepad then -- Gamepad
-		if current_vendor == 1356 then -- playstation controller (or otherwise sony)
-			gfx.print(text('dpad') .. text('moves') .. text('cross') .. text('toggle'), 70, 220)
-		else
-			gfx.print(text('dpad') .. text('moves') .. text('a') .. text('toggle'), 70, 220)
-		end
-	else
-		gfx.print(start(save.up) .. text('slash') .. start(save.down) .. text('move') .. start(save.primary) .. text('toggle'), 70, 220)
-	end
 
 	draw_on_top()
 end
