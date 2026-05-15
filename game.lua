@@ -16,8 +16,8 @@ function game:enter(current, ...)
 	assets = {
 		cursor = gfx.newImage('images/' ..tostring(save.color) .. '/cursor.png'),
 		cursor_pick = gfx.newImage('images/' ..tostring(save.color) .. '/cursor_pick.png'),
-		full_circle_inverted = gfx.newImageFont('fonts/full-circle-inverted.png', '0123456789 !"#$%&\'()*+,-./:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\\]^_`abcdefghijklmnopqrstuvwxyz{|}~�àçéèêîôÀûÇÉÈÊÎÔÛ゠ーシドトジスズセゼソゾタダサザコゴンマツヅテデナニヌネッハノカガキギクオォエグケゲェホボポミペベヘフブプヒビピバパチヂイゥィウアァムリルレロョヨラユュモメヤャワヮヰヱヲヴヵヷヸヿヾヽ・ヺヶヹしじすずせぜそぞざさこごぐくぎきがかおぉえぇうぅいぃただちぢっつづてでへべぺとどふぶぷのり゛゜ゝゞむみねにげけわゎゟゖゕゔんはばぱまぽぼほひびぴるれろをゑゐぬよょならゆゅもあぁやゃめüúùøËÕÖÓÒØëáâãäåæïíìÏÍÌÜÚÙ×ÁÂÃÄÅÆÐÑÝÞñóòõö÷þýÿðß¿¡¨°®©¯±²³´µ¶·¸¹º»«¼½¾§¥¤£¢¦ª¬制回取数替日消作少選今使形得了倍方早明時終🎵色角択中二人開乗間六内動合宇。宙本目転一全向押灰分秒反戻自者語英決！完限表示獲設定音量言（）安黒２十字位誰読込書出切詳細高指前成編集的値名確認起点保存先共有達、統組五図？食来遊変更新登録失敗１５０最大削除当爆発支配土下座負任務四部報告船準備練習物挑戦息忘昨休水補給折紙見元気君長奇妙説『』呼同操繰返利通常盤体重他場残増延基疑問入聞無視△✕º◻⏰🔒', 0),
-		half_circle_inverted = gfx.newImageFont('fonts/half-circle-inverted.png', '0123456789 !"#$%&\'()*+,-./:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\\]^_`abcdefghijklmnopqrstuvwxyz{|}~�⏰🔒àçéèêîôûÀÇÉÈÊÎÔÛ゠ァアィイゥウェエォオカガキギクグケゲコゴサザシジスズセゼソゾタダチヂッツヅテデトドナニヌネノハバパヒビピフブプヘベペホボポマミムメモャヤュユョヨラリルレロヮワヰヱヲンヴヵヶヷヸヺヹ・ーヽヾヿぁあぃいぅうぇえぉおかがきぎくぐけげこごさざしじすずせぜそぞただちぢっつづてでとどなにぬねのはばぱひびぴふぶぷへべぺほぼぽまみむめもゃやゅゆょよらりるれろゎわゐゑをんゔゕゖ゛゜ゝゞゟ制回取数替日消作少選今使形得了倍方早明時終🎵色角択中二人開乗間六内動合宇。宙本目転一全向押灰分秒反戻自者語英決！完限表示獲設定音量言（）安黒２十字位誰読込書出切詳細高指前成編集的値名確認起点保存先共有達、統組五図？食来遊変更新登録失敗１５０最大削除当爆発支配土下座負任務四部報告船準備練習物挑戦息忘昨休水補給折紙見元気君長奇妙説『』呼同操繰返利通常盤体重他場残増延基疑問入聞無視△✕º◻', 0),
+		full_circle_inverted = gfx.newImageFont('fonts/full-circle-inverted.png', '0123456789 !"#$%&\'()*+,-./:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\\]^_`abcdefghijklmnopqrstuvwxyz{|}~�àçéèêîôÀûÇÉÈÊÎÔÛ゠ーシドトジスズセゼソゾタダサザコゴンマツヅテデナニヌネッハノカガキギクオォエグケゲェホボポミペベヘフブプヒビピバパチヂイゥィウアァムリルレロョヨラユュモメヤャワヮヰヱヲヴヵヷヸヿヾヽ・ヺヶヹしじすずせぜそぞざさこごぐくぎきがかおぉえぇうぅいぃただちぢっつづてでへべぺとどふぶぷのり゛゜ゝゞむみねにげけわゎゟゖゕゔんはばぱまぽぼほひびぴるれろをゑゐぬよょならゆゅもあぁやゃめüúùøËÕÖÓÒØëáâãäåæïíìÏÍÌÜÚÙ×ÁÂÃÄÅÆÐÑÝÞñóòõö÷þýÿðß¿¡¨°®©¯±²³´µ¶·¸¹º»«¼½¾§¥¤£¢¦ª¬制回取数替日消作少選今使形得了倍方早明時終🎵色角択中二人開乗間六内動合宇。宙本目転一全向押灰分秒反戻自者語英決！完限表示獲設定音量言（）安黒２十字位誰読込書出切詳細高指前成編集的値名確認起点保存先共有達、統組五図？食来遊変更新登録失敗１５０最大削除当爆発支配土下座負任務四部報告船準備練習物挑戦息忘昨休水補給折紙見元気君長奇妙説『』呼同操繰返利通常盤体重他場残増延基疑問入聞無視△✕º◻⏰🔒整割振解放画面効果減少', 0),
+		half_circle_inverted = gfx.newImageFont('fonts/half-circle-inverted.png', '0123456789 !"#$%&\'()*+,-./:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\\]^_`abcdefghijklmnopqrstuvwxyz{|}~�⏰🔒àçéèêîôûÀÇÉÈÊÎÔÛ゠ァアィイゥウェエォオカガキギクグケゲコゴサザシジスズセゼソゾタダチヂッツヅテデトドナニヌネノハバパヒビピフブプヘベペホボポマミムメモャヤュユョヨラリルレロヮワヰヱヲンヴヵヶヷヸヺヹ・ーヽヾヿぁあぃいぅうぇえぉおかがきぎくぐけげこごさざしじすずせぜそぞただちぢっつづてでとどなにぬねのはばぱひびぴふぶぷへべぺほぼぽまみむめもゃやゅゆょよらりるれろゎわゐゑをんゔゕゖ゛゜ゝゞゟ制回取数替日消作少選今使形得了倍方早明時終🎵色角択中二人開乗間六内動合宇。宙本目転一全向押灰分秒反戻自者語英決！完限表示獲設定音量言（）安黒２十字位誰読込書出切詳細高指前成編集的値名確認起点保存先共有達、統組五図？食来遊変更新登録失敗１５０最大削除当爆発支配土下座負任務四部報告船準備練習物挑戦息忘昨休水補給折紙見元気君長奇妙説『』呼同操繰返利通常盤体重他場残増延基疑問入聞無視△✕º◻整割振解放画面効果減少', 0),
 		clock = gfx.newImageFont('fonts/clock.png', '0123456789:'),
 		hexa = gfx.newImage('images/' .. tostring(save.color) .. '/hexa_' .. tostring(save.reduceflashing) .. '.png'),
 		sfx_move = love.audio.newSource('audio/sfx/move.mp3', 'static'),
@@ -95,6 +95,7 @@ function game:enter(current, ...)
 		skippedfanfare = false,
 		missioncomplete = false,
 		time = 0,
+		autopause = false,
 		pause_selection = 1,
 		pause_selections = {'continue', 'quit'},
 		pos1 = 0,
@@ -452,17 +453,16 @@ function game:keypressed(key)
 					self:swap(vars.slot, true)
 				end
 			end
-		elseif key == 'escape' then
-			if (vars.handler == 'game' and not vars.paused) then
-				vars.pause_selections = {'continue'}
-				if vars.mode == 'arcade' and vars.can_do_stuff then table.insert(vars.pause_selections, 'restart') end
-				table.insert(vars.pause_selections, 'quit')
-				vars.paused = true
-				vars.handler = 'pause'
-				vars.pause_selection = 1
-				playsound(assets.sfx_move)
-				if music ~= nil then volume = {(save.music / 5) * 0.3} end
-			end
+		elseif key == 'escape' and not vars.paused and not transitioning then
+			vars.autopause = false
+			vars.pause_selections = {'continue'}
+			if vars.mode == 'arcade' and vars.can_do_stuff then table.insert(vars.pause_selections, 'restart') end
+			table.insert(vars.pause_selections, 'quit')
+			vars.paused = true
+			vars.handler = 'pause'
+			vars.pause_selection = 1
+			playsound(assets.sfx_move)
+			if music ~= nil then volume = {(save.music / 5) * 0.3} end
 		end
 	elseif vars.handler == 'losing' then
 		if key == save.primary or key == save.secondary then
@@ -485,6 +485,18 @@ function game:keypressed(key)
 			fademusic(100)
 			scenemanager:transitionscene(title, false, vars.mode)
 		end
+	elseif vars.handler == 'hexa' then
+		if key == 'escape' and not vars.paused and not transitioning then
+			vars.autopause = false
+			vars.pause_selections = {'continue'}
+			if vars.mode == 'arcade' and vars.can_do_stuff then table.insert(vars.pause_selections, 'restart') end
+			table.insert(vars.pause_selections, 'quit')
+			vars.paused = true
+			vars.handler = 'pause'
+			vars.pause_selection = 1
+			playsound(assets.sfx_move)
+			if music ~= nil then volume = {(save.music / 5) * 0.3} end
+		end
 	elseif vars.handler == 'pause' then
 		if key == save.left then
 			if vars.pause_selection == 1 then
@@ -502,7 +514,9 @@ function game:keypressed(key)
 			end
 		elseif key == save.primary then
 			vars.paused = false
-			if not vars.active_hexa then
+			if vars.active_hexa then
+				vars.handler = 'hexa'
+			else
 				vars.handler = 'game'
 			end
 			if music ~= nil then volume = {save.music / 5} end
@@ -540,7 +554,9 @@ function game:keypressed(key)
 			end
 		elseif key == save.secondary or key == 'escape' then
 			vars.paused = false
-			if not vars.active_hexa then
+			if vars.active_hexa then
+				vars.handler = 'hexa'
+			else
 				vars.handler = 'game'
 			end
 			if music ~= nil then volume = {save.music / 5} end
@@ -631,7 +647,11 @@ end
 function game:draw()
 	gfx.draw(assets.bg, 0, 0)
 	if vars.mode ~= 'dailyrun' then
-		gfx.draw(assets.bg_tile, (floor(value('bgx') / 2) * 2) - 1, (floor(value('bgy') / 2) * 2) - 1)
+		if save.reduceflashing then
+			gfx.draw(assets.bg_tile, -1, -1)
+		else
+			gfx.draw(assets.bg_tile, (floor(value('bgx') / 2) * 2) - 1, (floor(value('bgy') / 2) * 2) - 1)
+		end
 	end
 	gfx.draw(assets.stars, floor(value('sx')), floor(value('sy')))
 	if assets.draw_label ~= nil then gfx.draw(assets.draw_label, floor(value('label')), -13) end
@@ -770,6 +790,10 @@ function game:draw()
 		else
 			gfx.setFont(assets.half_circle_inverted)
 		end
+
+		--[[ if vars.autopause then
+			gfx.printf(text('autopause'), 0, 92, 400, 'center')
+		end ]]
 
 		for i = 1, #vars.pause_selections do
 			vars['pos' .. i] = floor(400 / #vars.pause_selections) * (i - 1)
@@ -1016,7 +1040,7 @@ function game:colorflip(temp1, temp2, temp3, temp4, temp5, temp6, yes)
 end
 
 function game:hexa(temp1, temp2, temp3, temp4, temp5, temp6)
-	vars.handler = ''
+	vars.handler = 'hexa'
 	vars.active_hexa = true
 	vars.tempcolor1 = temp1.color
 	vars.tempcolor2 = temp2.color

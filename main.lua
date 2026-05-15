@@ -47,6 +47,7 @@ if issteam then
 	function steam.friends.onGameOverlayActivated(a)
 		if a then
 			if vars ~= nil and (vars.handler == 'game' and not vars.paused) then
+				vars.autopause = true
 				vars.pause_selections = {'continue'}
 				if vars.mode == 'arcade' and vars.can_do_stuff then table.insert(vars.pause_selections, 'restart') end
 				table.insert(vars.pause_selections, 'quit')
@@ -107,7 +108,6 @@ local gamepad = false
 local floor = math.floor
 local max = math.max
 local scale
-quit = 0
 
 -- for the sticks
 lstick_up = false
@@ -115,7 +115,7 @@ lstick_down = false
 lstick_left = false
 lstick_right = false
 
-version = '2.3.0'
+version = '2.3.1'
 
 gfx.setLineWidth(3)
 gfx.setLineStyle('rough')
@@ -239,8 +239,8 @@ hexaplex_whites = {
 	{love.math.colorFromBytes(255, 241, 232, 255)},
 }
 
-local full_circle = gfx.newImageFont('fonts/full-circle-inverted.png', '0123456789 !"#$%&\'()*+,-./:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\\]^_`abcdefghijklmnopqrstuvwxyz{|}~�àçéèêîôÀûÇÉÈÊÎÔÛ゠ーシドトジスズセゼソゾタダサザコゴンマツヅテデナニヌネッハノカガキギクオォエグケゲェホボポミペベヘフブプヒビピバパチヂイゥィウアァムリルレロョヨラユュモメヤャワヮヰヱヲヴヵヷヸヿヾヽ・ヺヶヹしじすずせぜそぞざさこごぐくぎきがかおぉえぇうぅいぃただちぢっつづてでへべぺとどふぶぷのり゛゜ゝゞむみねにげけわゎゟゖゕゔんはばぱまぽぼほひびぴるれろをゑゐぬよょならゆゅもあぁやゃめüúùøËÕÖÓÒØëáâãäåæïíìÏÍÌÜÚÙ×ÁÂÃÄÅÆÐÑÝÞñóòõö÷þýÿðß¿¡¨°®©¯±²³´µ¶·¸¹º»«¼½¾§¥¤£¢¦ª¬制回取数替日消作少選今使形得了倍方早明時終🎵色角択中二人開乗間六内動合宇。宙本目転一全向押灰分秒反戻自者語英決！完限表示獲設定音量言（）安黒２十字位誰読込書出切詳細高指前成編集的値名確認起点保存先共有達、統組五図？食来遊変更新登録失敗１５０最大削除当爆発支配土下座負任務四部報告船準備練習物挑戦息忘昨休水補給折紙見元気君長奇妙説『』呼同操繰返利通常盤体重他場残増延基疑問入聞無視△✕º◻', 0)
-local half_circle = gfx.newImageFont('fonts/half-circle-inverted.png', '0123456789 !"#$%&\'()*+,-./:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\\]^_`abcdefghijklmnopqrstuvwxyz{|}~�⏰🔒àçéèêîôûÀÇÉÈÊÎÔÛ゠ァアィイゥウェエォオカガキギクグケゲコゴサザシジスズセゼソゾタダチヂッツヅテデトドナニヌネノハバパヒビピフブプヘベペホボポマミムメモャヤュユョヨラリルレロヮワヰヱヲンヴヵヶヷヸヺヹ・ーヽヾヿぁあぃいぅうぇえぉおかがきぎくぐけげこごさざしじすずせぜそぞただちぢっつづてでとどなにぬねのはばぱひびぴふぶぷへべぺほぼぽまみむめもゃやゅゆょよらりるれろゎわゐゑをんゔゕゖ゛゜ゝゞゟ制回取数替日消作少選今使形得了倍方早明時終🎵色角択中二人開乗間六内動合宇。宙本目転一全向押灰分秒反戻自者語英決！完限表示獲設定音量言（）安黒２十字位誰読込書出切詳細高指前成編集的値名確認起点保存先共有達、統組五図？食来遊変更新登録失敗１５０最大削除当爆発支配土下座負任務四部報告船準備練習物挑戦息忘昨休水補給折紙見元気君長奇妙説『』呼同操繰返利通常盤体重他場残増延基疑問入聞無視△✕º◻', 0)
+local full_circle = gfx.newImageFont('fonts/full-circle-inverted.png', '0123456789 !"#$%&\'()*+,-./:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\\]^_`abcdefghijklmnopqrstuvwxyz{|}~�àçéèêîôÀûÇÉÈÊÎÔÛ゠ーシドトジスズセゼソゾタダサザコゴンマツヅテデナニヌネッハノカガキギクオォエグケゲェホボポミペベヘフブプヒビピバパチヂイゥィウアァムリルレロョヨラユュモメヤャワヮヰヱヲヴヵヷヸヿヾヽ・ヺヶヹしじすずせぜそぞざさこごぐくぎきがかおぉえぇうぅいぃただちぢっつづてでへべぺとどふぶぷのり゛゜ゝゞむみねにげけわゎゟゖゕゔんはばぱまぽぼほひびぴるれろをゑゐぬよょならゆゅもあぁやゃめüúùøËÕÖÓÒØëáâãäåæïíìÏÍÌÜÚÙ×ÁÂÃÄÅÆÐÑÝÞñóòõö÷þýÿðß¿¡¨°®©¯±²³´µ¶·¸¹º»«¼½¾§¥¤£¢¦ª¬制回取数替日消作少選今使形得了倍方早明時終🎵色角択中二人開乗間六内動合宇。宙本目転一全向押灰分秒反戻自者語英決！完限表示獲設定音量言（）安黒２十字位誰読込書出切詳細高指前成編集的値名確認起点保存先共有達、統組五図？食来遊変更新登録失敗１５０最大削除当爆発支配土下座負任務四部報告船準備練習物挑戦息忘昨休水補給折紙見元気君長奇妙説『』呼同操繰返利通常盤体重他場残増延基疑問入聞無視△✕º◻整割振解放画面効果減少', 0)
+local half_circle = gfx.newImageFont('fonts/half-circle-inverted.png', '0123456789 !"#$%&\'()*+,-./:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\\]^_`abcdefghijklmnopqrstuvwxyz{|}~�⏰🔒àçéèêîôûÀÇÉÈÊÎÔÛ゠ァアィイゥウェエォオカガキギクグケゲコゴサザシジスズセゼソゾタダチヂッツヅテデトドナニヌネノハバパヒビピフブプヘベペホボポマミムメモャヤュユョヨラリルレロヮワヰヱヲンヴヵヶヷヸヺヹ・ーヽヾヿぁあぃいぅうぇえぉおかがきぎくぐけげこごさざしじすずせぜそぞただちぢっつづてでとどなにぬねのはばぱひびぴふぶぷへべぺほぼぽまみむめもゃやゅゆょよらりるれろゎわゐゑをんゔゕゖ゛゜ゝゞゟ制回取数替日消作少選今使形得了倍方早明時終🎵色角択中二人開乗間六内動合宇。宙本目転一全向押灰分秒反戻自者語英決！完限表示獲設定音量言（）安黒２十字位誰読込書出切詳細高指前成編集的値名確認起点保存先共有達、統組五図？食来遊変更新登録失敗１５０最大削除当爆発支配土下座負任務四部報告船準備練習物挑戦息忘昨休水補給折紙見元気君長奇妙説『』呼同操繰返利通常盤体重他場残増延基疑問入聞無視△✕º◻整割振解放画面効果減少', 0)
 local text
 icon_color = love.image.newImageData('images/2/icon.png')
 icon_peedee = love.image.newImageData('images/1/icon.png')
@@ -631,22 +631,12 @@ function love.keypressed(key)
 			vars.sequenceindex = 1
 		end
 	end
-	if key == 'escape' and vars ~= nil then
-		if vars.handler == 'remap' then
-			options:restorebuttons()
-			playsound(assets.sfx_back)
-			vars.remap_step = 1
-			vars.handler = 'options'
-			love.filesystem.write('data.json', json.encode(save))
-		elseif vars.handler ~= 'game' and vars.handler ~= 'quit' then
-			quit = quit + 1
-			afterdelay('quit_timer', 2000, function()
-				quit = 0
-			end)
-			if quit == 2 then
-				love.event.quit()
-			end
-		end
+	if key == 'escape' and vars ~= nil and vars.handler == 'remap' then
+		options:restorebuttons()
+		playsound(assets.sfx_back)
+		vars.remap_step = 1
+		vars.handler = 'options'
+		love.filesystem.write('data.json', json.encode(save))
 	end
 	if key == 'f11' then
 		save.fullscreen = not save.fullscreen
@@ -788,6 +778,7 @@ end
 
 function love.joystickremoved()
 	if vars ~= nil and (vars.handler == 'game' and not vars.paused) then
+		vars.autopause = true
 		vars.pause_selections = {'continue'}
 		if vars.mode == 'arcade' and vars.can_do_stuff then table.insert(vars.pause_selections, 'restart') end
 		table.insert(vars.pause_selections, 'quit')
@@ -865,6 +856,7 @@ function love.focus(f)
 	else
 		love.mouse.setVisible(true)
 		if vars ~= nil and (vars.handler == 'game' and not vars.paused) then
+			vars.autopause = true
 			vars.pause_selections = {'continue'}
 			if vars.mode == 'arcade' and vars.can_do_stuff then table.insert(vars.pause_selections, 'restart') end
 			table.insert(vars.pause_selections, 'quit')
@@ -898,28 +890,6 @@ end
 
 function draw_on_top()
 	gfx.setColor(1, 1, 1, 1)
-
-	if quit > 0 and save.lang ~= nil then
-		gfx.setColor(0, 0, 0, 1)
-		gfx.rectangle('fill', 0, 0, 400, 25)
-		if save.color == 1 then
-			gfx.setFont(full_circle)
-			gfx.setColor(love.math.colorFromBytes(255, 241, 232, 255))
-		else
-			gfx.setFont(half_circle)
-			gfx.setColor(1, 1, 1, 1)
-		end
-		if save.gamepad then
-			if current_vendor == 1356 then -- playstation controller (or otherwise sony)
-				gfx.printf(text('quit_options'), 0, 5, 400, 'center')
-			else
-				gfx.printf(text('quit_start'), 0, 5, 400, 'center')
-			end
-		else
-			gfx.printf(text('quit_esc'), 0, 5, 400, 'center')
-		end
-		gfx.setColor(1, 1, 1, 1)
-	end
 
 	if transitioning and vars.transition ~= nil then
 		gfx.draw(podbaydoor, math.floor(((value('transition') * 200) - 219) / 2) * 2, 0)
