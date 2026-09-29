@@ -747,7 +747,7 @@ function game:draw()
 	if vars.missioncomplete then
 		gfx.draw(assets.mission_complete, 0, 0)
 	end
-	gfx.draw(assets.modal_canvas, 0, floor(value('modal') or 240))
+	gfx.draw(assets.modal_canvas, 0, floor((value('modal') or 240) / 2) * 2)
 
 	if vars.paused then
 		gfx.draw(assets.half, 0, 0)
@@ -760,12 +760,15 @@ function game:draw()
 			gfx.setColor(1, 1, 1, 1)
 		end
 
+		local pause_offset = 0
+		if vars.autopause then pause_offset = 11 end
+
 		gfx.setFont(assets.full_circle_inverted)
 
 		if vars.pause_selections[vars.pause_selection] == 'continue' then
-			gfx.printf(text('continue'), vars.pos1, 112, vars.length1, 'center')
+			gfx.printf(text('continue'), vars.pos1, 112 + pause_offset, vars.length1, 'center')
 		elseif vars.pause_selections[vars.pause_selection] == 'restart' then
-			gfx.printf(text('restart'), vars.pos2, 112, vars.length2, 'center')
+			gfx.printf(text('restart'), vars.pos2, 112 + pause_offset, vars.length2, 'center')
 		elseif vars.pause_selections[vars.pause_selection] == 'quit' then
 			local pos
 			local length
@@ -777,11 +780,11 @@ function game:draw()
 				length = vars.length3
 			end
 			if vars.mode == 'logic' or vars.mode == 'time' or vars.mode == 'picture' or vars.mode == 'speedrun' then
-				gfx.printf(text('exitmission'), pos, 112, length, 'center')
+				gfx.printf(text('exitmission'), pos, 112 + pause_offset, length, 'center')
 			elseif vars.mode == 'arcade' or vars.mode == 'dailyrun' then
-				gfx.printf(text('endgame'), pos, 112, length, 'center')
+				gfx.printf(text('endgame'), pos, 112 + pause_offset, length, 'center')
 			elseif vars.mode == 'zen' then
-				gfx.printf(text('imdone'), pos, 112, length, 'center')
+				gfx.printf(text('imdone'), pos, 112 + pause_offset, length, 'center')
 			end
 		end
 
@@ -791,9 +794,7 @@ function game:draw()
 			gfx.setFont(assets.half_circle_inverted)
 		end
 
-		--[[ if vars.autopause then
-			gfx.printf(text('autopause'), 0, 92, 400, 'center')
-		end ]]
+		if vars.autopause then gfx.printf(text('autopaused'), 0, 101, 400, 'center') end
 
 		for i = 1, #vars.pause_selections do
 			vars['pos' .. i] = floor(400 / #vars.pause_selections) * (i - 1)
@@ -801,29 +802,29 @@ function game:draw()
 		end
 
 		if vars.pause_selections[vars.pause_selection] ~= 'continue' then
-			gfx.printf(text('continue'), vars.pos1, 112, vars.length1, 'center')
+			gfx.printf(text('continue'), vars.pos1, 112 + pause_offset, vars.length1, 'center')
 		end
 		if #vars.pause_selections == 2 then
 			if vars.pause_selections[vars.pause_selection] ~= 'quit' then
 				if vars.mode == 'logic' or vars.mode == 'time' or vars.mode == 'picture' or vars.mode == 'speedrun' then
-					gfx.printf(text('exitmission'), vars.pos2, 112, vars.length2, 'center')
+					gfx.printf(text('exitmission'), vars.pos2, 112 + pause_offset, vars.length2, 'center')
 				elseif vars.mode == 'arcade' or vars.mode == 'dailyrun' then
-					gfx.printf(text('endgame'), vars.pos2, 112, vars.length2, 'center')
+					gfx.printf(text('endgame'), vars.pos2, 112 + pause_offset, vars.length2, 'center')
 				elseif vars.mode == 'zen' then
-					gfx.printf(text('imdone'), vars.pos2, 112, vars.length2, 'center')
+					gfx.printf(text('imdone'), vars.pos2, 112 + pause_offset, vars.length2, 'center')
 				end
 			end
 		else
 			if vars.pause_selections[vars.pause_selection] ~= 'restart' then
-				gfx.printf(text('restart'), vars.pos2, 112, vars.length2, 'center')
+				gfx.printf(text('restart'), vars.pos2, 112 + pause_offset, vars.length2, 'center')
 			end
 			if vars.pause_selections[vars.pause_selection] ~= 'quit' then
 				if vars.mode == 'logic' or vars.mode == 'time' or vars.mode == 'picture' or vars.mode == 'speedrun' then
-					gfx.printf(text('exitmission'), vars.pos3, 112, vars.length3, 'center')
+					gfx.printf(text('exitmission'), vars.pos3, 112 + pause_offset, vars.length3, 'center')
 				elseif vars.mode == 'arcade' or vars.mode == 'dailyrun' then
-					gfx.printf(text('endgame'), vars.pos3, 112, vars.length3, 'center')
+					gfx.printf(text('endgame'), vars.pos3, 112 + pause_offset, vars.length3, 'center')
 				elseif vars.mode == 'zen' then
-					gfx.printf(text('imdone'), vars.pos3, 112, vars.length3, 'center')
+					gfx.printf(text('imdone'), vars.pos3, 112 + pause_offset, vars.length3, 'center')
 				end
 			end
 		end

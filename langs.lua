@@ -298,6 +298,7 @@ langs = {
 		["exports"] = " exports. ",
 		["directions_move"] = "Directions move. ",
 		["command_error"] = "Can't clear the mission in this state!",
+		["autopaused"] = "(game paused automatically)",
 
 		-- Unused in PC edition
 		--["yourrank"] = "Your rank: ",
@@ -621,6 +622,7 @@ langs = {
 		["exports"] = " : exporter. ",
 		["directions_move"] = "Directions : déplacer. ",
 		["command_error"] = "Cette configuration ne peut être résolue !",
+		["autopaused"] = "(jeu mis en pause automatiquement)",
 	},
 
 	jp = {
@@ -921,6 +923,7 @@ langs = {
 		["exports"] = "でセーブ。 ",
 		["directions_move"] = "方向キーで選ぶ。 ",
 		["command_error"] = "このミッションは達成できません！",
+		["autopaused"] = "", -- TODO: fill
 	}
 }
 

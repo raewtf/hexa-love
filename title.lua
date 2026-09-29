@@ -262,7 +262,7 @@ function title:draw()
 		gfx.setFont(assets.full_circle_inverted)
 		if save.color == 1 then gfx.setColor(love.math.colorFromBytes(255, 241, 232, 255)) end
 
-		gfx.printf(text('quit_sure_1'), 0, 62, 400, 'center')
+		gfx.printf(text('quit_sure_1'), 0, 90, 400, 'center')
 
 		if save.color == 1 then
 			gfx.setColor(love.math.colorFromBytes(255, 241, 232, 127))
@@ -272,22 +272,12 @@ function title:draw()
 
 		if save.gamepad then
 			if current_vendor == 1356 then -- playstation controller (or otherwise sony)
-				gfx.printf(text('quit_sure_2_options'), 0, 103, 400, 'center')
+				gfx.printf(text('cross') .. text('quits') .. text('circle') .. text('back'), 0, 135, 400, 'center')
 			else
-				gfx.printf(text('quit_sure_2_start'), 0, 103, 400, 'center')
+				gfx.printf(text('a') .. text('quits') .. text('b') .. text('back'), 0, 135, 400, 'center')
 			end
 		else
-			gfx.printf(text('quit_sure_2_esc'), 0, 103, 400, 'center')
-		end
-
-		if save.gamepad then
-			if current_vendor == 1356 then -- playstation controller (or otherwise sony)
-				gfx.printf(text('cross') .. text('quits') .. text('circle') .. text('back'), 0, 160, 400, 'center')
-			else
-				gfx.printf(text('a') .. text('quits') .. text('b') .. text('back'), 0, 160, 400, 'center')
-			end
-		else
-			gfx.printf(start(save.primary) .. text('quits') .. start(save.secondary) .. text('back'), 0, 160, 400, 'center')
+			gfx.printf(start(save.primary) .. text('quits') .. start(save.secondary) .. text('back'), 0, 135, 400, 'center')
 		end
 
 		gfx.setColor(1, 1, 1, 1)

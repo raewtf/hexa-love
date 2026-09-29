@@ -115,7 +115,7 @@ lstick_down = false
 lstick_left = false
 lstick_right = false
 
-version = '2.3.1'
+version = '2.3.2'
 
 gfx.setLineWidth(3)
 gfx.setLineStyle('rough')
